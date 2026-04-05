@@ -5,15 +5,15 @@ const projectData = {
         approach: "We crafted a full corporate identity system, from logo design to brand guidelines, specifically designed to reflect the scale and technical excellence of their work.",
         outcome: "A comprehensive brand framework that ensures consistency across all physical and digital touchpoints, reinforcing the corporation’s credibility on a national level.",
         images: [
-            "assets/projects/EEC/EEC-Field Jacket.png",
-            "assets/projects/EEC/EEC-Cosntruction Site.jpg",
-            "assets/projects/EEC/EEC-Photography.jpg",
-            "assets/projects/EEC/EEC-Hard Hat.png",
-            "assets/projects/EEC/EEC-Employee ID.jpg",
-            "assets/projects/EEC/EEC-Hi-Vi Vest.png",
-            "assets/projects/EEC/Backgrounds.jpg",
-            "assets/projects/EEC/0-59-Recovered.jpg",
-            "assets/projects/EEC/EEC-Site Signage.jpg",
+            "assets/projects/EEC/EEC-Field Jacket.webp",
+            "assets/projects/EEC/EEC-Cosntruction Site.webp",
+            "assets/projects/EEC/EEC-Photography.webp",
+            "assets/projects/EEC/EEC-Hard Hat.webp",
+            "assets/projects/EEC/EEC-Employee ID.webp",
+            "assets/projects/EEC/EEC-Hi-Vi Vest.webp",
+            "assets/projects/EEC/Backgrounds.webp",
+            "assets/projects/EEC/0-59-Recovered.webp",
+            "assets/projects/EEC/EEC-Site Signage.webp",
             "assets/projects/EEC/EEC-Animation.webm"
         ]
     },
@@ -23,16 +23,16 @@ const projectData = {
         approach: "The identity design draws inspiration from imperial architecture, heritage patterns, and archival archival elements, creating a visual language that honors the past while remaining accessible to modern audiences.",
         outcome: "A cohesive identity system, including wayfinding and signage, that allows the museum to communicate with dignity and clarity across all exhibitions and communications.",
         images: [
-            "assets/projects/Palace Museum/Palace Museum Entrance.png",
+            "assets/projects/Palace Museum/Palace Museum Entrance.webp",
             "assets/projects/Palace Museum/Palace Museum Story Animation.webm",
-            "assets/projects/Palace Museum/Palace Museum Signage.png",
-            "assets/projects/Palace Museum/Palace Museum Totebag.jpg",
-            "assets/projects/Palace Museum/Palace Museum Cataloge.jpg",
+            "assets/projects/Palace Museum/Palace Museum Signage.webp",
+            "assets/projects/Palace Museum/Palace Museum Totebag.webp",
+            "assets/projects/Palace Museum/Palace Museum Cataloge.webp",
             "assets/projects/Palace Museum/Palace Museum Guide Video.webm",
-            "assets/projects/Palace Museum/Palace Museum Post Card.png",
-            "assets/projects/Palace Museum/Palace Museum Wayfinding.png",
-            "assets/projects/Palace Museum/Palace Museum Posters.png",
-            "assets/projects/Palace Museum/Palace Museum Logo.png"
+            "assets/projects/Palace Museum/Palace Museum Post Card.webp",
+            "assets/projects/Palace Museum/Palace Museum Wayfinding.webp",
+            "assets/projects/Palace Museum/Palace Museum Posters.webp",
+            "assets/projects/Palace Museum/Palace Museum Logo.webp"
         ]
     },
     "project-3": {
@@ -42,15 +42,15 @@ const projectData = {
         outcome: "A successful internal launch that unified the team’s visual language across all physical and digital touchpoints, from office environments to digital toolkits.",
         images: [
             "assets/projects/Heineken EVP/EVP-Reveal Video.webm",
-            "assets/projects/Heineken EVP/EVP-Billboard.jpg",
-            "assets/projects/Heineken EVP/EVP Tote Bag.jpg",
-            "assets/projects/Heineken EVP/EVP-Hoodie.png",
-            "assets/projects/Heineken EVP/EVP Poster.jpg",
-            "assets/projects/Heineken EVP/EVP t shirt.jpg",
-            "assets/projects/Heineken EVP/EVP_Wall Papers.jpg",
-            "assets/projects/Heineken EVP/EVP Stamps.jpg",
-            "assets/projects/Heineken EVP/EVP Illustrations.jpg",
-            "assets/projects/Heineken EVP/EVP-Stickers.jpg"
+            "assets/projects/Heineken EVP/EVP-Billboard.webp",
+            "assets/projects/Heineken EVP/EVP Tote Bag.webp",
+            "assets/projects/Heineken EVP/EVP-Hoodie.webp",
+            "assets/projects/Heineken EVP/EVP Poster.webp",
+            "assets/projects/Heineken EVP/EVP t shirt.webp",
+            "assets/projects/Heineken EVP/EVP_Wall Papers.webp",
+            "assets/projects/Heineken EVP/EVP Stamps.webp",
+            "assets/projects/Heineken EVP/EVP Illustrations.webp",
+            "assets/projects/Heineken EVP/EVP-Stickers.webp"
         ]
     }
 };
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         block.style.backgroundColor = '#e6e6e6';
                     }
 
-                    if (imgSrc.toLowerCase().endsWith('.webm') || imgSrc.toLowerCase().endsWith('.mp4')) {
+                    if (imgSrc.toLowerCase().endsWith('.webm') || imgSrc.toLowerCase().endsWith('.webm')) {
                         block.style.overflow = 'hidden';
                         block.style.position = 'relative';
                         const video = document.createElement('video');
