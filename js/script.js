@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         const img = document.createElement('img');
                         img.loading = 'lazy';
+                        img.decoding = 'async';
                         img.onload = () => {
                             block.classList.add('loaded');
                         };
