@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kidus Minyelshowa | Portfolio</title>
+    <meta name="description"
+        content="Kidus Minyelshowa - Designer working on visual systems, identity, and structured design.">
+    <!-- Typography: Inter for a modern editorial feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700;900&family=Dr+Sugiyama&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+</head>
+
+<body>
+
+    <!-- Side Navbar -->
+    <nav class="side-navbar">
+        <div class="nav-contact">
+            <div class="nav-location">Addis Ababa, Ethiopia</div>
+            <div class="nav-email">kidusminye@gmail.com</div>
+        </div>
+            <div class="nav-avatar">
+                <img src="assets/img/KTM.jpg" alt="Avatar" class="avatar-img" width="45" height="45">
+            </div>
+            <button class="nav-info-btn" aria-label="Information">
+                <img src="assets/img/Asset 3.svg" alt="Info icon" class="info-icon">
+            </button>
+    </nav>
+
+    <!-- Info Overlay -->
+    <div id="info-overlay" class="info-overlay">
+        <div class="info-overlay-content">
+            <p class="info-description">
+                I’m Kidus Minyelshowa, a designer focused on building clear visual systems. My work centers on
+                structure, using layout, hierarchy, typography, and motion to create frameworks that organize how brands
+                and ideas are communicated. Rather than approaching design as a collection of isolated visuals, I focus
+                on defining relationships between elements so the work remains consistent, adaptable, and easy to use
+                across different contexts. The aim is always clarity: making complex information readable and design
+                decisions durable.
+            </p>
+            <div class="info-socials">
+                <a href="https://instagram.com/kidusminyel" class="info-link" target="_blank"
+                    rel="noopener noreferrer">INSTAGRAM</a>
+                <a href="https://linkedin.com/in/kidusminyel" class="info-link" target="_blank"
+                    rel="noopener noreferrer">LINKEDIN</a>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-container">
+
+        <!-- Hero Section -->
+        <section id="hero" class="section hero">
+            <div class="hero-content">
+                <h1 class="hero-title">KIDUS MINYELSHOWA</h1>
+
+                <div class="visual-blocks">
+                    <div class="square red-square" data-label="Motion design">
+                        <video src="assets/projects/Palace Museum/Palace Museum Story Animation.webm" loop muted playsinline
+                            preload="metadata" class="square-video"></video>
+                    </div>
+                    <div class="square green-square" data-label="Brand design">
+                        <video src="assets/projects/Lalibel/Lalibel Logo animation.mp4" loop muted playsinline
+                            preload="metadata" class="square-video"></video>
+                    </div>
+                    <div class="square blue-square" data-label="Type design">
+                        <video src="assets/video/Type Design Animation.mp4" loop muted playsinline preload="metadata" class="square-video"></video>
+                    </div>
+                </div>
+
+                <p class="hero-subtitle">
+                    A designer working on visual systems,<br>identity, and structured design.
+                </p>
+            </div>
+        </section>
+
+        <!-- Featured Work Section -->
+        <section id="featured-work" class="section featured-work">
+            <div class="section-header">
+                <h2 class="section-label">FEATURED WORK</h2>
+                <div class="header-line"></div>
+                <span class="header-subtitle">Selection of recent projects</span>
+            </div>
+            <div class="project-grid-wrapper">
+                <div class="project-grid">
+                    <!-- Project 1 -->
+                    <div class="project-item" data-project="project-1">
+                        <div class="project-card orange-border">
+                            <div class="project-image-container">
+                                <img src="assets/projects/EEC/EEC-Field Jacket.png" alt="EEC" class="project-image" loading="lazy" width="580" height="435">
+                            </div>
+                        </div>
+                        <div class="project-title-pill">
+                            <span class="play-icon"></span>
+                            <h3 class="project-title">EEC</h3>
+                        </div>
+                    </div>
+                    <!-- Project 2 -->
+                    <div class="project-item" data-project="project-2">
+                        <div class="project-card teal-border">
+                            <div class="project-image-container">
+                                <img src="assets/projects/Palace Museum/Palace Museum Cataloge.jpg" alt="Palace Museum"
+                                    class="project-image" loading="lazy" width="580" height="435">
+                            </div>
+                        </div>
+                        <div class="project-title-pill">
+                            <span class="play-icon"></span>
+                            <h3 class="project-title">Palace Museum</h3>
+                        </div>
+                    </div>
+                    <!-- Project 3 -->
+                    <div class="project-item" data-project="project-3">
+                        <div class="project-card brown-border">
+                            <div class="project-image-container">
+                                <img src="assets/projects/Heineken EVP/EVP Tote Bag.jpg" alt="Heineken EVP"
+                                    class="project-image" loading="lazy" width="580" height="435">
+                            </div>
+                        </div>
+                        <div class="project-title-pill">
+                            <span class="play-icon"></span>
+                            <h3 class="project-title">Heineken EVP</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- More Work Section -->
+        <section id="more-work" class="section more-work">
+            <div class="section-header">
+                <h2 class="section-label">MORE WORK</h2>
+            </div>
+            <div class="work-list">
+                <div class="work-item">
+                    <div class="work-item-header">
+                        <h3 class="work-title">Lalibel</h3>
+                        <p class="work-desc">A visual identity for Lalibel that captures the essence of heritage through sleek, contemporary design, balancing traditional motifs with a modern aesthetic.</p>
+                    </div>
+                    <!-- Hover elements -->
+                    <div class="work-hover-card hover-before">
+                        <img src="assets/projects/Lalibel/Lalibel Label.png" alt="Lalibel Label" loading="lazy" width="155" height="180">
+                    </div>
+                    <div class="work-hover-card hover-after">
+                        <img src="assets/projects/Lalibel/Lalibel Totebag.png" alt="Lalibel Totebag" loading="lazy" width="155" height="180">
+                    </div>
+                    <div class="work-item-content">
+                        <div class="work-visual-grid">
+                            <div class="work-block">
+                                <video src="assets/projects/Lalibel/Lalibel Logo animation.mp4" loop muted playsinline
+                                    preload="metadata" class="lazy-video"></video>
+                            </div>
+                            <div class="work-block">
+                                <img src="assets/projects/Lalibel/Lalibel on Ph.jpg" alt="Mobile" loading="lazy">
+                            </div>
+                            <div class="work-block">
+                                <img src="assets/projects/Lalibel/Lalibel Feature.jpg" alt="Feature" loading="lazy">
+                            </div>
+                            <div class="work-block">
+                                <img src="assets/projects/Lalibel/Lalibel Posters.jpg" alt="Posters" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-item">
+                    <div class="work-item-header">
+                        <h3 class="work-title">Re'es</h3>
+                        <p class="work-desc">An identity project centered on leadership and clarity, using a strict typographic framework to establish a distinct and professional entity.</p>
+                    </div>
+                    <!-- Hover elements -->
+                    <div class="work-hover-card hover-before">
+                        <img src="assets/projects/Re'es/Re es event Brochur.jpg" alt="Brochure" loading="lazy" width="155" height="180">
+                    </div>
+                    <div class="work-hover-card hover-after">
+                        <img src="assets/projects/Re'es/Re es on Banner.jpg" alt="Banner" loading="lazy" width="155" height="180">
+                    </div>
+                    <div class="work-item-content">
+                        <div class="work-visual-grid">
+                            <div class="work-block">
+                                <img src="assets/projects/Re'es/Re'es Outdoor.jpg" alt="Outdoor">
+                            </div>
+                            <div class="work-block">
+                                <video src="assets/projects/Re'es/Re'es palette animation.mp4" loop muted playsinline
+                                    preload="metadata" class="lazy-video"></video>
+                            </div>
+                            <div class="work-block">
+                                <video src="assets/projects/Re'es/Re'es text animation.mp4" loop muted playsinline
+                                    preload="metadata" class="lazy-video"></video>
+                            </div>
+                            <div class="work-block">
+                                <img src="assets/projects/Re'es/Re'es logo.jpg" alt="Logo" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-copyright">
+            ©ALL RIGHTS RESERVED 2026 KIDUS
+        </div>
+    </footer>
+
+    <!-- Project Overlay Modal -->
+    <div id="project-modal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-esc-hint">Press Esc to go back</div>
+        <button class="close-modal" aria-label="Close modal">
+            <img src="assets/img/Asset 5.svg" alt="Close icon" class="close-icon">
+        </button>
+        <div class="modal-content">
+            <div class="modal-body">
+                <h2 id="modal-title" class="modal-project-title"></h2>
+                <p id="modal-statement" class="modal-statement"></p>
+                <div class="modal-visuals-container">
+                    <div class="modal-visuals" id="modal-visuals">
+                        <!-- Visual blocks will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="next-project-btn" class="next-project-btn">NEXT PROJECT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="hero-floating-pill" class="hero-floating-pill"></div>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
