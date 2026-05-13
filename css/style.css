@@ -409,8 +409,9 @@ body {
 }
 
 .hero-subtitle {
-    font-family: 'Dr Sugiyama', cursive;
-    font-size: 90px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 60px;
+    letter-spacing: 0.2px;
     max-width: 5000px;
     line-height: 1.2;
     color: var(--muted-text);
@@ -437,7 +438,7 @@ body {
 }
 
 .header-subtitle {
-    font-family: 'Dr Sugiyama', cursive;
+    font-family: 'Figtree', sans-serif;
     font-size: 32px;
     color: var(--muted-text);
 }
@@ -789,7 +790,8 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block; /* Eliminate weird gaps/borders below inline media */
+    display: block;
+    /* Eliminate weird gaps/borders below inline media */
     border-radius: inherit;
 }
 
@@ -1482,12 +1484,13 @@ body {
         overflow: hidden;
     }
 }
- 
- .bento-block {
-     opacity: 0;
-     transition: opacity 600ms var(--ease-out-expo);
- }
- 
- .bento-block.loaded, .bento-block:has(video) {
-     opacity: 1;
- }
+
+.bento-block {
+    opacity: 0;
+    transition: opacity 600ms var(--ease-out-expo);
+}
+
+.bento-block.loaded,
+.bento-block:has(video) {
+    opacity: 1;
+}
