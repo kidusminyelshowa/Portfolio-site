@@ -1,16 +1,11 @@
 :root {
-    /* NEW COLOR SCHEME */
-    --primary-bg: #d1f811;
-    --primary-text: #022018;
-    --accent-color: #01803b;
-    --dark-bg: #022018;
+    /* Colors */
+    --bg-color: #f3f4f6;
+    --primary-text: #020202;
+    --secondary-text: #808080;
+    --muted-text: #cccccc;
+    --contact-bg: #507af3;
     --white: #ffffff;
-    --light-text: rgba(2, 32, 24, 0.7);
-    --muted-text: rgba(2, 32, 24, 0.5);
-
-    /* Typography */
-    --font-primary: 'Apfel Grotezk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    --font-fallback: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 
     /* Spacing Scale */
     --s1: 16px;
@@ -19,9 +14,9 @@
     --s4: 120px;
 
     /* Layout */
-    --max-width: 1400px;
-    --gutter: 40px;
-    --margin: 80px;
+    --max-width: 2200px;
+    --gutter: 24px;
+    --margin: 64px;
 
     /* Transitions */
     --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -29,106 +24,80 @@
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* Global Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Side Navbar Styles */
+.side-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 100vh;
+    border-right: 0.25px solid #cccccc;
+    background-color: var(--bg-color);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-html, body, #root {
+.nav-contact {
+    position: absolute;
+    top: 120px;
+    width: 80px;
+}
+
+.nav-location {
+    position: absolute;
+    top: 0;
+    left: 40px;
+    font-size: 18px;
+    color: #020202;
+    text-transform: none;
+    font-weight: 400;
+    transform: rotate(270deg) translateY(-96px);
+    /* 40px - 2px = 38px from edge */
+    white-space: nowrap;
+}
+
+.nav-email {
+    position: absolute;
+    top: 0;
+    left: 40px;
+    font-size: 16px;
+    color: #808080;
+    font-weight: 400;
+    transform: rotate(270deg) translateY(-74px) translateX(2px);
+    /* 40px + 15px = 55px */
+    white-space: nowrap;
+}
+
+.nav-avatar {
+    position: absolute;
+    bottom: 100px;
+    /* 80px margin + 45px button + 30px gap */
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.75px solid #e6e6e6;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.avatar-img {
     width: 100%;
     height: 100%;
-    margin: 0;
-    padding: 0;
+    object-fit: cover;
 }
 
-body {
-    background-color: var(--primary-bg);
-    color: var(--primary-text);
-    font-family: var(--font-primary);
-    line-height: 1.6;
-}
-
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 700;
-    color: var(--primary-text);
-    font-family: var(--font-primary);
-    text-transform: uppercase;
-    letter-spacing: -2px;
-}
-
-p {
-    color: var(--primary-text);
-    font-family: var(--font-fallback);
-}
-
-a {
-    color: var(--primary-text);
-    text-decoration: none;
-    transition: opacity var(--transition);
-}
-
-a:hover {
-    opacity: 0.7;
-}
-
-/* Button Styles */
-button {
-    font-family: var(--font-primary);
-    cursor: pointer;
-    transition: all var(--transition);
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--primary-bg);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--accent-color);
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--dark-bg);
-}
-
-/* Selection */
-::selection {
-    background-color: var(--accent-color);
-    color: var(--white);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    :root {
-        --gutter: 24px;
-        --margin: 40px;
-    }
-
-    h1 {
-        font-size: 48px;
-    }
-
-    h2 {
-        font-size: 36px;
-    }
-
-    p {
-        font-size: 16px;
-    }
-}
-
+.nav-info-btn {
+    position: absolute;
+    bottom: 40px;
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: var(--white);
     display: flex;
     justify-content: center;
     align-items: center;

@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "npm install --prefix client",
-    "prebuild": "node scripts/copy_to_client_public.js",
-    "build": "npm run prebuild && npm run build --prefix client",
+    "dev": "node server/index.js",
     "start": "node server/index.js"
   },
   "devDependencies": {
