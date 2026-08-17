@@ -310,14 +310,14 @@ body {
 
 .square-video {
     position: absolute;
-    top: 30px;
-    left: 30px;
-    right: 30px;
-    bottom: 30px;
-    width: calc(100% - 60px);
-    height: calc(100% - 60px);
+    top: 00px;
+    left: 00px;
+    right: 00px;
+    bottom: 00px;
+    width: calc(100% - 00px);
+    height: calc(100% - 00px);
     object-fit: cover;
-    border-radius: 20px;
+    border-radius: 0px;
     z-index: 2;
 }
 
@@ -331,10 +331,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 45px;
+    margin-bottom: 60px;
     /* Space to subtitle */
     position: relative;
-    height: 500px;
+    height: 450px;
 }
 
 .red-square {
