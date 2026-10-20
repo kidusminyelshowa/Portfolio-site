@@ -1,7 +1,7 @@
 // Inquiries go into a private Supabase table that only accepts inserts from the site.
 // The publishable key is meant to be public; row-level security keeps the table unreadable.
-const SUPABASE_URL = 'https://vuzxysgjuvgovcxmnfae.supabase.co';
-const SUPABASE_KEY = 'sb_publishable__AvHZoRcFSWGQgHTA31hNA_Yq3nPJc4';
+export const SUPABASE_URL = 'https://vuzxysgjuvgovcxmnfae.supabase.co';
+export const SUPABASE_KEY = 'sb_publishable__AvHZoRcFSWGQgHTA31hNA_Yq3nPJc4';
 
 export async function submitInquiry(inquiry) {
     const response = await fetch(`${SUPABASE_URL}/rest/v1/inquiries`, {

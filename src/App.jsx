@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Footer from './components/Footer.jsx';
 import ProjectModal from './components/ProjectModal.jsx';
@@ -6,6 +6,9 @@ import SideNav from './components/SideNav.jsx';
 import Archive from './pages/Archive.jsx';
 import Contact from './pages/Contact.jsx';
 import Home from './pages/Home.jsx';
+
+// The private studio loads on its own, so visitors never download it
+const Studio = lazy(() => import('./studio/Studio.jsx'));
 
 // Scroll to the top on page changes, or to the section named in the hash
 function useScrollManagement(page) {
@@ -21,7 +24,7 @@ function useScrollManagement(page) {
     }, [page.pathname, page.hash]);
 }
 
-export default function App() {
+function Site() {
     const location = useLocation();
     // A project opened from a page keeps that page behind it
     const page = location.state?.background || location;
@@ -41,4 +44,16 @@ export default function App() {
             <ProjectModal />
         </>
     );
+}
+
+export default function App() {
+    const { pathname } = useLocation();
+    if (pathname === '/studio' || pathname.startsWith('/studio/')) {
+        return (
+            <Suspense fallback={null}>
+                <Studio />
+            </Suspense>
+        );
+    }
+    return <Site />;
 }
