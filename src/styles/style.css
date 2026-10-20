@@ -744,6 +744,74 @@ button {
     color: var(--ink-soft);
 }
 
+/* Case study extras, shown only when filled in */
+.case-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 56px;
+    margin-top: 40px;
+}
+
+.case-fact dt {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+
+.case-fact dd {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.case-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin: -24px 0 72px;
+    list-style: none;
+}
+
+.case-results li {
+    padding: 24px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: var(--radius);
+    background-color: var(--blue-mist);
+    color: var(--navy);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+}
+
+.case-sections {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 72px;
+    border-top: 1px solid var(--line);
+}
+
+.case-section {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 16px 64px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.case-section-heading {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.case-section p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    white-space: pre-line;
+}
+
 /* Gallery: one full-width piece, then two pairs of 7/5 and 5/7 columns, repeating */
 .case-gallery {
     display: grid;
@@ -1453,6 +1521,25 @@ button {
 
     .modal-scroll {
         margin: 0;
+    }
+
+    .case-section {
+        grid-template-columns: 1fr;
+        padding: 24px 0;
+    }
+
+    .case-section-heading {
+        font-size: 22px;
+    }
+
+    .case-results li {
+        font-size: 18px;
+        padding: 18px;
+    }
+
+    .case-facts {
+        gap: 12px 32px;
+        margin-top: 28px;
     }
 
     .modal-topbar {

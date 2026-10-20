@@ -1,0 +1,161 @@
+# Decap CMS: edits here are saved as commits to main, and Vercel redeploys the site.
+backend:
+  name: github
+  repo: kidusminyelshowa/Portfolio-site
+  branch: main
+  auth_endpoint: api/auth
+
+# The live preview pane isn't styled like the site, so it's off
+editor:
+  preview: false
+
+media_folder: public/assets/uploads
+public_folder: /assets/uploads
+
+collections:
+  - name: projects
+    label: Projects
+    label_singular: Project
+    folder: content/projects
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: title
+    slug: "{{fields.slug}}"
+    summary: "{{order}}. {{title}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: slug
+        label: URL name
+        hint: "Lowercase words joined by dashes, e.g. palace-museum. The project lives at /work/<URL name>."
+        widget: string
+        pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Use lowercase letters, numbers and dashes"]
+      - { name: order, label: Order, widget: number, value_type: int, hint: "Lower numbers come first." }
+      - { name: featured, label: Show on home page, widget: boolean, default: true, required: false }
+      - { name: tags, label: Tags, widget: list, hint: "Comma separated, e.g. Rebrand, Wayfinding, Motion" }
+      - name: services
+        label: Services
+        hint: "Pick from the disciplines on the About page. These drive the filters on the index."
+        widget: relation
+        collection: settings
+        file: about
+        search_fields: ["disciplines.*"]
+        value_field: "disciplines.*"
+        display_fields: ["disciplines.*"]
+        multiple: true
+        required: false
+      - { name: cover, label: Cover image, widget: image }
+      - { name: client, label: Client, widget: string, required: false }
+      - { name: year, label: Year, widget: string, required: false }
+      - { name: role, label: Your role, widget: string, required: false }
+      - { name: team, label: Team, widget: string, required: false, hint: "Studio or people you worked with" }
+      - { name: context, label: Context, widget: text }
+      - { name: approach, label: Approach, widget: text, required: false }
+      - { name: outcome, label: Outcome, widget: text, required: false }
+      - name: results
+        label: Results
+        hint: "Short wins shown as cards, e.g. Rolled out across 40 sites"
+        widget: list
+        required: false
+        field: { name: result, label: Result, widget: string }
+      - name: sections
+        label: Story sections
+        hint: "Optional extra chapters, e.g. The challenge, The system"
+        widget: list
+        required: false
+        summary: "{{fields.heading}}"
+        fields:
+          - { name: heading, label: Heading, widget: string }
+          - { name: text, label: Text, widget: text }
+      - name: gallery
+        label: Gallery
+        widget: list
+        summary: "{{fields.src}}"
+        fields:
+          - { name: src, label: Image or video, widget: file, hint: "Images (webp, jpg, png) or video (webm, mp4)" }
+          - { name: alt, label: Description, widget: string, required: false, hint: "What's in the image, for screen readers" }
+          - { name: background, label: Background color, widget: string, required: false, hint: "Optional hex color behind the image, e.g. #e6e6e6" }
+
+  - name: playground
+    label: Playground
+    label_singular: Playground piece
+    folder: content/playground
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: title
+    slug: "{{slug}}"
+    summary: "{{order}}. {{title}}"
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: order, label: Order, widget: number, value_type: int, default: 1 }
+      - { name: media, label: Image or video, widget: file }
+      - { name: caption, label: Caption, widget: string, required: false }
+
+  - name: settings
+    label: Site
+    files:
+      - name: site
+        label: Site details
+        file: content/site.json
+        format: json
+        fields:
+          - { name: name, label: Name, widget: string }
+          - { name: heroTitle, label: Hero title, widget: string }
+          - { name: tagline, label: Tagline, widget: text, hint: "A line break starts a new line in the hero." }
+          - { name: location, label: Location, widget: string }
+          - { name: email, label: Email, widget: string }
+          - { name: url, label: Website, widget: string }
+          - { name: avatar, label: Portrait, widget: image }
+          - { name: bio, label: Short bio, widget: text, hint: "Shown in the info panel." }
+          - name: socials
+            label: Socials
+            widget: list
+            summary: "{{fields.label}}"
+            fields:
+              - { name: label, label: Label, widget: string }
+              - { name: url, label: Link, widget: string }
+          - name: heroSquares
+            label: Hero stamps
+            widget: list
+            summary: "{{fields.label}}"
+            fields:
+              - { name: label, label: Label, widget: string }
+              - { name: color, label: Color, widget: select, options: [ink, blue, navy] }
+              - { name: video, label: Video, widget: file }
+          - name: intros
+            label: Section intros
+            widget: object
+            hint: "Wrap a word in *asterisks* to highlight it."
+            fields:
+              - { name: work, label: Selected work, widget: string }
+              - { name: services, label: What I do, widget: string }
+              - { name: playground, label: Playground, widget: string }
+          - { name: contactHeading, label: Contact question, widget: string }
+          - { name: contactYes, label: Yes button, widget: string }
+          - { name: contactNo, label: Not now button, widget: string }
+          - { name: contactNoReply, label: Reply after Not now, widget: string }
+          - { name: availability, label: Availability footnote, widget: string }
+          - { name: footer, label: Copyright line, widget: string }
+
+      - name: about
+        label: About
+        file: content/about.json
+        format: json
+        fields:
+          - { name: heading, label: Heading, widget: string }
+          - { name: story, label: Story, widget: text }
+          - { name: approach, label: How I work, widget: text }
+          - { name: disciplines, label: Disciplines (What I do), widget: list }
+          - name: community
+            label: Community footnote
+            widget: object
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: role, label: Your role, widget: string }
+              - { name: summary, label: Summary, widget: string }
+              - { name: url, label: Link, widget: string, required: false }
+          - { name: now, label: Right now, widget: list, required: false }

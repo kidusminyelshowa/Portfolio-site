@@ -29,6 +29,14 @@ function GalleryItem({ item }) {
     );
 }
 
+// Optional case study facts; anything left empty in the CMS is skipped
+const FACTS = [
+    ['client', 'Client'],
+    ['year', 'Year'],
+    ['role', 'Role'],
+    ['team', 'Team'],
+];
+
 function CloseIcon() {
     return (
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -128,6 +136,17 @@ export default function ProjectModal() {
                                 </ul>
                             </header>
 
+                            {FACTS.some(([key]) => shown[key]) && (
+                                <dl className="case-facts">
+                                    {FACTS.filter(([key]) => shown[key]).map(([key, label]) => (
+                                        <div key={key} className="case-fact">
+                                            <dt>{label}</dt>
+                                            <dd>{shown[key]}</dd>
+                                        </div>
+                                    ))}
+                                </dl>
+                            )}
+
                             <div className="case-intro">
                                 <p className="case-context">{shown.context}</p>
                                 {(shown.approach || shown.outcome) && (
@@ -147,6 +166,25 @@ export default function ProjectModal() {
                                     </div>
                                 )}
                             </div>
+
+                            {shown.results?.length > 0 && (
+                                <ul className="case-results" aria-label="Results">
+                                    {shown.results.map((result) => (
+                                        <li key={result}>{result}</li>
+                                    ))}
+                                </ul>
+                            )}
+
+                            {shown.sections?.length > 0 && (
+                                <div className="case-sections">
+                                    {shown.sections.map((section) => (
+                                        <section key={section.heading} className="case-section">
+                                            <h3 className="case-section-heading">{section.heading}</h3>
+                                            <p>{section.text}</p>
+                                        </section>
+                                    ))}
+                                </div>
+                            )}
 
                             <div className="case-gallery">
                                 {shown.gallery.map((item) => (

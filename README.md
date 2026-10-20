@@ -16,8 +16,27 @@ npm run preview   # serve the production build
 - `content/site.json` – name, tagline, availability, short bio, contact details, socials, hero videos
 - `content/about.json` – About story, how I work, disciplines, Hager Beqel and the Now list
 - `content/playground/*.json` – side work (title, caption, media, order); the section appears once there's at least one
-- `content/projects/*.json` – one file per project (title, tags, cover, text, gallery). `order` sets its position and `featured: false` keeps a project off the home page (it still shows on the `/work` index).
+- `content/projects/*.json` – one file per project (title, tags, services, cover, text, gallery, plus optional client, year, role, team, results and story sections). `order` sets its position and `featured: false` keeps a project off the home page (it still shows on the `/work` index).
 - `public/assets/` – images and videos, served from `/assets/...`
 - `src/` – React components and styles
 
 Each project has its own URL, e.g. `/work/palace-museum`.
+
+## Content manager (Decap CMS)
+
+Edit everything at `/admin` on the live site. Saving commits the change to `main`, and Vercel redeploys within a minute or two. Uploaded images and videos go to `public/assets/uploads/`.
+
+### One-time sign-in setup
+
+1. On GitHub, go to Settings → Developer settings → OAuth Apps → New OAuth App.
+   - Homepage URL: your live site, e.g. `https://kidusminyel.gu.cc`
+   - Authorization callback URL: the same domain plus `/api/callback`, e.g. `https://kidusminyel.gu.cc/api/callback`
+2. Copy the Client ID, then generate a client secret.
+3. In Vercel, open the project → Settings → Environment Variables and add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`, then redeploy.
+4. Visit `/admin` on that same domain and sign in with GitHub.
+
+Sign-in only works on the domain the callback URL points to; preview deployments can't sign in.
+
+### Editing locally
+
+Run `npx decap-server` in one terminal and `npm run dev` in another, add `local_backend: true` to the top of `public/admin/config.yml` (don't commit it), and open `http://localhost:5173/admin/`. Changes write straight to the files in `content/`.
