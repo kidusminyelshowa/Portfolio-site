@@ -44,6 +44,28 @@
 html {
     background-color: var(--paper);
     scroll-behavior: smooth;
+    scrollbar-color: var(--ink) var(--paper);
+}
+
+/* Scrollbar in the site's ink and paper, with a blue thumb on hover */
+::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--paper);
+    border-left: var(--stroke) solid var(--ink);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--ink);
+    border: 3px solid var(--paper);
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--blue);
 }
 
 body {
@@ -338,22 +360,14 @@ button {
     margin-bottom: 60px;
 }
 
-/* Each stamp casts a hard ink shadow, like the cards and portrait */
-.stamp {
+.square {
     position: absolute;
     width: 382px;
     height: 435px;
-    filter: drop-shadow(6px 6px 0 var(--ink));
-    transition: transform 600ms var(--ease-out-expo);
-    animation: stamp-in 900ms var(--ease-out-expo) backwards;
-}
-
-.square {
-    position: absolute;
-    inset: 0;
     background-color: var(--surface);
     mask: url('/assets/img/stamp.svg') no-repeat center / contain;
     -webkit-mask: url('/assets/img/stamp.svg') no-repeat center / contain;
+    transition: transform 600ms var(--ease-out-expo);
 }
 
 .square::before {
@@ -372,51 +386,35 @@ button {
     z-index: 2;
 }
 
-.ink-stamp {
-    --fan: rotate(-6deg) translateX(-250px) translateY(-10px) scale(0.9);
+.ink-square {
     color: var(--ink);
     z-index: 1;
-    transform: var(--fan);
+    transform: rotate(-5deg) translateX(-260px) scale(0.9) translateY(-13px);
 }
 
-.ink-stamp:hover {
-    transform: rotate(-8deg) translateX(-290px) translateY(-18px) scale(0.96);
+.ink-square:hover {
+    transform-origin: right bottom;
+    transform: rotate(-7deg) translateX(-280px) scale(1.01) translateY(-13px);
 }
 
-.blue-stamp {
-    --fan: rotate(0deg);
+.blue-square {
     color: var(--blue);
     z-index: 3;
-    animation-delay: 80ms;
 }
 
-.blue-stamp:hover {
-    transform: translateY(-8px) scale(1.04);
+.blue-square:hover {
+    transform: scale(1.1);
 }
 
-.navy-stamp {
-    --fan: rotate(6deg) translateX(250px) translateY(-10px) scale(0.9);
+.navy-square {
     color: var(--navy);
     z-index: 2;
-    transform: var(--fan);
-    animation-delay: 160ms;
+    transform: rotate(5deg) translateX(260px) scale(0.9) translateY(-15px);
 }
 
-.navy-stamp:hover {
-    transform: rotate(8deg) translateX(290px) translateY(-18px) scale(0.96);
-}
-
-/* The stamps start stacked and fan out on load */
-@keyframes stamp-in {
-    from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.85);
-    }
-
-    to {
-        opacity: 1;
-        transform: var(--fan);
-    }
+.navy-square:hover {
+    transform-origin: left bottom;
+    transform: rotate(7deg) translateX(280px) scale(1.01) translateY(-15px);
 }
 
 .hero-floating-pill {
@@ -452,19 +450,11 @@ button {
 
 .hero-subtitle {
     font-size: 56px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1.15;
-    letter-spacing: -0.03em;
-    color: var(--ink);
+    letter-spacing: -0.02em;
+    color: var(--ink-soft);
     margin-bottom: 80px;
-}
-
-.hero-subtitle mark {
-    padding: 0 0.12em;
-    border-radius: 0.24em;
-    background-color: var(--blue-mist);
-    color: var(--navy);
-    font-weight: 700;
 }
 
 /* ---------- Work grid ---------- */
@@ -1292,24 +1282,29 @@ button {
         transform: scale(0.85);
     }
 
-    .stamp {
+    .square {
         width: 160px;
         height: 185px;
-        filter: drop-shadow(4px 4px 0 var(--ink));
     }
 
-    .ink-stamp {
-        --fan: rotate(-6deg) translateX(-80px) scale(0.92);
+    .ink-square {
+        transform: rotate(-5deg) translateX(-60px);
     }
 
-    .navy-stamp {
-        --fan: rotate(6deg) translateX(80px) scale(0.92);
+    .ink-square:hover {
+        transform: rotate(-8deg) translateX(-75px) scale(1.02);
     }
 
-    .ink-stamp:hover,
-    .blue-stamp:hover,
-    .navy-stamp:hover {
-        transform: var(--fan);
+    .blue-square:hover {
+        transform: scale(1.05);
+    }
+
+    .navy-square {
+        transform: rotate(5deg) translateX(60px);
+    }
+
+    .navy-square:hover {
+        transform: rotate(8deg) translateX(75px) scale(1.02);
     }
 
     .hero-floating-pill {
@@ -1935,9 +1930,5 @@ button {
     *::before,
     *::after {
         transition-duration: 0.01ms !important;
-    }
-
-    .stamp {
-        animation: none;
     }
 }
