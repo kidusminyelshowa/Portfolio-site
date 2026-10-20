@@ -4,6 +4,7 @@ import Footer from './components/Footer.jsx';
 import ProjectModal from './components/ProjectModal.jsx';
 import SideNav from './components/SideNav.jsx';
 import Archive from './pages/Archive.jsx';
+import Contact from './pages/Contact.jsx';
 import Home from './pages/Home.jsx';
 
 // Scroll to the top on page changes, or to the section named in the hash
@@ -32,6 +33,7 @@ export default function App() {
             <main className="main-container">
                 <Routes location={page}>
                     <Route path="/work" element={<Archive />} />
+                    <Route path="/contact" element={<Contact />} />
                     <Route path="*" element={<Home />} />
                 </Routes>
             </main>

@@ -138,6 +138,17 @@ collections:
           - { name: contactYes, label: Yes button, widget: string }
           - { name: contactNo, label: Not now button, widget: string }
           - { name: contactNoReply, label: Reply after Not now, widget: string }
+          - name: inquiry
+            label: Inquiry form
+            widget: object
+            hint: "The step-by-step form behind \"Yes, let's talk\". Empty the timelines and budgets lists to skip that question."
+            fields:
+              - { name: heading, label: Heading, widget: string }
+              - { name: intro, label: Intro, widget: text }
+              - { name: projectTypes, label: Project types, widget: list }
+              - { name: timelines, label: Timelines, widget: list, required: false }
+              - { name: budgets, label: Budgets, widget: list, required: false }
+              - { name: thanks, label: Thank-you message, widget: text }
           - { name: availability, label: Availability footnote, widget: string }
           - { name: footer, label: Copyright line, widget: string }
 
