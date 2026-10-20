@@ -3,7 +3,6 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Footer from './components/Footer.jsx';
 import ProjectModal from './components/ProjectModal.jsx';
 import SideNav from './components/SideNav.jsx';
-import TopNav from './components/TopNav.jsx';
 import Archive from './pages/Archive.jsx';
 import Home from './pages/Home.jsx';
 
@@ -30,7 +29,6 @@ export default function App() {
     return (
         <>
             <SideNav />
-            <TopNav />
             <main className="main-container">
                 <Routes location={page}>
                     <Route path="/work" element={<Archive />} />

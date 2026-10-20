@@ -10,7 +10,6 @@ const byOrder = (a, b) => (a.order ?? 0) - (b.order ?? 0);
 export const projects = Object.values(projectModules).sort(byOrder);
 export const featuredProjects = projects.filter((p) => p.featured !== false);
 export const playground = Object.values(playgroundModules).sort(byOrder);
-export const projectTags = [...new Set(projects.flatMap((p) => p.tags))];
 
 export const getProject = (slug) => projects.find((p) => p.slug === slug);
 

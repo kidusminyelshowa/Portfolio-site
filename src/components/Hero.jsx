@@ -1,6 +1,7 @@
 import { Fragment, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { site } from '../content.js';
+import { highlight } from './SectionIntro.jsx';
 import { usePlayInView } from '../hooks.js';
 
 function HeroSquare({ square, onPointer, onLeave }) {
@@ -18,7 +19,7 @@ function HeroSquare({ square, onPointer, onLeave }) {
 
     return (
         <div
-            className={`square ${square.color}-square`}
+            className={`stamp ${square.color}-stamp`}
             data-label={square.label}
             onMouseEnter={(e) => {
                 onPointer(e, square);
@@ -40,7 +41,9 @@ function HeroSquare({ square, onPointer, onLeave }) {
             }}
             onTouchCancel={onLeave}
         >
-            <video ref={videoRef} src={square.video} loop muted playsInline preload="metadata" className="square-video" />
+            <div className={`square ${square.color}-square`}>
+                <video ref={videoRef} src={square.video} loop muted playsInline preload="metadata" className="square-video" />
+            </div>
         </div>
     );
 }
@@ -76,7 +79,7 @@ export default function Hero() {
                                     <br />{' '}
                                 </>
                             )}
-                            {line}
+                            {highlight(line)}
                         </Fragment>
                     ))}
                 </p>

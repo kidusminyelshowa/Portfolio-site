@@ -88,6 +88,7 @@ button {
     left: 0;
     width: var(--nav-width);
     height: 100vh;
+    padding: 40px 0 176px;
     border-right: var(--stroke) solid var(--ink);
     background-color: var(--paper);
     z-index: 1000;
@@ -96,32 +97,58 @@ button {
     align-items: center;
 }
 
-.nav-contact {
-    position: absolute;
-    top: 120px;
-    width: var(--nav-width);
+/* Section links read bottom to top, like the location and email above them */
+.side-links {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 6px;
+    margin: auto 0;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
 }
 
-.nav-location {
-    position: absolute;
-    top: 0;
-    left: 40px;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--ink);
-    white-space: nowrap;
-    transform: rotate(270deg) translateY(-96px);
-}
-
-.nav-email {
-    position: absolute;
-    top: 0;
-    left: 40px;
-    font-size: 16px;
+.side-link {
+    padding: 10px 6px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: var(--ink-soft);
     text-decoration: none;
     white-space: nowrap;
-    transform: rotate(270deg) translateY(-74px) translateX(2px);
+    transition: background-color var(--transition), color var(--transition);
+}
+
+.side-link:hover {
+    color: var(--blue);
+}
+
+.side-link[aria-current='true'] {
+    background-color: var(--ink);
+    color: var(--paper);
+}
+
+.nav-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+.nav-location {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.nav-email {
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
     transition: color var(--transition);
 }
 
@@ -311,14 +338,22 @@ button {
     margin-bottom: 60px;
 }
 
-.square {
+/* Each stamp casts a hard ink shadow, like the cards and portrait */
+.stamp {
     position: absolute;
     width: 382px;
     height: 435px;
+    filter: drop-shadow(6px 6px 0 var(--ink));
+    transition: transform 600ms var(--ease-out-expo);
+    animation: stamp-in 900ms var(--ease-out-expo) backwards;
+}
+
+.square {
+    position: absolute;
+    inset: 0;
     background-color: var(--surface);
     mask: url('/assets/img/stamp.svg') no-repeat center / contain;
     -webkit-mask: url('/assets/img/stamp.svg') no-repeat center / contain;
-    transition: transform 600ms var(--ease-out-expo);
 }
 
 .square::before {
@@ -337,35 +372,51 @@ button {
     z-index: 2;
 }
 
-.ink-square {
+.ink-stamp {
+    --fan: rotate(-6deg) translateX(-250px) translateY(-10px) scale(0.9);
     color: var(--ink);
     z-index: 1;
-    transform: rotate(-5deg) translateX(-260px) scale(0.9) translateY(-13px);
+    transform: var(--fan);
 }
 
-.ink-square:hover {
-    transform-origin: right bottom;
-    transform: rotate(-7deg) translateX(-280px) scale(1.01) translateY(-13px);
+.ink-stamp:hover {
+    transform: rotate(-8deg) translateX(-290px) translateY(-18px) scale(0.96);
 }
 
-.blue-square {
+.blue-stamp {
+    --fan: rotate(0deg);
     color: var(--blue);
     z-index: 3;
+    animation-delay: 80ms;
 }
 
-.blue-square:hover {
-    transform: scale(1.1);
+.blue-stamp:hover {
+    transform: translateY(-8px) scale(1.04);
 }
 
-.navy-square {
+.navy-stamp {
+    --fan: rotate(6deg) translateX(250px) translateY(-10px) scale(0.9);
     color: var(--navy);
     z-index: 2;
-    transform: rotate(5deg) translateX(260px) scale(0.9) translateY(-15px);
+    transform: var(--fan);
+    animation-delay: 160ms;
 }
 
-.navy-square:hover {
-    transform-origin: left bottom;
-    transform: rotate(7deg) translateX(280px) scale(1.01) translateY(-15px);
+.navy-stamp:hover {
+    transform: rotate(8deg) translateX(290px) translateY(-18px) scale(0.96);
+}
+
+/* The stamps start stacked and fan out on load */
+@keyframes stamp-in {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: var(--fan);
+    }
 }
 
 .hero-floating-pill {
@@ -401,11 +452,19 @@ button {
 
 .hero-subtitle {
     font-size: 56px;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.15;
-    letter-spacing: -0.02em;
-    color: var(--ink-soft);
+    letter-spacing: -0.03em;
+    color: var(--ink);
     margin-bottom: 80px;
+}
+
+.hero-subtitle mark {
+    padding: 0 0.12em;
+    border-radius: 0.24em;
+    background-color: var(--blue-mist);
+    color: var(--navy);
+    font-weight: 700;
 }
 
 /* ---------- Work grid ---------- */
@@ -771,35 +830,6 @@ button {
     text-transform: uppercase;
 }
 
-/* ---------- Top nav ---------- */
-
-.top-nav {
-    position: fixed;
-    top: 20px;
-    right: 24px;
-    z-index: 900;
-    display: flex;
-    gap: 4px;
-    padding: 6px;
-    background-color: var(--surface);
-    border: var(--stroke) solid var(--ink);
-    border-radius: 40px;
-}
-
-.top-nav-link {
-    padding: 6px 14px;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: background-color var(--transition), color var(--transition);
-}
-
-.top-nav-link:hover {
-    background-color: var(--blue);
-    color: var(--paper);
-}
-
 .info-nav {
     grid-column: 1 / -1;
     display: none;
@@ -828,16 +858,6 @@ button {
 
 .section-link:hover {
     color: var(--blue);
-}
-
-.eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
 }
 
 .now-dot {
@@ -875,8 +895,9 @@ button {
     font-size: 16px;
 }
 
-.about-now .eyebrow {
-    color: var(--blue);
+.about-now-label {
+    font-weight: 700;
+    color: var(--ink);
 }
 
 .about-now ul {
@@ -1089,10 +1110,32 @@ button {
     color: var(--ink-soft);
 }
 
-@media (hover: hover) {
+.archive-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 50%;
+    transition: background-color var(--transition), color var(--transition), transform var(--transition);
+}
 
+.archive-empty {
+    padding: 32px 0;
+    font-size: 18px;
+    color: var(--ink-soft);
+}
+
+@media (hover: hover) {
     .archive-row:hover .archive-name {
         color: var(--blue);
+    }
+
+    .archive-row:hover .archive-arrow {
+        background-color: var(--blue);
+        color: var(--paper);
+        transform: rotate(45deg);
     }
 }
 
@@ -1166,10 +1209,6 @@ button {
 
     .footer-contact {
         padding: 56px 40px;
-    }
-
-    .top-nav {
-        display: none;
     }
 
     .info-nav {
@@ -1253,29 +1292,24 @@ button {
         transform: scale(0.85);
     }
 
-    .square {
+    .stamp {
         width: 160px;
         height: 185px;
+        filter: drop-shadow(4px 4px 0 var(--ink));
     }
 
-    .ink-square {
-        transform: rotate(-5deg) translateX(-60px);
+    .ink-stamp {
+        --fan: rotate(-6deg) translateX(-80px) scale(0.92);
     }
 
-    .ink-square:hover {
-        transform: rotate(-8deg) translateX(-75px) scale(1.02);
+    .navy-stamp {
+        --fan: rotate(6deg) translateX(80px) scale(0.92);
     }
 
-    .blue-square:hover {
-        transform: scale(1.05);
-    }
-
-    .navy-square {
-        transform: rotate(5deg) translateX(60px);
-    }
-
-    .navy-square:hover {
-        transform: rotate(8deg) translateX(75px) scale(1.02);
+    .ink-stamp:hover,
+    .blue-stamp:hover,
+    .navy-stamp:hover {
+        transform: var(--fan);
     }
 
     .hero-floating-pill {
@@ -1477,40 +1511,24 @@ button {
 
 .section-intro {
     display: flex;
-    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
     gap: 24px;
     margin-bottom: 48px;
 }
 
-.section-intro-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
-.chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 18px 9px 12px;
-    border: var(--stroke) solid var(--ink);
-    border-radius: 40px;
-    background-color: var(--surface);
-    box-shadow: 3px 3px 0 var(--ink);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    line-height: 1;
-    text-transform: uppercase;
-}
-
-.chip-dot {
-    width: 12px;
-    height: 12px;
-    border: var(--stroke) solid var(--ink);
-    border-radius: 50%;
-    background-color: var(--blue);
+.section-intro .section-link {
+    flex-shrink: 0;
+    padding-bottom: 0.4em;
 }
 
 .section-intro-text {
@@ -1653,65 +1671,6 @@ button {
     outline-offset: 4px;
 }
 
-/* ---------- Values band ---------- */
-
-.values {
-    width: calc(100vw - var(--nav-width));
-    margin: var(--s3) 0 var(--s3) calc(50% - (100vw - var(--nav-width)) / 2);
-    overflow: hidden;
-    border-block: var(--stroke) solid var(--ink);
-    background-color: var(--ink);
-    color: var(--paper);
-}
-
-.values-track {
-    display: flex;
-    width: max-content;
-    animation: values-scroll 28s linear infinite;
-}
-
-.values:hover .values-track {
-    animation-play-state: paused;
-}
-
-.values-row {
-    display: flex;
-    list-style: none;
-}
-
-.values-row li {
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-    padding: 0.2em 0.4em 0.2em 0;
-    font-size: clamp(48px, 8vw, 128px);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.values-row li:nth-child(even) {
-    color: transparent;
-    -webkit-text-stroke: 2px var(--paper);
-}
-
-.values-mark {
-    width: 0.42em;
-    height: 0.42em;
-    flex-shrink: 0;
-    border: 3px solid var(--paper);
-    border-radius: 50%;
-    background-color: var(--blue);
-}
-
-@keyframes values-scroll {
-    to {
-        transform: translateX(-50%);
-    }
-}
-
 /* ---------- Services ---------- */
 
 .services-list {
@@ -1721,7 +1680,7 @@ button {
 
 .service-row {
     display: grid;
-    grid-template-columns: 56px minmax(0, 1fr) auto;
+    grid-template-columns: 56px minmax(0, 1fr) auto auto;
     align-items: center;
     gap: 24px;
     padding: 16px 0;
@@ -1745,6 +1704,13 @@ button {
     line-height: 1;
     text-transform: uppercase;
     transition: transform 600ms var(--ease-out-expo);
+}
+
+.service-count {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    white-space: nowrap;
 }
 
 .service-circle {
@@ -1828,6 +1794,19 @@ button {
     font-weight: 600;
 }
 
+/* Short screens: drop the email, then the location, so the links keep their room */
+@media (max-height: 820px) and (min-width: 1025px) {
+    .nav-email {
+        display: none;
+    }
+}
+
+@media (max-height: 640px) and (min-width: 1025px) {
+    .nav-contact {
+        display: none;
+    }
+}
+
 /* ---------- New sections: tablet and phone ---------- */
 
 @media (max-width: 1024px) {
@@ -1852,6 +1831,10 @@ button {
         bottom: 92px;
     }
 
+    .side-links {
+        display: none;
+    }
+
     .stack-card {
         height: min(70vh, 720px);
     }
@@ -1859,13 +1842,10 @@ button {
 
 @media (max-width: 768px) {
     .section-intro {
-        gap: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
         margin-bottom: 28px;
-    }
-
-    .chip {
-        font-size: 12px;
-        padding: 7px 14px 7px 10px;
     }
 
     .section-intro-text {
@@ -1906,13 +1886,8 @@ button {
         height: 48px;
     }
 
-    .values {
-        margin: 40px 0 40px calc(50% - 50vw);
-        width: 100vw;
-    }
-
-    .values-row li:nth-child(even) {
-        -webkit-text-stroke-width: 1.5px;
+    .service-count {
+        display: none;
     }
 
     .service-row {
@@ -1962,7 +1937,7 @@ button {
         transition-duration: 0.01ms !important;
     }
 
-    .values-track {
+    .stamp {
         animation: none;
     }
 }

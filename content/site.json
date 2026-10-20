@@ -1,7 +1,7 @@
 {
   "name": "Kidus Minyelshowa",
   "heroTitle": "KIDUS MINYELSHOWA",
-  "tagline": "A generalist designer working across\nbrand, type, motion and culture.",
+  "tagline": "A generalist designer working across\n*brand*, *type*, *motion* and *culture*.",
   "availability": "Open for freelance art direction and brand design, in Addis Ababa and worldwide.",
   "location": "Addis Ababa, Ethiopia",
   "email": "kidusminyel@gmail.com",
@@ -40,11 +40,6 @@
     "services": "Where I can help, from the first idea to the *full system*.",
     "playground": "Side things, *experiments* and stuff I make when no one's asking."
   },
-  "values": [
-    "Curiosity",
-    "Merging fields",
-    "Room to wander"
-  ],
   "contactHeading": "So, shall we make something together?",
   "contactYes": "Yes, let's talk",
   "contactNo": "Maybe later",

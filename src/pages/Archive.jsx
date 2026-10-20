@@ -1,11 +1,17 @@
-import { useEffect, useState } from 'react';
-import { formatIndex, projects, projectTags, site } from '../content.js';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { about, formatIndex, projects, site } from '../content.js';
 import { ArrowIcon } from '../components/Icons.jsx';
 import ProjectLink from '../components/ProjectLink.jsx';
 
+const services = about.disciplines.filter((d) => projects.some((p) => p.services?.includes(d)));
+
 export default function Archive() {
-    const [tag, setTag] = useState(null);
-    const shown = tag ? projects.filter((p) => p.tags.includes(tag)) : projects;
+    // The filter lives in the URL, so a service on the home page can link straight to it
+    const [params, setParams] = useSearchParams();
+    const service = params.get('service');
+    const shown = service ? projects.filter((p) => p.services?.includes(service)) : projects;
+    const setService = (value) => setParams(value ? { service: value } : {}, { replace: true });
 
     useEffect(() => {
         const previous = document.title;
@@ -19,19 +25,21 @@ export default function Archive() {
         <section className="section archive">
             <div className="archive-header">
                 <h1 className="archive-title">Index</h1>
-                <p className="archive-intro">Every project in one list. Filter by discipline to find what you're after.</p>
+                <p className="archive-intro">Every project in one list. Filter by service to find what you're after.</p>
             </div>
 
-            <div className="archive-filters" role="group" aria-label="Filter by discipline">
-                <button className="filter-chip" aria-pressed={tag === null} onClick={() => setTag(null)}>
+            <div className="archive-filters" role="group" aria-label="Filter by service">
+                <button className="filter-chip" aria-pressed={!service} onClick={() => setService(null)}>
                     All ({projects.length})
                 </button>
-                {projectTags.map((t) => (
-                    <button key={t} className="filter-chip" aria-pressed={tag === t} onClick={() => setTag(t)}>
-                        {t}
+                {services.map((s) => (
+                    <button key={s} className="filter-chip" aria-pressed={service === s} onClick={() => setService(s)}>
+                        {s}
                     </button>
                 ))}
             </div>
+
+            {shown.length === 0 && <p className="archive-empty">Nothing here yet. Say hello if you've got one in mind.</p>}
 
             <ul className="archive-list">
                 {shown.map((project) => (
@@ -43,7 +51,7 @@ export default function Archive() {
                             </span>
                             <span className="archive-name">{project.title}</span>
                             <span className="archive-tags">{project.tags.join(' · ')}</span>
-                            <span className="work-card-arrow">
+                            <span className="archive-arrow">
                                 <ArrowIcon />
                             </span>
                         </ProjectLink>
