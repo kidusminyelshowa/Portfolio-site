@@ -2,9 +2,10 @@ import { site } from '../content.js';
 
 export default function Footer() {
     return (
-        <footer className="site-footer">
+        <footer id="contact" className="site-footer">
             <div className="footer-contact">
                 <p className="footer-heading">{site.contactHeading}</p>
+                {site.availability && <p className="footer-availability">{site.availability}</p>}
                 <a className="footer-email" href={`mailto:${site.email}`}>
                     {site.email}
                 </a>

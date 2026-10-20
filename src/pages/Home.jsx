@@ -1,19 +1,17 @@
-import Footer from '../components/Footer.jsx';
+import About from '../components/About.jsx';
+import Community from '../components/Community.jsx';
 import Hero from '../components/Hero.jsx';
-import ProjectModal from '../components/ProjectModal.jsx';
-import SideNav from '../components/SideNav.jsx';
+import Playground from '../components/Playground.jsx';
 import WorkGrid from '../components/WorkGrid.jsx';
 
 export default function Home() {
     return (
         <>
-            <SideNav />
-            <main className="main-container">
-                <Hero />
-                <WorkGrid />
-            </main>
-            <Footer />
-            <ProjectModal />
+            <Hero />
+            <WorkGrid />
+            <About />
+            <Playground />
+            <Community />
         </>
     );
 }

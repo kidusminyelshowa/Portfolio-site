@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { site } from '../content.js';
+import { navLinks } from './TopNav.jsx';
 
 export default function SideNav() {
     const [infoOpen, setInfoOpen] = useState(false);
@@ -46,6 +48,13 @@ export default function SideNav() {
                 <div className="info-overlay-content">
                     <img src={site.avatar} alt="" className="info-portrait" width="96" height="96" />
                     <p className="info-description">{site.bio}</p>
+                    <nav className="info-nav" aria-label="Sections">
+                        {navLinks.map((link) => (
+                            <Link key={link.label} to={link.to} className="info-nav-link" onClick={() => setInfoOpen(false)}>
+                                {link.label}
+                            </Link>
+                        ))}
+                    </nav>
                     <div className="info-socials">
                         {site.socials.map((social) => (
                             <a

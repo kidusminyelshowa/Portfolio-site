@@ -1,11 +1,13 @@
 {
   "name": "Kidus Minyelshowa",
   "heroTitle": "KIDUS MINYELSHOWA",
-  "tagline": "A designer working on brand visual\nsystems, and identity design.",
+  "tagline": "A generalist designer working across\nbrand, type, motion and culture.",
+  "availability": "Open for freelance art direction and brand design, in Addis Ababa and worldwide.",
   "location": "Addis Ababa, Ethiopia",
   "email": "kidusminyel@gmail.com",
+  "url": "https://kidusminyel.gu.cc",
   "avatar": "/assets/img/KTM.webp",
-  "bio": "Hello! I am Kidus, a graphic designer and type designer. I enjoy solving visual problems with random thinking and careful craft. I stay curious and I like to experiment with new ideas, methods, and tools. My work combines design, typography, and technology to create useful and meaningful outcomes. I spend much of my time exploring innovation, learning new skills, and improving the way I work. I believe good design should be simple, purposeful, and built to last.",
+  "bio": "Hi, I'm Kidus. I'm a generalist designer who touches on everything creative, from brand identity and art direction to type, motion and space. I work through curiosity, mixing fields until something clicks. Right now I'm taking on freelance art direction and brand design work, in Addis Ababa and worldwide.",
   "socials": [
     {
       "label": "INSTAGRAM",
@@ -33,7 +35,6 @@
       "video": "/assets/video/Type Design Animation.webm"
     }
   ],
-  "footer": "© 2026 Kidus Minyelshowa",
-  "url": "https://kidusminyel.gu.cc",
-  "contactHeading": "Let's work together"
+  "contactHeading": "Let's work together",
+  "footer": "© 2026 Kidus Minyelshowa"
 }

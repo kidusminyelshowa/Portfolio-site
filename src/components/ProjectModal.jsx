@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { formatIndex, getNeighbours, getProject, isVideo, projects, site } from '../content.js';
 
 const defaultTitle = document.title;
@@ -38,8 +38,8 @@ function CloseIcon() {
 }
 
 export default function ProjectModal() {
-    const { slug } = useParams();
     const location = useLocation();
+    const slug = matchPath('/work/:slug', location.pathname)?.params.slug;
     const navigate = useNavigate();
     const routeProject = slug ? getProject(slug) : null;
     const isOpen = Boolean(routeProject);
@@ -69,7 +69,7 @@ export default function ProjectModal() {
 
     const close = () => {
         // Return to the page underneath when we came from it, so Back still works as expected
-        if (location.state?.fromHome) navigate(-1);
+        if (location.state?.background) navigate(-1);
         else navigate('/', { replace: true, preventScrollReset: true });
     };
 
