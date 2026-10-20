@@ -99,11 +99,9 @@ export default function ProjectModal() {
             <div className="modal-backdrop" onClick={close}></div>
             <div
                 className="modal-content"
-                ref={contentRef}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modal-title"
-                tabIndex={-1}
             >
                 <div className="modal-topbar">
                     <span className="modal-counter">
@@ -115,57 +113,60 @@ export default function ProjectModal() {
                     </button>
                 </div>
 
-                {shown && (
-                    <article className={`modal-body${fading ? ' fading' : ''}`}>
-                        <header className="case-header">
-                            <h2 id="modal-title" className="case-title">
-                                {shown.title}
-                            </h2>
-                            <ul className="case-tags">
-                                {shown.tags.map((tag) => (
-                                    <li key={tag}>{tag}</li>
+                {/* Scrolls under the top bar, with the scrollbar kept clear of the rounded corners */}
+                <div className="modal-scroll" ref={contentRef} tabIndex={-1}>
+                    {shown && (
+                        <article className={`modal-body${fading ? ' fading' : ''}`}>
+                            <header className="case-header">
+                                <h2 id="modal-title" className="case-title">
+                                    {shown.title}
+                                </h2>
+                                <ul className="case-tags">
+                                    {shown.tags.map((tag) => (
+                                        <li key={tag}>{tag}</li>
+                                    ))}
+                                </ul>
+                            </header>
+
+                            <div className="case-intro">
+                                <p className="case-context">{shown.context}</p>
+                                {(shown.approach || shown.outcome) && (
+                                    <div className="case-details">
+                                        {shown.approach && (
+                                            <div className="case-detail">
+                                                <h3 className="case-detail-label">Approach</h3>
+                                                <p>{shown.approach}</p>
+                                            </div>
+                                        )}
+                                        {shown.outcome && (
+                                            <div className="case-detail">
+                                                <h3 className="case-detail-label">Outcome</h3>
+                                                <p>{shown.outcome}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="case-gallery">
+                                {shown.gallery.map((item) => (
+                                    <GalleryItem key={`${shown.slug}-${item.src}`} item={item} />
                                 ))}
-                            </ul>
-                        </header>
+                            </div>
 
-                        <div className="case-intro">
-                            <p className="case-context">{shown.context}</p>
-                            {(shown.approach || shown.outcome) && (
-                                <div className="case-details">
-                                    {shown.approach && (
-                                        <div className="case-detail">
-                                            <h3 className="case-detail-label">Approach</h3>
-                                            <p>{shown.approach}</p>
-                                        </div>
-                                    )}
-                                    {shown.outcome && (
-                                        <div className="case-detail">
-                                            <h3 className="case-detail-label">Outcome</h3>
-                                            <p>{shown.outcome}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="case-gallery">
-                            {shown.gallery.map((item) => (
-                                <GalleryItem key={`${shown.slug}-${item.src}`} item={item} />
-                            ))}
-                        </div>
-
-                        <nav className="case-nav" aria-label="More projects">
-                            <button className="case-nav-link prev" onClick={() => goTo(neighbours.prev)}>
-                                <span className="case-nav-label">← Previous</span>
-                                <span className="case-nav-title">{neighbours.prev.title}</span>
-                            </button>
-                            <button className="case-nav-link next" onClick={() => goTo(neighbours.next)}>
-                                <span className="case-nav-label">Next →</span>
-                                <span className="case-nav-title">{neighbours.next.title}</span>
-                            </button>
-                        </nav>
-                    </article>
-                )}
+                            <nav className="case-nav" aria-label="More projects">
+                                <button className="case-nav-link prev" onClick={() => goTo(neighbours.prev)}>
+                                    <span className="case-nav-label">← Previous</span>
+                                    <span className="case-nav-title">{neighbours.prev.title}</span>
+                                </button>
+                                <button className="case-nav-link next" onClick={() => goTo(neighbours.next)}>
+                                    <span className="case-nav-label">Next →</span>
+                                    <span className="case-nav-title">{neighbours.next.title}</span>
+                                </button>
+                            </nav>
+                        </article>
+                    )}
+                </div>
             </div>
         </div>
     );
