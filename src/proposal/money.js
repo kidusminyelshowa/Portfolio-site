@@ -10,6 +10,14 @@ export function totals({ items = [], discount_pct = 0, vat_rate = 0 }) {
     return { subtotal, discount, vat, total: round(subtotal - discount + vat) };
 }
 
+// An invoice can ask for part of the proposal (a deposit, say): the share applies after discount, before VAT
+export function invoiceTotals(invoice) {
+    const base = totals({ ...invoice, vat_rate: 0 });
+    const net = round(((base.subtotal - base.discount) * (Number(invoice.share_pct) || 100)) / 100);
+    const vat = round((net * (Number(invoice.vat_rate) || 0)) / 100);
+    return { subtotal: base.subtotal, discount: base.discount, net, vat, total: round(net + vat) };
+}
+
 export function formatMoney(amount, currency = 'ETB') {
     try {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency, currencyDisplay: 'code' }).format(amount);
