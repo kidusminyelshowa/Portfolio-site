@@ -23,7 +23,9 @@ export default function SideNav() {
             <nav className="side-navbar">
                 <div className="nav-contact">
                     <div className="nav-location">{site.location}</div>
-                    <div className="nav-email">{site.email}</div>
+                    <a className="nav-email" href={`mailto:${site.email}`}>
+                        {site.email}
+                    </a>
                 </div>
                 <div className="nav-avatar">
                     <img src={site.avatar} alt="Avatar" className="avatar-img" width="45" height="45" />
@@ -31,7 +33,9 @@ export default function SideNav() {
                 <button
                     ref={buttonRef}
                     className="nav-info-btn"
-                    aria-label="Information"
+                    aria-label="About Kidus"
+                    aria-expanded={infoOpen}
+                    aria-controls="info-overlay"
                     onClick={() => setInfoOpen((open) => !open)}
                 >
                     <img src="/assets/img/Asset 3.svg" alt="Info icon" className="info-icon" />

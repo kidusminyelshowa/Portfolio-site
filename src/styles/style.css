@@ -59,6 +59,8 @@
 }
 
 .nav-email {
+    text-decoration: none;
+    transition: color var(--transition);
     position: absolute;
     top: 0;
     left: 40px;
@@ -68,6 +70,10 @@
     transform: rotate(270deg) translateY(-74px) translateX(2px);
     /* 40px + 15px = 55px */
     white-space: nowrap;
+}
+
+.nav-email:hover {
+    color: var(--primary-text);
 }
 
 .nav-avatar {
@@ -823,7 +829,46 @@ body {
 .site-footer {
     padding: 80px 0 40px;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 120px;
+}
+
+.footer-contact {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    padding: 0 var(--margin);
+}
+
+.footer-heading {
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: var(--primary-text);
+}
+
+.footer-email {
+    font-size: 24px;
+    color: #808080;
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.footer-email:hover {
+    color: var(--primary-text);
+}
+
+.footer-socials {
+    display: flex;
+    gap: 24px;
+}
+
+.footer-socials .info-link {
+    font-size: 16px;
 }
 
 .footer-copyright {
@@ -978,6 +1023,29 @@ body {
     max-width: 700px;
     margin: 40px auto 100px auto;
     line-height: 1.4;
+}
+
+.modal-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px;
+    max-width: 900px;
+    margin: -40px auto 100px auto;
+}
+
+.modal-detail-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--primary-text);
+    margin-bottom: 12px;
+}
+
+.modal-detail-text {
+    font-size: 16px;
+    color: #808080;
+    line-height: 1.5;
 }
 
 .modal-visuals-container {
@@ -1225,6 +1293,24 @@ body {
 @media (max-width: 768px) {
     :root {
         --margin: 24px;
+    }
+
+    .modal-details {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        margin: -40px 0 60px 0;
+    }
+
+    .footer-heading {
+        font-size: 24px;
+    }
+
+    .footer-email {
+        font-size: 18px;
+    }
+
+    .site-footer {
+        gap: 64px;
     }
 
     .side-navbar {

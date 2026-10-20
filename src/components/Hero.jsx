@@ -40,7 +40,7 @@ function HeroSquare({ square, onPointer, onLeave }) {
             }}
             onTouchCancel={onLeave}
         >
-            <video ref={videoRef} src={square.video} loop muted playsInline preload="auto" className="square-video" />
+            <video ref={videoRef} src={square.video} loop muted playsInline preload="metadata" className="square-video" />
         </div>
     );
 }

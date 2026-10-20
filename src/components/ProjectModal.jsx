@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { featuredProjects, getProject, isVideo } from '../content.js';
+import { featuredProjects, getProject, isVideo, site } from '../content.js';
+
+const defaultTitle = document.title;
 
 function GalleryBlock({ item, index }) {
     const [loaded, setLoaded] = useState(isVideo(item.src));
@@ -68,7 +70,7 @@ export default function ProjectModal() {
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : '';
-        document.title = isOpen ? `${routeProject.title} – Kidus' Portfolio` : "Kidus' Portfolio";
+        document.title = isOpen ? `${routeProject.title} – ${site.name}` : defaultTitle;
         return () => {
             document.body.style.overflow = '';
         };
@@ -110,6 +112,22 @@ export default function ProjectModal() {
                 <div className="modal-body" style={{ opacity: fading ? 0 : 1 }}>
                     <h2 id="modal-title" className="modal-project-title">{shown?.title}</h2>
                     <p id="modal-statement" className="modal-statement">{shown?.context}</p>
+                    {(shown?.approach || shown?.outcome) && (
+                        <div className="modal-details">
+                            {shown.approach && (
+                                <div className="modal-detail">
+                                    <h3 className="modal-detail-label">Approach</h3>
+                                    <p className="modal-detail-text">{shown.approach}</p>
+                                </div>
+                            )}
+                            {shown.outcome && (
+                                <div className="modal-detail">
+                                    <h3 className="modal-detail-label">Outcome</h3>
+                                    <p className="modal-detail-text">{shown.outcome}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
                     <div className="modal-visuals-container">
                         <div className="modal-visuals" id="modal-visuals">
                             {shown?.gallery.map((item, index) => (
