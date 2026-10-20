@@ -1,0 +1,40 @@
+{
+  "slug": "lalibel",
+  "title": "Lalibel",
+  "featured": false,
+  "order": 4,
+  "cardColor": "green",
+  "cover": "/assets/projects/Lalibel/Lalibel Feature.webp",
+  "summary": "A visual identity for Lalibel that captures the essence of heritage through sleek, contemporary design, balancing traditional motifs with a modern aesthetic.",
+  "context": "",
+  "approach": "",
+  "outcome": "",
+  "gallery": [
+    {
+      "src": "/assets/projects/Lalibel/Lalibel Logo animation.webm",
+      "alt": "Lalibel logo animation"
+    },
+    {
+      "src": "/assets/projects/Lalibel/Lalibel on Ph.webp",
+      "alt": "Mobile"
+    },
+    {
+      "src": "/assets/projects/Lalibel/Lalibel Feature.webp",
+      "alt": "Feature"
+    },
+    {
+      "src": "/assets/projects/Lalibel/Lalibel Posters.webp",
+      "alt": "Posters"
+    }
+  ],
+  "hoverImages": [
+    {
+      "src": "/assets/projects/Lalibel/Lalibel Label.webp",
+      "alt": "Lalibel Label"
+    },
+    {
+      "src": "/assets/projects/Lalibel/Lalibel Totebag.webp",
+      "alt": "Lalibel Totebag"
+    }
+  ]
+}

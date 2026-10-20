@@ -1,0 +1,40 @@
+{
+  "slug": "rees",
+  "title": "Re'es",
+  "featured": false,
+  "order": 5,
+  "cardColor": "green",
+  "cover": "/assets/projects/Re'es/Re'es logo.webp",
+  "summary": "An identity project centered on leadership and clarity, using a strict typographic framework to establish a distinct and professional entity.",
+  "context": "",
+  "approach": "",
+  "outcome": "",
+  "gallery": [
+    {
+      "src": "/assets/projects/Re'es/Re'es Outdoor.webp",
+      "alt": "Outdoor"
+    },
+    {
+      "src": "/assets/projects/Re'es/Re'es palette animation.webm",
+      "alt": "Re'es palette animation"
+    },
+    {
+      "src": "/assets/projects/Re'es/Re'es text animation.webm",
+      "alt": "Re'es text animation"
+    },
+    {
+      "src": "/assets/projects/Re'es/Re'es logo.webp",
+      "alt": "Logo"
+    }
+  ],
+  "hoverImages": [
+    {
+      "src": "/assets/projects/Re'es/Re es event Brochur.webp",
+      "alt": "Brochure"
+    },
+    {
+      "src": "/assets/projects/Re'es/Re es on Banner.webp",
+      "alt": "Banner"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "Kidus Minyelshowa",
+  "heroTitle": "KIDUS MINYELSHOWA",
+  "tagline": "A designer working on brand visual\nsystems, and identity design.",
+  "location": "Addis Ababa, Ethiopia",
+  "email": "kidusminyel@gmail.com",
+  "avatar": "/assets/img/KTM.webp",
+  "bio": "Hello! I am Kidus, a graphic designer and type designer. I enjoy solving visual problems with random thinking and careful craft. I stay curious and I like to experiment with new ideas, methods, and tools. My work combines design, typography, and technology to create useful and meaningful outcomes. I spend much of my time exploring innovation, learning new skills, and improving the way I work. I believe good design should be simple, purposeful, and built to last.",
+  "socials": [
+    {
+      "label": "INSTAGRAM",
+      "url": "https://instagram.com/kidusminyel"
+    },
+    {
+      "label": "LINKEDIN",
+      "url": "https://linkedin.com/in/kidusminyel"
+    }
+  ],
+  "heroSquares": [
+    {
+      "label": "Motion design",
+      "color": "red",
+      "video": "/assets/projects/Palace Museum/Palace Museum Story Animation.webm"
+    },
+    {
+      "label": "Brand design",
+      "color": "green",
+      "video": "/assets/projects/Lalibel/Lalibel Logo animation.webm"
+    },
+    {
+      "label": "Type design",
+      "color": "blue",
+      "video": "/assets/video/Type Design Animation.webm"
+    }
+  ],
+  "footer": "©ALL RIGHTS RESERVED 2026 KIDUS"
+}
