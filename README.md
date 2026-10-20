@@ -1,26 +1,21 @@
-# Portfolio converted to Node + React
+# Kidus Minyelshowa – Portfolio
 
-Quick start:
+Built with [Vite](https://vite.dev) and React.
 
-1. Install dependencies (root will install dev tool `concurrently`):
+## Run locally
 
 ```bash
 npm install
-cd server && npm install
-cd ../client && npm install
+npm run dev       # dev server at http://localhost:5173
+npm run build     # production build in dist/
+npm run preview   # serve the production build
 ```
 
-2. Run in development (runs server and client concurrently):
+## Where things live
 
-```bash
-npm run dev
-```
+- `content/site.json` – name, tagline, bio, contact details, socials, hero videos
+- `content/projects/*.json` – one file per project (title, cover, text, gallery). Set `featured: true` to show it under Recent Work; `order` sets its position.
+- `public/assets/` – images and videos, served from `/assets/...`
+- `src/` – React components and styles
 
-3. Build and start production:
-
-```bash
-npm run build
-npm start
-```
-
-Server serves the built client from `client/dist` and exposes `GET /api/hello`.
+Each featured project has its own URL, e.g. `/work/palace-museum`.
