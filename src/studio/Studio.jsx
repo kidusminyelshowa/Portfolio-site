@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { site } from '../content.js';
 import Leads from './Leads.jsx';
+import Prices from './Prices.jsx';
+import { ProposalEditor, ProposalList } from './Proposals.jsx';
 import SetPassword from './SetPassword.jsx';
 import Settings from './Settings.jsx';
 import { isRecoveryReturn, supabase } from './supabase.js';
@@ -163,6 +165,8 @@ function Shell({ email }) {
                 </Link>
                 <nav className="studio-nav" aria-label="Studio">
                     <NavLink to="/studio/leads">Leads</NavLink>
+                    <NavLink to="/studio/proposals">Proposals</NavLink>
+                    <NavLink to="/studio/prices">Prices</NavLink>
                     <NavLink to="/studio/settings">Settings</NavLink>
                 </nav>
                 <div className="studio-account">
@@ -175,6 +179,9 @@ function Shell({ email }) {
             <main className="studio-main">
                 <Routes>
                     <Route path="/studio/leads" element={<Leads />} />
+                    <Route path="/studio/proposals" element={<ProposalList />} />
+                    <Route path="/studio/proposals/:id" element={<ProposalEditor />} />
+                    <Route path="/studio/prices" element={<Prices />} />
                     <Route path="/studio/settings" element={<Settings />} />
                     <Route path="*" element={<Navigate to="/studio/leads" replace />} />
                 </Routes>
