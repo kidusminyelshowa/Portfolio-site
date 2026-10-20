@@ -44,3 +44,20 @@ Run `npx decap-server` in one terminal and `npm run dev` in another, add `local_
 ## Inquiries
 
 "Yes, let's talk" opens a step-by-step form at `/contact`. Submissions are saved to the `inquiries` table in the **portfolio** Supabase project (Table Editor → inquiries). Visitors can only add rows; use the `status` column (new, replied, in progress, won, lost, archived) and `notes` to track each one. The form's wording and options live under Site details → Inquiry form in the CMS.
+
+## Studio (private tools)
+
+`/studio` is a private area for running client work, hidden from search engines and only usable by emails listed in the `studio_owners` table (starts with `kidusminyel@gmail.com`).
+
+- **Leads:** every contact-form inquiry, on a board from New to Won or Lost. Open a card to change its stage, add notes or reply, or drag it between columns. Add leads by hand or paste a list from a spreadsheet (first row: `name,email,company,message,budget,timeline`).
+- **Settings:** business details, currency and VAT (Ethiopia and International presets), bank details, TIN, contract terms and invoice note. Proposals, contracts and invoices use these.
+
+### One-time sign-in setup
+
+Sign-in is a link sent by email through Supabase. In the **portfolio** Supabase project, open Authentication → URL Configuration:
+
+1. Set **Site URL** to the live domain, e.g. `https://kidusminyel.xyz`.
+2. Under **Redirect URLs**, add `https://kidusminyel.xyz/studio` (and `http://localhost:5173/studio` for local work).
+
+To let another email in, add it (lowercase) to the `studio_owners` table in the Table Editor. Database changes live in `supabase/migrations/`.
+
