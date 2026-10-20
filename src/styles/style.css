@@ -1362,40 +1362,42 @@ button {
     }
 
     .hero-title {
-        font-size: 40px;
+        font-size: clamp(22px, 7.4vw, 40px);
         letter-spacing: -0.045em;
-        margin-bottom: 24px;
+        white-space: nowrap;
+        margin-bottom: 28px;
     }
 
+    /* Stamps scale with the viewport so they fill the phone width. */
     .visual-blocks {
-        height: 220px;
-        margin-bottom: 32px;
-        transform: scale(0.85);
+        width: 100%;
+        height: min(68vw, 430px);
+        margin-bottom: 36px;
     }
 
     .square {
-        width: 160px;
-        height: 185px;
+        width: min(54vw, 340px);
+        height: min(61.5vw, 387px);
     }
 
     .ink-square {
-        transform: rotate(-5deg) translateX(-60px);
+        transform: rotate(-5deg) translateX(max(-21vw, -132px)) scale(0.9);
     }
 
     .ink-square:hover {
-        transform: rotate(-8deg) translateX(-75px) scale(1.02);
+        transform: rotate(-8deg) translateX(max(-23vw, -145px)) scale(0.94);
     }
 
     .blue-square:hover {
-        transform: scale(1.05);
+        transform: scale(1.04);
     }
 
     .navy-square {
-        transform: rotate(5deg) translateX(60px);
+        transform: rotate(5deg) translateX(min(21vw, 132px)) scale(0.9);
     }
 
     .navy-square:hover {
-        transform: rotate(8deg) translateX(75px) scale(1.02);
+        transform: rotate(8deg) translateX(min(23vw, 145px)) scale(0.94);
     }
 
     .hero-floating-pill {
