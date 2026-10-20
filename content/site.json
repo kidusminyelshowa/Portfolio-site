@@ -1,13 +1,6 @@
 {
-  "name": "Kidus Minyelshowa",
-  "heroTitle": "KIDUS MINYELSHOWA",
-  "tagline": "A generalist designer working across\nbrand, type, motion and culture.",
-  "availability": "Open for freelance art direction and brand design, in Addis Ababa and worldwide.",
-  "location": "Addis Ababa, Ethiopia",
-  "email": "kidusminyel@gmail.com",
-  "url": "https://kidusminyel.gu.cc",
-  "avatar": "/assets/img/KTM.webp",
-  "bio": "Hi, I'm Kidus. I'm a generalist designer who touches on everything creative, from brand identity and art direction to type, motion and space. I work through curiosity, mixing fields until something clicks. Right now I'm taking on freelance art direction and brand design work, in Addis Ababa and worldwide.",
+  "contactNo": "Maybe later",
+  "contactHeading": "So, shall we make something together?",
   "socials": [
     {
       "label": "INSTAGRAM",
@@ -18,6 +11,21 @@
       "url": "https://linkedin.com/in/kidusminyel"
     }
   ],
+  "contactYes": "Yes, let's talk",
+  "intros": {
+    "work": "A few projects I'm proud of, across *brand*, *type* and *motion*.",
+    "services": "Where I can help, from the first idea to the *full system*.",
+    "playground": "Side things, *experiments* and stuff I make when no one's asking."
+  },
+  "bio": "Hi, I'm Kidus. I'm a generalist designer who touches on everything creative, from brand identity and art direction to type, motion and space. I work through curiosity, mixing fields until something clicks. Right now I'm taking on freelance art direction and brand design work, in Addis Ababa and worldwide.",
+  "contactNoReply": "No worries. My inbox doesn't close, so come back whenever.",
+  "name": "Kidus Minyelshowa",
+  "tagline": "A generalist designer working across\nbrand, type, motion and culture.",
+  "url": "https://kidusminyel.xyz",
+  "location": "Addis Ababa, Ethiopia",
+  "avatar": "/assets/img/KTM.webp",
+  "availability": "Open for freelance art direction and brand design, in Addis Ababa and worldwide.",
+  "footer": "© 2026 Kidus Minyelshowa",
   "heroSquares": [
     {
       "label": "Motion design",
@@ -35,14 +43,6 @@
       "video": "/assets/video/Type Design Animation.webm"
     }
   ],
-  "intros": {
-    "work": "A few projects I'm proud of, across *brand*, *type* and *motion*.",
-    "services": "Where I can help, from the first idea to the *full system*.",
-    "playground": "Side things, *experiments* and stuff I make when no one's asking."
-  },
-  "contactHeading": "So, shall we make something together?",
-  "contactYes": "Yes, let's talk",
-  "contactNo": "Maybe later",
-  "contactNoReply": "No worries. My inbox doesn't close, so come back whenever.",
-  "footer": "© 2026 Kidus Minyelshowa"
+  "email": "kidusminyel@gmail.com",
+  "heroTitle": "KIDUS MINYELSHOWA"
 }
