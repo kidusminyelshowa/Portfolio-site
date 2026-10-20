@@ -40,3 +40,7 @@ Sign-in only works on the domain the callback URL points to; preview deployments
 ### Editing locally
 
 Run `npx decap-server` in one terminal and `npm run dev` in another, add `local_backend: true` to the top of `public/admin/config.yml` (don't commit it), and open `http://localhost:5173/admin/`. Changes write straight to the files in `content/`.
+
+## Inquiries
+
+"Yes, let's talk" opens a step-by-step form at `/contact`. Submissions are saved to the `inquiries` table in the **portfolio** Supabase project (Table Editor → inquiries). Visitors can only add rows; use the `status` column (new, replied, in progress, won, lost, archived) and `notes` to track each one. The form's wording and options live under Site details → Inquiry form in the CMS.
