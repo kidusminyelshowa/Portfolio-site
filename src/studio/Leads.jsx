@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from './supabase.js';
 
 // The inquiries table's status, in pipeline order
@@ -163,6 +164,9 @@ function LeadDetail({ lead, onSave, onDelete, onClose }) {
                 <a className="studio-button" href={`mailto:${lead.email}?subject=${encodeURIComponent('Re: your project')}`}>
                     Reply by email
                 </a>
+                <Link className="studio-button" to={`/studio/proposals/new?lead=${lead.id}`}>
+                    Write a proposal
+                </Link>
                 <button type="button" className="studio-button is-primary" disabled={saving} onClick={() => save({ status, notes: notes.trim() || null })}>
                     {saving ? 'Saving…' : 'Save'}
                 </button>

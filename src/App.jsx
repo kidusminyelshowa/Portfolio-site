@@ -9,6 +9,8 @@ import Home from './pages/Home.jsx';
 
 // The private studio loads on its own, so visitors never download it
 const Studio = lazy(() => import('./studio/Studio.jsx'));
+// A client's proposal page stands on its own too, without the site's navigation
+const ProposalPage = lazy(() => import('./proposal/ProposalPage.jsx'));
 
 // Scroll to the top on page changes, or to the section named in the hash
 function useScrollManagement(page) {
@@ -55,6 +57,15 @@ export default function App() {
         return (
             <Suspense fallback={null}>
                 <Studio />
+            </Suspense>
+        );
+    }
+    if (pathname.startsWith('/proposal/')) {
+        return (
+            <Suspense fallback={null}>
+                <Routes>
+                    <Route path="/proposal/:slug" element={<ProposalPage />} />
+                </Routes>
             </Suspense>
         );
     }
