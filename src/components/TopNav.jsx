@@ -3,6 +3,7 @@ import { playground } from '../content.js';
 
 export const navLinks = [
     { label: 'Work', to: '/#work' },
+    { label: 'Services', to: '/#services' },
     { label: 'About', to: '/#about' },
     ...(playground.length > 0 ? [{ label: 'Playground', to: '/#playground' }] : []),
     { label: 'Index', to: '/work' },

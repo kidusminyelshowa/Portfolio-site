@@ -1,4 +1,5 @@
-import { isVideo, playground } from '../content.js';
+import { isVideo, playground, site } from '../content.js';
+import SectionIntro from './SectionIntro.jsx';
 
 // Side work: type, lettering, sketches and motion tests, added through the CMS
 export default function Playground() {
@@ -6,10 +7,7 @@ export default function Playground() {
 
     return (
         <section id="playground" className="section playground">
-            <div className="section-header">
-                <h2 className="section-label">Playground</h2>
-                <span className="section-count">Type, sketches and experiments</span>
-            </div>
+            <SectionIntro label="Playground" text={site.intros?.playground} />
             <div className="playground-grid">
                 {playground.map((item) => (
                     <figure key={item.media} className="playground-item">

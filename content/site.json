@@ -35,6 +35,19 @@
       "video": "/assets/video/Type Design Animation.webm"
     }
   ],
-  "contactHeading": "Let's work together",
+  "intros": {
+    "work": "A few projects I'm proud of, across *brand*, *type* and *motion*.",
+    "services": "Where I can help, from the first idea to the *full system*.",
+    "playground": "Side things, *experiments* and stuff I make when no one's asking."
+  },
+  "values": [
+    "Curiosity",
+    "Merging fields",
+    "Room to wander"
+  ],
+  "contactHeading": "So, shall we make something together?",
+  "contactYes": "Yes, let's talk",
+  "contactNo": "Maybe later",
+  "contactNoReply": "No worries. My inbox doesn't close, so come back whenever.",
   "footer": "© 2026 Kidus Minyelshowa"
 }
