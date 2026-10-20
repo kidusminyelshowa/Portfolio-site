@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Footer from './components/Footer.jsx';
 import ProjectModal from './components/ProjectModal.jsx';
@@ -48,7 +48,10 @@ function Site() {
 
 export default function App() {
     const { pathname } = useLocation();
-    if (pathname === '/studio' || pathname.startsWith('/studio/')) {
+    // A studio email link can land on the home page when Supabase falls back to the Site URL. Remember it on first load,
+    // since the studio clears the token from the URL straight away.
+    const [isAuthReturn] = useState(() => /(access_token|error_code)=/.test(window.location.hash));
+    if (pathname === '/studio' || pathname.startsWith('/studio/') || isAuthReturn) {
         return (
             <Suspense fallback={null}>
                 <Studio />

@@ -573,6 +573,22 @@ body.is-studio {
     grid-column: 1 / -1;
 }
 
+.settings-password {
+    margin-top: 40px;
+}
+
+.settings-password .studio-form {
+    max-width: 420px;
+}
+
+.studio-card-title {
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
 .settings-save {
     position: sticky;
     bottom: 0;

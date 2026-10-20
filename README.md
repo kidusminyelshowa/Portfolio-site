@@ -26,38 +26,11 @@ Each project has its own URL, e.g. `/work/palace-museum`.
 
 Edit everything at `/admin` on the live site. Saving commits the change to `main`, and Vercel redeploys within a minute or two. Uploaded images and videos go to `public/assets/uploads/`.
 
-### One-time sign-in setup
+### Signing in
 
-1. On GitHub, go to Settings → Developer settings → OAuth Apps → New OAuth App.
-   - Homepage URL: your live site, e.g. `https://kidusminyel.gu.cc`
-   - Authorization callback URL: the same domain plus `/api/callback`, e.g. `https://kidusminyel.gu.cc/api/callback`
-2. Copy the Client ID, then generate a client secret.
-3. In Vercel, open the project → Settings → Environment Variables and add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`, then redeploy.
-4. Visit `/admin` on that same domain and sign in with GitHub.
+Sign in with email and password. The first time (or after forgetting it), use "Forgot your password, or never set one?" to get an email link, open it on the same device and choose a password. You can change it later under Settings → Password.
 
-Sign-in only works on the domain the callback URL points to; preview deployments can't sign in.
-
-### Editing locally
-
-Run `npx decap-server` in one terminal and `npm run dev` in another, add `local_backend: true` to the top of `public/admin/config.yml` (don't commit it), and open `http://localhost:5173/admin/`. Changes write straight to the files in `content/`.
-
-## Inquiries
-
-"Yes, let's talk" opens a step-by-step form at `/contact`. Submissions are saved to the `inquiries` table in the **portfolio** Supabase project (Table Editor → inquiries). Visitors can only add rows; use the `status` column (new, replied, in progress, won, lost, archived) and `notes` to track each one. The form's wording and options live under Site details → Inquiry form in the CMS.
-
-## Studio (private tools)
-
-`/studio` is a private area for running client work, hidden from search engines and only usable by emails listed in the `studio_owners` table (starts with `kidusminyel@gmail.com`).
-
-- **Leads:** every contact-form inquiry, on a board from New to Won or Lost. Open a card to change its stage, add notes or reply, or drag it between columns. Add leads by hand or paste a list from a spreadsheet (first row: `name,email,company,message,budget,timeline`).
-- **Settings:** business details, currency and VAT (Ethiopia and International presets), bank details, TIN, contract terms and invoice note. Proposals, contracts and invoices use these.
-
-### One-time sign-in setup
-
-Sign-in is a link sent by email through Supabase. In the **portfolio** Supabase project, open Authentication → URL Configuration:
-
-1. Set **Site URL** to the live domain, e.g. `https://kidusminyel.xyz`.
-2. Under **Redirect URLs**, add `https://kidusminyel.xyz/studio` (and `http://localhost:5173/studio` for local work).
+The link only works when Supabase knows the site's address. In the **portfolio** Supabase project, open Authentication → URL Configuration, set **Site URL** to the live domain (e.g. `https://kidusminyel.xyz`) and add `https://kidusminyel.xyz/studio` under **Redirect URLs**. Supabase's built-in email sends only a few messages an hour, so if it says the limit was reached, wait a bit and try again.
 
 To let another email in, add it (lowercase) to the `studio_owners` table in the Table Editor. Database changes live in `supabase/migrations/`.
 
