@@ -1,11 +1,13 @@
 {
   "slug": "palace-museum",
   "title": "Palace Museum",
-  "featured": true,
   "order": 2,
-  "cardColor": "teal",
+  "tags": [
+    "Rebrand",
+    "Wayfinding",
+    "Motion"
+  ],
   "cover": "/assets/projects/Palace Museum/Palace Museum Catalogue.webp",
-  "summary": "",
   "context": "A comprehensive rebrand for the National Palace Museum, formerly the Jubilee Palace. The project objective was to reintroduce this iconic landmark as a premier cultural destination with deep historical weight and contemporary relevance.",
   "approach": "The identity design draws inspiration from imperial architecture, heritage patterns, and archival elements, creating a visual language that honors the past while remaining accessible to modern audiences.",
   "outcome": "A cohesive identity system, including wayfinding and signage, that allows the museum to communicate with dignity and clarity across all exhibitions and communications.",
@@ -50,6 +52,5 @@
       "src": "/assets/projects/Palace Museum/Palace Museum Logo.webp",
       "alt": ""
     }
-  ],
-  "hoverImages": []
+  ]
 }

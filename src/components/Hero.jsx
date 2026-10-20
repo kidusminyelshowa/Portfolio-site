@@ -71,7 +71,11 @@ export default function Hero() {
                 <p className="hero-subtitle">
                     {taglineLines.map((line, i) => (
                         <Fragment key={i}>
-                            {i > 0 && <br />}
+                            {i > 0 && (
+                                <>
+                                    <br />{' '}
+                                </>
+                            )}
                             {line}
                         </Fragment>
                     ))}

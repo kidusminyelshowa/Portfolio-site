@@ -1,12 +1,14 @@
 {
   "slug": "rees",
   "title": "Re'es",
-  "featured": false,
   "order": 5,
-  "cardColor": "green",
-  "cover": "/assets/projects/Re'es/Re'es logo.webp",
-  "summary": "An identity project centered on leadership and clarity, using a strict typographic framework to establish a distinct and professional entity.",
-  "context": "",
+  "tags": [
+    "Visual identity",
+    "Typography",
+    "Motion"
+  ],
+  "cover": "/assets/projects/Re'es/Re'es Outdoor.webp",
+  "context": "An identity project centered on leadership and clarity, using a strict typographic framework to establish a distinct and professional entity.",
   "approach": "",
   "outcome": "",
   "gallery": [
@@ -25,9 +27,7 @@
     {
       "src": "/assets/projects/Re'es/Re'es logo.webp",
       "alt": "Logo"
-    }
-  ],
-  "hoverImages": [
+    },
     {
       "src": "/assets/projects/Re'es/Re'es Event Brochure.webp",
       "alt": "Brochure"

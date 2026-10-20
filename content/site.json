@@ -19,17 +19,17 @@
   "heroSquares": [
     {
       "label": "Motion design",
-      "color": "red",
+      "color": "ink",
       "video": "/assets/projects/Palace Museum/Palace Museum Story Animation.webm"
     },
     {
       "label": "Brand design",
-      "color": "green",
+      "color": "blue",
       "video": "/assets/projects/Lalibel/Lalibel Logo animation.webm"
     },
     {
       "label": "Type design",
-      "color": "blue",
+      "color": "navy",
       "video": "/assets/video/Type Design Animation.webm"
     }
   ],

@@ -44,6 +44,7 @@ export default function SideNav() {
 
             <div ref={overlayRef} id="info-overlay" className={`info-overlay${infoOpen ? ' active' : ''}`}>
                 <div className="info-overlay-content">
+                    <img src={site.avatar} alt="" className="info-portrait" width="96" height="96" />
                     <p className="info-description">{site.bio}</p>
                     <div className="info-socials">
                         {site.socials.map((social) => (
