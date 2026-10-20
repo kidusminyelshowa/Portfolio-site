@@ -13,13 +13,11 @@
   "community": {
     "name": "Hager Beqel",
     "role": "Co-founder",
-    "description": "Hager Beqel is a community-driven cultural initiative I co-founded, born from the need to see the culture we live in. We curate events and experiments that bring several art forms together into interdisciplinary experiences.",
-    "highlight": "I also run regular type design workshops through Hager Beqel.",
+    "summary": "a community-driven cultural initiative curating interdisciplinary art events, where I also run type design workshops.",
     "url": ""
   },
   "now": [
     "Working on a couple of exciting branding projects.",
-    "Building a tool that could change how design and marketing teams work.",
-    "Running type design workshops with Hager Beqel."
+    "Building a tool that could change how design and marketing teams work."
   ]
 }

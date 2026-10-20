@@ -19,6 +19,16 @@ export default function About() {
                             <li key={discipline}>{discipline}</li>
                         ))}
                     </ul>
+                    {about.now.length > 0 && (
+                        <div className="about-now">
+                            <span className="eyebrow">Currently</span>
+                            <ul>
+                                {about.now.map((item) => (
+                                    <li key={item}>{item}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
         </section>

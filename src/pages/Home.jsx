@@ -1,5 +1,4 @@
 import About from '../components/About.jsx';
-import Community from '../components/Community.jsx';
 import Hero from '../components/Hero.jsx';
 import Playground from '../components/Playground.jsx';
 import WorkGrid from '../components/WorkGrid.jsx';
@@ -11,7 +10,6 @@ export default function Home() {
             <WorkGrid />
             <About />
             <Playground />
-            <Community />
         </>
     );
 }

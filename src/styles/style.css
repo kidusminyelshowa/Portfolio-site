@@ -566,8 +566,38 @@ button {
     margin-top: 12px;
 }
 
-.footer-copyright {
+.footer-notes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 32px;
     margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+
+.footer-note {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    max-width: 620px;
+}
+
+.footer-note .now-dot {
+    align-self: center;
+    width: 8px;
+    height: 8px;
+}
+
+.footer-note a {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.footer-copyright {
+    margin-left: auto;
     text-align: right;
     font-size: 11px;
     letter-spacing: 0.2em;
@@ -939,24 +969,22 @@ button {
     background-color: var(--surface);
 }
 
-.availability {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 80px;
-    padding: 10px 18px;
-    border: var(--stroke) solid var(--ink);
-    border-radius: 40px;
-    background-color: var(--surface);
-    font-size: 15px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: box-shadow var(--transition), transform var(--transition);
+.about-now {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 16px;
 }
 
-.availability:hover {
-    box-shadow: 4px 4px 0 var(--ink);
-    transform: translate(-2px, -2px);
+.about-now .eyebrow {
+    color: var(--blue);
+}
+
+.about-now ul {
+    list-style: none;
 }
 
 /* A card left alone on the last row spans the full width */
@@ -1076,83 +1104,6 @@ button {
 .playground-caption {
     font-size: 14px;
     color: var(--ink-soft);
-}
-
-/* ---------- Community and now ---------- */
-
-.community {
-    padding-bottom: var(--s4);
-}
-
-.community-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: 32px;
-}
-
-.community-card,
-.now-card {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 40px;
-    border: var(--stroke) solid var(--ink);
-    border-radius: 28px;
-}
-
-.community-card {
-    background-color: var(--navy);
-    color: var(--paper);
-    font-size: 17px;
-    line-height: 1.55;
-}
-
-.community-name {
-    font-size: clamp(36px, 4vw, 56px);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1;
-}
-
-.community-highlight {
-    padding-top: 16px;
-    border-top: 1px solid rgba(238, 241, 242, 0.3);
-    font-weight: 600;
-}
-
-.community-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 700;
-    color: inherit;
-}
-
-.now-card {
-    background-color: var(--surface);
-}
-
-.now-list {
-    display: flex;
-    flex-direction: column;
-    list-style: none;
-}
-
-.now-list li {
-    padding: 16px 0;
-    border-bottom: 1px solid var(--line);
-    font-size: 18px;
-    line-height: 1.4;
-}
-
-.now-list li:last-child {
-    border-bottom: none;
-}
-
-.footer-availability {
-    font-size: 18px;
-    max-width: 560px;
-    opacity: 0.9;
 }
 
 /* ---------- Index page ---------- */
@@ -1343,8 +1294,7 @@ button {
         display: flex;
     }
 
-    .about-grid,
-    .community-grid {
+    .about-grid {
         grid-template-columns: 1fr;
     }
 
@@ -1527,17 +1477,17 @@ button {
         word-break: break-all;
     }
 
-    .footer-copyright {
-        text-align: center;
-        font-size: 10px;
-        letter-spacing: 0.12em;
+    .footer-notes {
+        flex-direction: column;
+        gap: 10px;
+        font-size: 13px;
     }
 
-    .availability {
-        margin-bottom: 8px;
-        font-size: 13px;
-        padding: 8px 14px;
+    .footer-copyright {
+        margin-left: 0;
         text-align: left;
+        font-size: 10px;
+        letter-spacing: 0.12em;
     }
 
     .about-grid {
@@ -1555,24 +1505,6 @@ button {
 
     .about-lead {
         font-size: 19px;
-    }
-
-    .community-card,
-    .now-card {
-        padding: 28px 22px;
-        border-radius: 20px;
-    }
-
-    .now-list li {
-        font-size: 16px;
-    }
-
-    .community {
-        padding-bottom: 64px;
-    }
-
-    .footer-availability {
-        font-size: 15px;
     }
 
     .archive {

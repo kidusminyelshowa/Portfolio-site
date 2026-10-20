@@ -1,11 +1,12 @@
-import { site } from '../content.js';
+import { about, site } from '../content.js';
 
 export default function Footer() {
+    const { community } = about;
+
     return (
         <footer id="contact" className="site-footer">
             <div className="footer-contact">
                 <p className="footer-heading">{site.contactHeading}</p>
-                {site.availability && <p className="footer-availability">{site.availability}</p>}
                 <a className="footer-email" href={`mailto:${site.email}`}>
                     {site.email}
                 </a>
@@ -17,7 +18,28 @@ export default function Footer() {
                     ))}
                 </div>
             </div>
-            <div className="footer-copyright">{site.footer}</div>
+            <div className="footer-notes">
+                {site.availability && (
+                    <p className="footer-note">
+                        <span className="now-dot" aria-hidden="true"></span>
+                        {site.availability}
+                    </p>
+                )}
+                {community && (
+                    <p className="footer-note">
+                        {community.role} of{' '}
+                        {community.url ? (
+                            <a href={community.url} target="_blank" rel="noopener noreferrer">
+                                {community.name}
+                            </a>
+                        ) : (
+                            community.name
+                        )}
+                        , {community.summary}
+                    </p>
+                )}
+                <p className="footer-copyright">{site.footer}</p>
+            </div>
         </footer>
     );
 }

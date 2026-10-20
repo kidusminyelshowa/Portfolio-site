@@ -81,12 +81,6 @@ export default function Hero() {
                     ))}
                 </p>
 
-                {site.availability && (
-                    <a href="#contact" className="availability">
-                        <span className="now-dot" aria-hidden="true"></span>
-                        {site.availability}
-                    </a>
-                )}
             </div>
 
             {createPortal(
