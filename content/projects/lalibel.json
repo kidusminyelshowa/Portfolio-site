@@ -1,12 +1,19 @@
 {
   "slug": "lalibel",
   "title": "Lalibel",
-  "featured": false,
   "order": 4,
-  "cardColor": "green",
+  "featured": true,
+  "tags": [
+    "Visual identity",
+    "Packaging",
+    "Motion"
+  ],
+  "services": [
+    "Brand identity",
+    "Motion"
+  ],
   "cover": "/assets/projects/Lalibel/Lalibel Feature.webp",
-  "summary": "A visual identity for Lalibel that captures the essence of heritage through sleek, contemporary design, balancing traditional motifs with a modern aesthetic.",
-  "context": "",
+  "context": "A visual identity for Lalibel that captures the essence of heritage through sleek, contemporary design, balancing traditional motifs with a modern aesthetic.",
   "approach": "",
   "outcome": "",
   "gallery": [
@@ -25,9 +32,7 @@
     {
       "src": "/assets/projects/Lalibel/Lalibel Posters.webp",
       "alt": "Posters"
-    }
-  ],
-  "hoverImages": [
+    },
     {
       "src": "/assets/projects/Lalibel/Lalibel Label.webp",
       "alt": "Lalibel Label"

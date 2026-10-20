@@ -1,11 +1,19 @@
 {
   "slug": "eec",
   "title": "EEC",
-  "featured": true,
   "order": 1,
-  "cardColor": "orange",
+  "featured": true,
+  "tags": [
+    "Brand identity",
+    "Environmental graphics",
+    "Motion"
+  ],
+  "services": [
+    "Brand identity",
+    "Spatial and wayfinding",
+    "Motion"
+  ],
   "cover": "/assets/projects/EEC/EEC-Field Jacket.webp",
-  "summary": "",
   "context": "Partnered with the Ethiopian Engineering Corporation to develop a bold and functional visual identity rooted in strength and precision. EEC is an industry leader in infrastructure and innovation.",
   "approach": "We crafted a full corporate identity system, from logo design to brand guidelines, specifically designed to reflect the scale and technical excellence of their work.",
   "outcome": "A comprehensive brand framework that ensures consistency across all physical and digital touchpoints, reinforcing the corporation’s credibility on a national level.",
@@ -15,7 +23,7 @@
       "alt": ""
     },
     {
-      "src": "/assets/projects/EEC/EEC-Cosntruction Site.webp",
+      "src": "/assets/projects/EEC/EEC-Construction Site.webp",
       "alt": ""
     },
     {
@@ -50,6 +58,5 @@
       "src": "/assets/projects/EEC/EEC-Animation.webm",
       "alt": ""
     }
-  ],
-  "hoverImages": []
+  ]
 }

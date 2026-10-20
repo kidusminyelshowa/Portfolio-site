@@ -1,21 +1,17 @@
-import FeaturedWork from '../components/FeaturedWork.jsx';
-import Footer from '../components/Footer.jsx';
+import About from '../components/About.jsx';
 import Hero from '../components/Hero.jsx';
-import MoreWork from '../components/MoreWork.jsx';
-import ProjectModal from '../components/ProjectModal.jsx';
-import SideNav from '../components/SideNav.jsx';
+import Playground from '../components/Playground.jsx';
+import Services from '../components/Services.jsx';
+import WorkGrid from '../components/WorkGrid.jsx';
 
 export default function Home() {
     return (
         <>
-            <SideNav />
-            <main className="main-container">
-                <Hero />
-                <FeaturedWork />
-                <MoreWork />
-            </main>
-            <Footer />
-            <ProjectModal />
+            <Hero />
+            <WorkGrid />
+            <Services />
+            <About />
+            <Playground />
         </>
     );
 }

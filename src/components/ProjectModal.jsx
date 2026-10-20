@@ -1,55 +1,45 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { featuredProjects, getProject, isVideo } from '../content.js';
+import { matchPath, useLocation, useNavigate } from 'react-router-dom';
+import { formatIndex, getNeighbours, getProject, isVideo, projects, site } from '../content.js';
 
-function GalleryBlock({ item, index }) {
+const defaultTitle = document.title;
+
+function GalleryItem({ item }) {
     const [loaded, setLoaded] = useState(isVideo(item.src));
     const style = item.background ? { backgroundColor: item.background } : undefined;
 
-    if (isVideo(item.src)) {
-        return (
-            <div className={`bento-block block-${index + 1} loaded`} style={{ ...style, overflow: 'hidden', position: 'relative' }}>
-                <video
-                    src={item.src}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        pointerEvents: 'none',
-                    }}
-                />
-            </div>
-        );
-    }
-
     return (
-        <div className={`bento-block block-${index + 1}${loaded ? ' loaded' : ''}`} style={style}>
-            <img
-                src={item.src}
-                alt={item.alt}
-                loading="lazy"
-                decoding="async"
-                ref={(img) => {
-                    // Cached images can finish before onLoad is attached
-                    if (img?.complete && !loaded) setLoaded(true);
-                }}
-                onLoad={() => setLoaded(true)}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-        </div>
+        <figure className={`case-media${loaded ? ' loaded' : ''}`} style={style}>
+            {isVideo(item.src) ? (
+                <video src={item.src} autoPlay loop muted playsInline aria-label={item.alt || undefined} />
+            ) : (
+                <img
+                    src={item.src}
+                    alt={item.alt}
+                    loading="lazy"
+                    decoding="async"
+                    ref={(img) => {
+                        // Cached images can finish before onLoad is attached
+                        if (img?.complete && !loaded) setLoaded(true);
+                    }}
+                    onLoad={() => setLoaded(true)}
+                />
+            )}
+        </figure>
+    );
+}
+
+function CloseIcon() {
+    return (
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M5 5l14 14M19 5 5 19" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+        </svg>
     );
 }
 
 export default function ProjectModal() {
-    const { slug } = useParams();
     const location = useLocation();
+    const slug = matchPath('/work/:slug', location.pathname)?.params.slug;
     const navigate = useNavigate();
     const routeProject = slug ? getProject(slug) : null;
     const isOpen = Boolean(routeProject);
@@ -62,13 +52,16 @@ export default function ProjectModal() {
     useEffect(() => {
         if (routeProject) {
             setShown(routeProject);
-            if (contentRef.current) contentRef.current.scrollTop = 0;
+            if (contentRef.current) {
+                contentRef.current.scrollTop = 0;
+                contentRef.current.focus({ preventScroll: true });
+            }
         }
     }, [routeProject]);
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : '';
-        document.title = isOpen ? `${routeProject.title} – Kidus' Portfolio` : "Kidus' Portfolio";
+        document.title = isOpen ? `${routeProject.title} – ${site.name}` : defaultTitle;
         return () => {
             document.body.style.overflow = '';
         };
@@ -76,52 +69,103 @@ export default function ProjectModal() {
 
     const close = () => {
         // Return to the page underneath when we came from it, so Back still works as expected
-        if (location.state?.fromHome) navigate(-1);
+        if (location.state?.background) navigate(-1);
         else navigate('/', { replace: true, preventScrollReset: true });
     };
+
+    const goTo = (project) => {
+        setFading(true);
+        setTimeout(() => {
+            navigate(`/work/${project.slug}`, { replace: true, state: location.state, preventScrollReset: true });
+            setFading(false);
+        }, 200);
+    };
+
+    const neighbours = shown ? getNeighbours(shown.slug) : null;
 
     useEffect(() => {
         if (!isOpen) return undefined;
         const onKey = (e) => {
             if (e.key === 'Escape') close();
+            if (e.key === 'ArrowRight') goTo(neighbours.next);
+            if (e.key === 'ArrowLeft') goTo(neighbours.prev);
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
     });
 
-    const goNext = () => {
-        const index = featuredProjects.findIndex((p) => p.slug === shown.slug);
-        const next = featuredProjects[(index + 1) % featuredProjects.length];
-        setFading(true);
-        setTimeout(() => {
-            navigate(`/work/${next.slug}`, { replace: true, state: location.state, preventScrollReset: true });
-            setFading(false);
-        }, 250);
-    };
-
     return (
-        <div id="project-modal" className={`modal${isOpen ? ' active' : ''}`}>
+        <div id="project-modal" className={`modal${isOpen ? ' active' : ''}`} aria-hidden={!isOpen}>
             <div className="modal-backdrop" onClick={close}></div>
-            <div className="modal-esc-hint">Press Esc to go back</div>
-            <button className="close-modal" aria-label="Close modal" onClick={close}>
-                <img src="/assets/img/Asset 5.svg" alt="Close icon" className="close-icon" />
-            </button>
-            <div className="modal-content" ref={contentRef}>
-                <div className="modal-body" style={{ opacity: fading ? 0 : 1 }}>
-                    <h2 id="modal-title" className="modal-project-title">{shown?.title}</h2>
-                    <p id="modal-statement" className="modal-statement">{shown?.context}</p>
-                    <div className="modal-visuals-container">
-                        <div className="modal-visuals" id="modal-visuals">
-                            {shown?.gallery.map((item, index) => (
-                                <GalleryBlock key={`${shown.slug}-${item.src}`} item={item} index={index} />
-                            ))}
-                        </div>
-                    </div>
-                    <div className="modal-footer">
-                        <button id="next-project-btn" className="next-project-btn" onClick={goNext}>
-                            NEXT PROJECT
-                        </button>
-                    </div>
+            <div
+                className="modal-content"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+            >
+                <div className="modal-topbar">
+                    <span className="modal-counter">
+                        {neighbours && `${formatIndex(neighbours.index)} / ${formatIndex(projects.length - 1)}`}
+                    </span>
+                    <span className="modal-esc-hint">Esc to close · ← → to browse</span>
+                    <button className="close-modal" aria-label="Close project" onClick={close}>
+                        <CloseIcon />
+                    </button>
+                </div>
+
+                {/* Scrolls under the top bar, with the scrollbar kept clear of the rounded corners */}
+                <div className="modal-scroll" ref={contentRef} tabIndex={-1}>
+                    {shown && (
+                        <article className={`modal-body${fading ? ' fading' : ''}`}>
+                            <header className="case-header">
+                                <h2 id="modal-title" className="case-title">
+                                    {shown.title}
+                                </h2>
+                                <ul className="case-tags">
+                                    {shown.tags.map((tag) => (
+                                        <li key={tag}>{tag}</li>
+                                    ))}
+                                </ul>
+                            </header>
+
+                            <div className="case-intro">
+                                <p className="case-context">{shown.context}</p>
+                                {(shown.approach || shown.outcome) && (
+                                    <div className="case-details">
+                                        {shown.approach && (
+                                            <div className="case-detail">
+                                                <h3 className="case-detail-label">Approach</h3>
+                                                <p>{shown.approach}</p>
+                                            </div>
+                                        )}
+                                        {shown.outcome && (
+                                            <div className="case-detail">
+                                                <h3 className="case-detail-label">Outcome</h3>
+                                                <p>{shown.outcome}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="case-gallery">
+                                {shown.gallery.map((item) => (
+                                    <GalleryItem key={`${shown.slug}-${item.src}`} item={item} />
+                                ))}
+                            </div>
+
+                            <nav className="case-nav" aria-label="More projects">
+                                <button className="case-nav-link prev" onClick={() => goTo(neighbours.prev)}>
+                                    <span className="case-nav-label">← Previous</span>
+                                    <span className="case-nav-title">{neighbours.prev.title}</span>
+                                </button>
+                                <button className="case-nav-link next" onClick={() => goTo(neighbours.next)}>
+                                    <span className="case-nav-label">Next →</span>
+                                    <span className="case-nav-title">{neighbours.next.title}</span>
+                                </button>
+                            </nav>
+                        </article>
+                    )}
                 </div>
             </div>
         </div>

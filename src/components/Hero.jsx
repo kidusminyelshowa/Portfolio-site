@@ -40,7 +40,7 @@ function HeroSquare({ square, onPointer, onLeave }) {
             }}
             onTouchCancel={onLeave}
         >
-            <video ref={videoRef} src={square.video} loop muted playsInline preload="auto" className="square-video" />
+            <video ref={videoRef} src={square.video} loop muted playsInline preload="metadata" className="square-video" />
         </div>
     );
 }
@@ -71,11 +71,16 @@ export default function Hero() {
                 <p className="hero-subtitle">
                     {taglineLines.map((line, i) => (
                         <Fragment key={i}>
-                            {i > 0 && <br />}
+                            {i > 0 && (
+                                <>
+                                    <br />{' '}
+                                </>
+                            )}
                             {line}
                         </Fragment>
                     ))}
                 </p>
+
             </div>
 
             {createPortal(
