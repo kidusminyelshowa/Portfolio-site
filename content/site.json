@@ -19,6 +19,33 @@
   },
   "bio": "Hi, I'm Kidus. I'm a generalist designer who touches on everything creative, from brand identity and art direction to type, motion and space. I work through curiosity, mixing fields until something clicks. Right now I'm taking on freelance art direction and brand design work, in Addis Ababa and worldwide.",
   "contactNoReply": "No worries. My inbox doesn't close, so come back whenever.",
+  "inquiry": {
+    "heading": "Let's make something.",
+    "intro": "A few quick questions so I can come back to you with something useful. It takes about two minutes.",
+    "projectTypes": [
+      "Brand identity",
+      "Art direction",
+      "Type design",
+      "Motion",
+      "Spatial and wayfinding",
+      "Illustration",
+      "Something else"
+    ],
+    "timelines": [
+      "As soon as possible",
+      "In the next 1–3 months",
+      "Later this year",
+      "Just exploring"
+    ],
+    "budgets": [
+      "Under $2k",
+      "$2k–5k",
+      "$5k–10k",
+      "$10k+",
+      "Not sure yet"
+    ],
+    "thanks": "Thanks, that's in. I read every message myself and usually reply within a couple of days."
+  },
   "name": "Kidus Minyelshowa",
   "tagline": "A generalist designer working across\nbrand, type, motion and culture.",
   "url": "https://kidusminyel.xyz",
