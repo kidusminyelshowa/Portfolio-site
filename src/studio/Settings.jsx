@@ -158,7 +158,7 @@ export default function Settings() {
                         <Field label="Payment due (days after invoice)">
                             <input type="number" min="0" value={documents.paymentTermsDays} onChange={set('documents', 'paymentTermsDays')} />
                         </Field>
-                        <Field label="Contract terms" hint="One clause per paragraph. Added to every contract.">
+                        <Field label="Contract terms" hint="One clause per paragraph, added to every new contract. These start as sample terms: rewrite them to fit how you work.">
                             <textarea rows={6} value={documents.contractClauses} onChange={set('documents', 'contractClauses')} />
                         </Field>
                         <Field label="Invoice note" hint="Printed at the bottom of every invoice.">

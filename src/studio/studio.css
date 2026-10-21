@@ -1212,3 +1212,196 @@ body.is-studio {
         max-width: none;
     }
 }
+
+/* Deal: contract, invoices and kick-off on an accepted proposal */
+.deal {
+    max-width: 1100px;
+    margin-bottom: 24px;
+    box-shadow: 4px 4px 0 var(--blue);
+}
+
+.deal-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    list-style: none;
+}
+
+.deal-step {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 14px;
+}
+
+.deal-step-number {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 50%;
+    font-weight: 800;
+}
+
+.deal-step.is-done .deal-step-number {
+    background-color: var(--ink);
+    color: var(--paper);
+}
+
+.deal-step-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+    padding-top: 6px;
+}
+
+.deal-step-body h3 {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.deal-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    width: 100%;
+    padding: 10px 0;
+    border-bottom: 1.5px solid var(--line);
+}
+
+.deal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.deal-date input {
+    width: auto;
+}
+
+.deal-invoice-form {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 12px;
+    width: 100%;
+}
+
+.invoice-state {
+    padding: 2px 10px;
+    border: 1.5px solid var(--ink);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.invoice-state.is-paid {
+    background-color: var(--ink);
+    color: var(--paper);
+}
+
+.invoice-state.is-due {
+    background-color: var(--blue-mist);
+}
+
+.invoice-state.is-overdue {
+    border-color: #b3261e;
+    background-color: #f8d7d4;
+    color: #8c1d18;
+}
+
+.invoice-state.is-void {
+    border-style: dashed;
+    color: var(--ink-soft);
+}
+
+.invoice-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    max-width: 1100px;
+    margin-bottom: 24px;
+}
+
+.invoice-summary div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+    padding: 16px 20px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 16px;
+    background-color: var(--surface);
+}
+
+.invoice-summary span {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.invoice-summary strong {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.invoice-summary .is-overdue {
+    color: #b3261e;
+}
+
+.invoice-row,
+.project-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 12px 16px;
+    padding: 14px 20px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 16px;
+    background-color: var(--surface);
+}
+
+.project-row {
+    grid-template-columns: minmax(0, 1fr) 180px 180px auto;
+    align-items: end;
+}
+
+@media (max-width: 768px) {
+    .deal-invoice-form {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .deal-invoice-form .studio-field:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .deal-invoice-form .studio-button {
+        grid-column: 1 / -1;
+    }
+
+    .invoice-row,
+    .project-row {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        padding: 14px 16px;
+    }
+
+    .invoice-row .proposal-list-title,
+    .project-row .proposal-list-title,
+    .invoice-row .deal-actions {
+        grid-column: 1 / -1;
+    }
+
+    .invoice-row .invoice-state {
+        justify-self: end;
+        white-space: normal;
+        text-align: right;
+    }
+}

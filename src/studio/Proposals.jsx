@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { formatDate, formatMoney, lineTotal, totals, units, usdEstimate } from '../proposal/money.js';
 import { downloadProposalPdf } from '../proposal/pdf.js';
+import DealPanel from './Deal.jsx';
 import { useSettings } from './settings.js';
 import { supabase } from './supabase.js';
 
@@ -350,6 +351,8 @@ export function ProposalEditor() {
                 </p>
             )}
             {isLive && proposal.status !== 'accepted' && <p className="studio-help">The client sees saved changes on their page right away.</p>}
+
+            {proposal.status === 'accepted' && !isNew && <DealPanel proposal={proposal} settings={settings} />}
 
             <div className="builder-grid">
                 <div className="builder-main">
