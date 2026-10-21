@@ -1405,3 +1405,342 @@ body.is-studio {
         text-align: right;
     }
 }
+
+/* Today */
+
+.today {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    max-width: 1100px;
+}
+
+.today-setup-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+}
+
+.today-setup-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+}
+
+.today-setup-list li.is-done {
+    color: var(--ink-soft);
+    text-decoration: line-through;
+}
+
+.today-setup-list a {
+    color: var(--blue-deep);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.today-setup-mark {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 50%;
+    font-size: 13px;
+}
+
+.is-done .today-setup-mark {
+    background-color: var(--ink);
+    color: var(--paper);
+}
+
+.today-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.today-count {
+    padding: 0 9px;
+    border-radius: 20px;
+    background-color: var(--ink);
+    color: var(--paper);
+    letter-spacing: 0;
+}
+
+.today-clear {
+    padding: 18px 20px;
+    border: var(--stroke) dashed var(--ink);
+    border-radius: 16px;
+    color: var(--ink-soft);
+}
+
+.today-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+}
+
+.today-item {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 4px 16px;
+    padding: 14px 20px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 16px;
+    background-color: var(--surface);
+    color: inherit;
+    text-decoration: none;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.today-item:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 var(--ink);
+}
+
+.today-item.is-urgent {
+    border-color: #b3261e;
+}
+
+.today-kind {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--blue-deep);
+}
+
+.is-urgent .today-kind {
+    color: #b3261e;
+}
+
+.today-detail {
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+
+.today-numbers a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+    padding: 16px 20px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 16px;
+    background-color: var(--surface);
+    color: inherit;
+    text-decoration: none;
+}
+
+.today-numbers a:hover {
+    box-shadow: 3px 3px 0 var(--ink);
+}
+
+/* Project task boards */
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 1100px;
+    list-style: none;
+}
+
+.project-card {
+    border: var(--stroke) solid var(--ink);
+    border-radius: 16px;
+    background-color: var(--surface);
+    overflow: hidden;
+}
+
+.project-card .project-row {
+    grid-template-columns: minmax(0, 1fr) 180px 180px 200px;
+    border: 0;
+    border-radius: 0;
+}
+
+.project-card .deal-actions {
+    justify-content: flex-end;
+}
+
+.project-progress {
+    height: 6px;
+    margin: 0 20px 14px;
+    border-radius: 6px;
+    background-color: var(--paper-deep);
+    overflow: hidden;
+}
+
+.project-progress span {
+    display: block;
+    height: 100%;
+    background-color: var(--blue);
+}
+
+.task-board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    padding: 0 20px 20px;
+}
+
+.task-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 120px;
+    padding: 12px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 14px;
+    background-color: var(--paper-deep);
+}
+
+.task-column.is-over {
+    border-style: dashed;
+    background-color: var(--blue-mist);
+}
+
+.task-column h3 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.task-column h3 span {
+    color: var(--ink-soft);
+}
+
+.task-column ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+}
+
+.task {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    background-color: var(--surface);
+    cursor: grab;
+}
+
+.task.is-late {
+    border-color: #b3261e;
+}
+
+.task-title {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.task-tools {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.task-due {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-due input {
+    width: 100%;
+    max-width: 150px;
+    padding: 2px 4px;
+    border: 1px solid var(--ink-soft);
+    border-radius: 6px;
+    background: transparent;
+    font: inherit;
+    font-size: 13px;
+}
+
+.is-late .task-due input {
+    color: #b3261e;
+}
+
+.task-button {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    background-color: var(--surface);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.task-button:hover {
+    background-color: var(--ink);
+    color: var(--paper);
+}
+
+.task-add {
+    display: flex;
+    gap: 6px;
+}
+
+.task-add input {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    background-color: var(--surface);
+    font: inherit;
+}
+
+@media (max-width: 768px) {
+    .today-item {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 14px 16px;
+    }
+
+    .today-numbers a {
+        flex: 1 1 140px;
+        min-width: 0;
+    }
+
+    .today-numbers strong {
+        font-size: 19px;
+        overflow-wrap: anywhere;
+    }
+
+    .project-card .project-row {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .project-card .deal-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+
+    .task-board {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 0 16px 16px;
+    }
+
+    .project-progress {
+        margin: 0 16px 14px;
+    }
+}

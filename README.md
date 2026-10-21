@@ -49,13 +49,23 @@ Run `npx decap-server` in one terminal and `npm run dev` in another, add `local_
 
 `/studio` is a private area for running client work, hidden from search engines and only usable by emails listed in the `studio_owners` table.
 
+- **Today:** what needs you (overdue invoices, change requests, proposals to follow up, leads waiting on a reply or gone quiet, late tasks, projects due soon), your key numbers, and a getting-set-up checklist until it's done.
 - **Leads:** every contact-form inquiry, on a board from New to Won or Lost. Open a card to change its stage, add notes, reply or write a proposal, or drag it between columns. Add leads by hand or paste a list from a spreadsheet (first row: `name,email,company,message,budget,timeline`).
 - **Prices:** your services and what you charge. The starting list is marked as samples until you save your own.
 - **Proposals:** build a quote from your prices, send the client a private link (`/proposal/...`) where they can accept or ask for changes, and download a PDF.
 - **Next steps** (on an accepted proposal): create a numbered contract from your terms and mark it signed, raise a deposit and balance invoice (or one for the full amount) and mark them paid, then start the project. Contracts and invoices download as PDFs.
 - **Invoices:** everything you've billed, what's still waiting to be paid and what's overdue.
-- **Projects:** work you've started, with its status and due date.
+- **Projects:** work you've started, with its status, due date and a task board (To do, Doing, Done). New projects start with five kick-off tasks you can edit.
 - **Settings:** business details, currency and VAT (Ethiopia and International presets), bank details, TIN, contract terms and invoice note. Proposals, contracts and invoices use these.
+
+### Daily email
+
+Every morning at 08:00 Addis Ababa time, Vercel runs `api/daily-check.js` and emails the Today list to hello@kidusminyel.xyz through Resend (nothing is sent on a quiet day). It needs these in Vercel → Settings → Environment Variables:
+
+- `CRON_SECRET`: any long random string. Vercel sends it with the scheduled call so nobody else can trigger it.
+- `SUPABASE_SECRET_KEY`: a secret key from Supabase → Project Settings → API Keys. It reads the studio tables, so keep it only in Vercel.
+- `RESEND_API_KEY`: from Resend, with kidusminyel.xyz verified as a sending domain.
+- Optional: `DAILY_EMAIL_TO` and `DAILY_EMAIL_FROM` to change the addresses.
 
 ### Signing in
 

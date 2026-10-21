@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { formatDate, formatMoney, invoiceTotals } from '../proposal/money.js';
 import { downloadContractPdf, downloadInvoicePdf } from '../proposal/pdf.js';
 import { addDays, invoiceState, nextNumber, today } from './deals.js';
+import { seedTasks } from './Projects.jsx';
 import { sampleClauses } from './settings.js';
 import { supabase } from './supabase.js';
 
@@ -135,6 +136,8 @@ export default function DealPanel({ proposal, settings }) {
                 .select()
                 .single();
             if (e) throw e;
+            const seeded = await seedTasks(data.id);
+            if (seeded.error) throw seeded.error;
             setProject(data);
         });
 

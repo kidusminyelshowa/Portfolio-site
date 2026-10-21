@@ -8,6 +8,7 @@ import Projects from './Projects.jsx';
 import { ProposalEditor, ProposalList } from './Proposals.jsx';
 import SetPassword from './SetPassword.jsx';
 import Settings from './Settings.jsx';
+import Today from './Today.jsx';
 import { isRecoveryReturn, supabase } from './supabase.js';
 import './studio.css';
 
@@ -166,6 +167,7 @@ function Shell({ email }) {
                     Studio
                 </Link>
                 <nav className="studio-nav" aria-label="Studio">
+                    <NavLink to="/studio/today">Today</NavLink>
                     <NavLink to="/studio/leads">Leads</NavLink>
                     <NavLink to="/studio/proposals">Proposals</NavLink>
                     <NavLink to="/studio/invoices">Invoices</NavLink>
@@ -182,6 +184,7 @@ function Shell({ email }) {
             </header>
             <main className="studio-main">
                 <Routes>
+                    <Route path="/studio/today" element={<Today />} />
                     <Route path="/studio/leads" element={<Leads />} />
                     <Route path="/studio/proposals" element={<ProposalList />} />
                     <Route path="/studio/proposals/:id" element={<ProposalEditor />} />
@@ -189,7 +192,7 @@ function Shell({ email }) {
                     <Route path="/studio/projects" element={<Projects />} />
                     <Route path="/studio/prices" element={<Prices />} />
                     <Route path="/studio/settings" element={<Settings />} />
-                    <Route path="*" element={<Navigate to="/studio/leads" replace />} />
+                    <Route path="*" element={<Navigate to="/studio/today" replace />} />
                 </Routes>
             </main>
         </div>

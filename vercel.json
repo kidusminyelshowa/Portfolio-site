@@ -1,6 +1,7 @@
 {
   "redirects": [{ "source": "/admin", "destination": "/admin/", "permanent": false }],
   "rewrites": [{ "source": "/((?!api/|admin/).*)", "destination": "/index.html" }],
+  "crons": [{ "path": "/api/daily-check", "schedule": "0 5 * * *" }],
   "headers": [
     { "source": "/studio", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
     { "source": "/studio/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
