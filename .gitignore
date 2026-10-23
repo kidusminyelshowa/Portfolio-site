@@ -7,4 +7,5 @@ client/dist/
 .agents/
 .gemini/
 skills-lock.json
-portfolio_layout_instructions.md
+portfolio_layout_instructions.mddata/
+.vercel/

@@ -1,9 +1,39 @@
 {
   "redirects": [{ "source": "/admin", "destination": "/admin/", "permanent": false }],
-  "rewrites": [{ "source": "/((?!api/|admin/).*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/team", "destination": "/team/index.html" },
+    { "source": "/price", "destination": "/price/index.html" },
+    { "source": "/price/:slug", "destination": "/price/proposal.html" },
+    { "source": "/((?!api/|admin/|team/|price/).*)", "destination": "/index.html" }
+  ],
   "headers": [
-    { "source": "/studio", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
-    { "source": "/studio/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
-    { "source": "/proposal/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
+    {
+      "source": "/team/sw.js",
+      "headers": [
+        { "key": "Service-Worker-Allowed", "value": "/team" },
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    },
+    { "source": "/team/manifest.webmanifest", "headers": [{ "key": "Content-Type", "value": "application/manifest+json" }] },
+    { "source": "/team", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    {
+      "source": "/team/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    { "source": "/price", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    {
+      "source": "/price/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ],
+  "crons": [
+    { "path": "/api/cron?run=morning", "schedule": "0 5 * * *" },
+    { "path": "/api/cron?run=evening", "schedule": "30 14 * * 1-6" }
   ]
 }
