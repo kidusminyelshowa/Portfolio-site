@@ -3,7 +3,7 @@
    person is allowed to see or change; the browser never decides permissions.
    Private management notes are only ever sent to admins and the employee's
    own managers. */
-import { json, readBody, setupTokenOk } from './_lib.js';
+import { json, readBody, setupTokenOk, failure } from './_lib.js';
 import {
   readDb, mutate, log, migrate, uid, num, clip, today, monthOf, quarterOf, quarterMonths, quarterRange, quarterInfo, previousQuarter, nextQuarter,
   hashPassword, verifyPassword, makeToken, setCookie, currentUser,
@@ -1356,6 +1356,7 @@ export default async function handler(req, res) {
     const user = currentUser(saved, req);
     return json(res, 200, { ...result, data: user ? payload(saved, user) : null });
   } catch (e) {
-    return json(res, e.status || 500, { error: e.status ? e.message : 'Something went wrong. Please try again.' });
+    const [status, error] = failure(e);
+    return json(res, status, { error });
   }
 }

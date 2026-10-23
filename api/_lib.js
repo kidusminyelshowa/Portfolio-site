@@ -155,3 +155,19 @@ export function setupTokenOk(given) {
 export async function readAuthRecord() {
   return readJson(AUTH_PATH, LEADS_TOKEN, null, 'private');
 }
+
+/* ---------- errors for the API's catch blocks ----------
+   Expected errors (e.status) pass through. Anything else is logged for the server logs;
+   a storage problem (missing or wrong Blob token, unreachable store) says so, so setup
+   problems can be fixed without reading logs. Other details stay hidden. */
+export function failure(e) {
+  if (e && e.status) return [e.status, e.message];
+  console.error(e);
+  const cause = e && e.cause ? String(e.cause.hostname || e.cause.message || '') : '';
+  const msg = String((e && e.message) || '') + (cause ? ': ' + cause : '');
+  if (/vercel blob|blob|token|storage/i.test(msg + ' ' + String((e && e.name) || ''))) {
+    return [503, 'File storage is not working (' + msg.replace(/^Vercel Blob:\s*/i, '').slice(0, 200) +
+      '). Check LEADS_BLOB_TOKEN and MEDIA_BLOB_TOKEN in the server settings, then redeploy.'];
+  }
+  return [500, 'Something went wrong. Please try again.'];
+}

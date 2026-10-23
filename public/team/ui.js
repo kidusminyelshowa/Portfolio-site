@@ -46,6 +46,8 @@ export const settings = () => (S.data && S.data.settings) || {};
 /* the agency's name, logo, colours and region (Settings → Brand & region) */
 export const brand = () => (S.data && S.data.brand) || S.brand || { name: 'Team', colors: {} };
 export const brandName = () => brand().name || 'Team';
+/* "Kidus Studio Team", or just "Team" before the brand is known */
+export const appName = () => (brand().name && brand().name !== 'Team' ? brand().name + ' Team' : 'Team');
 /* the home currency (ETB in the Ethiopia preset) and the agency's time zone */
 export const cur = () => brand().currency || settings().currency || 'ETB';
 export const brandZone = () => brand().timeZone || 'UTC';
@@ -63,7 +65,7 @@ export function applyBrand() {
   const mark = document.getElementById('brandMark'), name = document.getElementById('brandName');
   if (mark) mark.replaceWith(Object.assign(brandMark(), { id: 'brandMark' }));
   if (name) name.textContent = brandName();
-  document.title = brandName() + ' Team';
+  document.title = appName();
 }
 export const employees = () => (S.data && S.data.employees) || [];
 export const empById = id => employees().find(e => e.id === id) || null;
@@ -366,7 +368,9 @@ export async function api(body) {
 }
 export async function loadState() {
   const r = await fetch('/api/team?state=1', { cache: 'no-store' });
-  const b = await r.json();
+  const b = await r.json().catch(() => ({}));
+  // a server problem (storage not set up, for example) is shown, not mistaken for a first run
+  if (!r.ok) throw new Error(b.error || 'The server answered ' + r.status);
   if (b.brand) S.brand = b.brand;
   if (b.data) S.data = b.data;
   return b;

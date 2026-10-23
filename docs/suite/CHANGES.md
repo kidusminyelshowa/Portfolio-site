@@ -35,7 +35,7 @@ only the source code in the zip. `.vercel/`, `.env` and `node_modules` were not 
 
 | File | Change | Tag |
 | --- | --- | --- |
-| `api/_lib.js` | imports storage from `_storage.js` instead of `@vercel/blob`; adds `setupTokenOk()` | SELF-HOSTING |
+| `api/_lib.js` | imports storage from `_storage.js` instead of `@vercel/blob`; adds `setupTokenOk()`; `failure()` logs unexpected errors and names storage problems instead of a generic error | SELF-HOSTING |
 | `api/auth.js` → `api/price-auth.js` | renamed: this site already has `/api/auth` (CMS sign-in); first password needs `SETUP_TOKEN` | SELF-HOSTING |
 | `api/team.js` | first admin needs `SETUP_TOKEN`; sends the brand with the state; new admin actions `saveBrand` and `applyPreset`; `logo` upload kind; accepts local `/media/` links; the original setup/migration import removed | REMOVE-GEZAT, SELF-HOSTING |
 | `api/quotes.js` | company details come from Brand & region (saving them in the price list writes them back there); home currency from the brand; public `GET ?brand=1`; request notes use the site's own address and brand name; kick-off message points to `/team` | REMOVE-GEZAT |

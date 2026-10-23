@@ -28,7 +28,11 @@ Your name, logo, colours, contact and bank details, currency, time zone and holi
      `npx web-push generate-vapid-keys` once to get a pair) and `VAPID_SUBJECT`
      (e.g. `mailto:hello@kidusminyel.xyz`)
    Every name is listed with an explanation in [`.env.example`](../../.env.example).
-3. **Redeploy** (Deployments → ⋯ → Redeploy) so the new variables apply.
+3. **Redeploy** (Deployments → ⋯ → Redeploy) so the new variables apply. Variables only reach
+   deployments made after they were added, and each variable must be ticked for the
+   environment you open (Production, and Preview if you test a preview link).
+   If `/team` says "File storage is not working", check that the private store really is
+   private and that each token sits under the right name.
 4. **Create your account.** Open `https://<your-domain>/team`. Because nobody has signed up
    yet it shows **Set up**: enter the setup key, your name, email and a password. The same
    password also opens the Price Builder at `/price` (you can change either later).

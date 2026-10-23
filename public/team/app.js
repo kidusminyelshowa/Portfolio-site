@@ -4,7 +4,7 @@
 import {
   el, $, frag, S, me, settings, employees, empById, subject, isAdmin, isManager, isPartner, canManage,
   avatar, chip, card, field, input, empty, select, toast, modal, closeModal, api, loadState, act,
-  initials, monthName, thisMonth, quarterLabel, brandName, brandMark, applyBrand
+  initials, monthName, thisMonth, quarterLabel, appName, brandMark, applyBrand
 } from '/team/ui.js';
 import { icon } from '/team/icons.js';
 import { viewDashboard, viewGoals, viewMilestones, viewSkills, viewReviews, viewCareer, viewLeave } from '/team/me.js';
@@ -50,7 +50,7 @@ function gate(mode) {
       }
       catch (e) { err.textContent = e.message; btn.disabled = false; }
     } }, [
-      markImg(), el('h1', { text: 'Set up ' + brandName() + ' Team' }),
+      markImg(), el('h1', { text: 'Set up ' + appName() }),
       el('p', { class: 'sub', text: 'This is the first time anyone has opened it. Create the founder account; you can add everyone else afterwards. The same password also opens the Price Builder.' }),
       field('Setup key', f.key), field('Name', f.name), field('Email', f.email), field('Password', f.password), err, btn
     ]));
@@ -67,7 +67,7 @@ function gate(mode) {
     try { await api({ action: 'login', email: f.email.value, password: f.password.value }); history.replaceState(null, '', '/team#/'); await start(); }
     catch (e) { err.textContent = e.message; btn.disabled = false; }
   } }, [
-    markImg(), el('h1', { text: brandName() + ' Team' }),
+    markImg(), el('h1', { text: appName() }),
     el('p', { class: 'sub', text: 'Sign in with your work email.' }),
     field('Email', f.email), field('Password', f.password), err, btn,
     el('p', { class: 'alt', text: 'Forgot your password? Ask an admin to set a new one.' })
