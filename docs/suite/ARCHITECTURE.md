@@ -16,7 +16,7 @@ portfolio.
 
 ## Data (all JSON documents)
 
-Private store (`LEADS_BLOB_TOKEN`, or `<STORAGE_DIR>/private`):
+Private store (`BLOB_READ_WRITE_TOKEN` from connecting a Blob store, or `LEADS_BLOB_TOKEN`, or `<STORAGE_DIR>/private`):
 
 | Path | What |
 | --- | --- |
@@ -28,9 +28,12 @@ Private store (`LEADS_BLOB_TOKEN`, or `<STORAGE_DIR>/private`):
 | `proposals/<slug>.json` | the frozen copy a client sees at `/price/<slug>` |
 | `leads/*.json` | client requests from proposal pages, kept as records |
 
-Public store (`MEDIA_BLOB_TOKEN`, or `<STORAGE_DIR>/public`, served at `/media/`): profile
-photos, backgrounds and the logo, uploaded straight from the browser with a short-lived signed
-upload.
+Pictures (profile photos, backgrounds, the logo): with `MEDIA_BLOB_TOKEN`, a public store the
+browser uploads to directly. Without it (the default), they go into the private store under
+`team/…` through `api/media.js` and are served at `/media/…` (only `team/avatar|background|logo`
+can be read there). Self-hosted, they are files in `<STORAGE_DIR>/public`, served at `/media/`.
+
+`config/secret.json` holds the signing key when `SESSION_SECRET` is not set.
 
 Writes to `team/db.json` go through `mutate()` (api/_team-lib.js): it re-reads, applies the
 change and saves only if nobody else saved in between (an ETag check), retrying otherwise.

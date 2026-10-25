@@ -4,7 +4,8 @@
     { "source": "/team", "destination": "/team/index.html" },
     { "source": "/price", "destination": "/price/index.html" },
     { "source": "/price/:slug", "destination": "/price/proposal.html" },
-    { "source": "/((?!api/|admin/|team/|price/).*)", "destination": "/index.html" }
+    { "source": "/media/(.*)", "destination": "/api/media?path=$1" },
+    { "source": "/((?!api/|admin/|team/|price/|media/).*)", "destination": "/index.html" }
   ],
   "headers": [
     {

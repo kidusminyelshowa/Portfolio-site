@@ -3,7 +3,7 @@
    person is allowed to see or change; the browser never decides permissions.
    Private management notes are only ever sent to admins and the employee's
    own managers. */
-import { json, readBody, setupTokenOk, failure } from './_lib.js';
+import { json, readBody, setupTokenOk, failure, ensureSecret } from './_lib.js';
 import {
   readDb, mutate, log, migrate, uid, num, clip, today, monthOf, quarterOf, quarterMonths, quarterRange, quarterInfo, previousQuarter, nextQuarter,
   hashPassword, verifyPassword, makeToken, setCookie, currentUser,
@@ -20,7 +20,7 @@ import { notify, notifyEmployee, managerIdsOf, adminIds, userOf, afterTaskDone, 
   ACHIEVEMENTS, achievementOn, recommendations, sendBroadcast, audienceIds, ACH } from './_team-notify.js';
 import { sendPush, VAPID_PUBLIC_KEY, pushReady } from './_push.js';
 import { LEAD_STAGES, importLeads, newLead, applyLeadFields, findDuplicate, logLeadActivity, visibleLeads } from './_leads.js';
-import { issueSignedToken, presignUrl, LOCAL_MEDIA_PREFIX } from './_storage.js';
+import { issueSignedToken, presignUrl, signUpload, LOCAL_MEDIA_PREFIX, MEDIA_PRIVATE } from './_storage.js';
 import { readBrand, brand, publicBrand, saveBrand, PRESETS } from './_brand.js';
 import { HOLIDAY_PRESETS } from './_team-notify.js';
 import { readJson, writeJson, LEADS_TOKEN } from './_lib.js';
@@ -266,6 +266,7 @@ export default async function handler(req, res) {
   res.setHeader('X-Robots-Tag', 'noindex, nofollow');
   const url = new URL(req.url, 'http://localhost');
   try {
+    await ensureSecret();
     await readBrand();
     let db0 = await readDb();
     if (migrate(db0)) {
@@ -1054,6 +1055,13 @@ export default async function handler(req, res) {
           if (num(body.size) > lim[0] * 1024 * 1024) fail('That file is larger than ' + lim[0] + ' MB.');
           const ext = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/svg+xml': 'svg' }[type] || 'bin';
           const pathname = 'team/' + body.kind + '/' + user.id + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + '.' + ext;
+          if (MEDIA_PRIVATE) {
+            // one-store setup: the picture goes through api/media.js into the private store
+            // (a function takes at most 4.5 MB, and pictures are shrunk in the browser first)
+            if (num(body.size) > 4 * 1024 * 1024) fail('That file is larger than 4 MB.');
+            const t = signUpload({ pathname, validUntil: Date.now() + 15 * 60 * 1000, maximumSizeInBytes: 4 * 1024 * 1024, allowedContentTypes: [type] });
+            return { ok: true, uploadUrl: '/api/media?token=' + encodeURIComponent(t), pathname };
+          }
           const signed = await issueSignedToken({ token: MEDIA_TOKEN, pathname, operations: ['put'], validUntil: Date.now() + 15 * 60 * 1000,
             maximumSizeInBytes: lim[0] * 1024 * 1024, allowedContentTypes: [type] });
           const { presignedUrl } = await presignUrl(signed, { operation: 'put', pathname, allowOverwrite: true, cacheControlMaxAge: 31536000 });

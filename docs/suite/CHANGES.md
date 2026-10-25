@@ -26,6 +26,8 @@ only the source code in the zip. `.vercel/`, `.env` and `node_modules` were not 
 | --- | --- | --- |
 | `api/_brand.js` | Brand & region document (`config/brand.json`): name, logo, colours, contact, bank, currency, time zone, phone code, country, city; Ethiopia and International presets | REMOVE-GEZAT |
 | `api/_storage.js` | the same storage functions over Vercel Blob or a local folder (ETags, conditional writes, signed uploads) | SELF-HOSTING |
+| `api/_secret.js`, `ensureSecret()` in `api/_lib.js` | the signing key: `SESSION_SECRET`, or one made on first run and kept in the private store | SELF-HOSTING |
+| `api/media.js` | one-store setup: pictures are saved in the private store and served at `/media/…` when there is no public store | SELF-HOSTING |
 | `server.js` | self-host server: static files, API, `vercel.json` rewrites/headers/redirects, cron jobs, local uploads | SELF-HOSTING |
 | `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `.env.example` | install anywhere | SELF-HOSTING |
 | `public/team/icons/*.png` | new generic app icons replacing the original logo icons | REMOVE-GEZAT |
@@ -46,7 +48,8 @@ only the source code in the zip. `.vercel/`, `.env` and `node_modules` were not 
 | `api/_sales.js`, `api/_leads.js` | default sales owner is the first manager instead of a named person | REMOVE-GEZAT |
 | `api/_push.js` | push contact from `VAPID_SUBJECT` instead of the original agency's email | REMOVE-GEZAT |
 | `api/_team-seed.js` | comments only | REMOVE-GEZAT |
-| `vercel.json` | merged with the portfolio's; the hourly cron moved to `server.js` (Vercel Hobby allows daily jobs only) | SELF-HOSTING |
+| `vercel.json` | merged with the portfolio's; the hourly cron moved to `server.js` (Vercel Hobby allows daily jobs only); `/media/…` goes to `api/media.js` | SELF-HOSTING |
+| `api/_lib.js` token | the private store also accepts Vercel's automatic `BLOB_READ_WRITE_TOKEN`, so connecting one store is enough | SELF-HOSTING |
 
 ## Browser changes
 

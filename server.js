@@ -2,7 +2,7 @@
    - serves the built site (dist/, made by `npm run build`)
    - runs every api/*.js function the way Vercel does (req.query, req.body, res.status/json/send/redirect)
    - applies the rewrites and headers from vercel.json
-   - runs the cron jobs from vercel.json on a timer, with CRON_SECRET
+   - runs the cron jobs from vercel.json on a timer (CRON_SECRET, or a random one per run)
    - with STORAGE=local, accepts signed photo uploads and serves them from /media/
    Start: `npm run build && npm start` (reads .env if present). */
 import http from 'node:http';
@@ -23,6 +23,9 @@ if (fs.existsSync(envFile)) {
 }
 
 const { BACKEND, checkUploadToken, localMediaFile, LOCAL_MEDIA_PREFIX, put } = await import('./api/_storage.js');
+const { ensureSecret } = await import('./api/_lib.js');
+// the cron jobs below call this same server, so without CRON_SECRET a random one for this run is enough
+if (!process.env.CRON_SECRET) process.env.CRON_SECRET = (await import('node:crypto')).randomBytes(24).toString('hex');
 const STATIC = path.join(ROOT, 'dist');
 const PORT = Number(process.env.PORT) || 3000;
 const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8'));
@@ -111,6 +114,7 @@ async function runApi(name, req, res, url) {
   vercelify(req, res, url);
   if (!['GET', 'HEAD'].includes(req.method)) {
     const raw = await readRaw(req);
+    req.rawBody = raw;   // uploads (api/media.js) need the bytes, not text
     const type = String(req.headers['content-type'] || '');
     if (/json/.test(type)) { try { req.body = raw.length ? JSON.parse(raw.toString('utf8')) : {}; } catch { req.body = {}; } }
     else if (/urlencoded/.test(type)) req.body = Object.fromEntries(new URLSearchParams(raw.toString('utf8')));
@@ -126,6 +130,7 @@ async function runApi(name, req, res, url) {
 
 /* ---------- local uploads (STORAGE=local only) ---------- */
 async function localUpload(req, res, url) {
+  await ensureSecret();
   const claims = BACKEND === 'local' && checkUploadToken(url.searchParams.get('token'));
   if (!claims || req.method !== 'PUT') { res.statusCode = 403; return res.end(JSON.stringify({ error: 'Upload link expired or invalid' })); }
   const type = String(req.headers['content-type'] || '').toLowerCase();
@@ -205,7 +210,6 @@ const EXTRA_CRONS = [{ path: '/api/cron?run=hourly', schedule: '5 * * * *' }];
 function startCron() {
   const jobs = (config.crons || []).concat(EXTRA_CRONS.filter(x => !(config.crons || []).some(j => j.path === x.path)));
   if (!jobs.length) return;
-  if (!process.env.CRON_SECRET) { console.warn('CRON_SECRET is not set: scheduled jobs will not run.'); return; }
   let last = '';
   setInterval(() => {
     const now = new Date();

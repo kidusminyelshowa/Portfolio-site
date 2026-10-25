@@ -4,11 +4,11 @@
    retries if someone else saved in between, so two people editing at the same
    time cannot silently overwrite each other. */
 import crypto from 'node:crypto';
+import { secret } from './_secret.js';
 import { readJsonMeta, writeJson, isWriteConflict, LEADS_TOKEN, hashPassword, verifyPassword } from './_lib.js';
 import { DEFAULT_SETTINGS, allLevels, findLevel, nextLevel, levelSkills, isPartner, PARTNER_DEPT } from './_team-config.js';
 
 export const DB_PATH = 'team/db.json';
-const SECRET = process.env.SESSION_SECRET || '';
 const COOKIE = 'gz_team';
 
 export const num = v => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
@@ -127,14 +127,14 @@ export function log(db, userId, action, detail) {
 
 /* ---------- accounts and sessions ---------- */
 export { hashPassword, verifyPassword };
-const sign = v => crypto.createHmac('sha256', SECRET).update(v).digest('hex');
+const sign = v => crypto.createHmac('sha256', secret()).update(v).digest('hex');
 
 export function makeToken(userId, hours) {
   const body = userId + '|' + (Date.now() + (hours || 24 * 14) * 3600 * 1000);
   return Buffer.from(body).toString('base64url') + '.' + sign(body);
 }
 export function readToken(token) {
-  if (!token || !SECRET) return null;
+  if (!token || !secret()) return null;
   const i = String(token).lastIndexOf('.');
   if (i < 0) return null;
   let body;

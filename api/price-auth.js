@@ -1,9 +1,10 @@
 import { json, readBody, readAuthRecord, writeJson, hashPassword, verifyPassword,
-         makeSession, setSessionCookie, isAuthed, setupTokenOk, LEADS_TOKEN, AUTH_PATH } from './_lib.js';
+         makeSession, setSessionCookie, isAuthed, setupTokenOk, ensureSecret, LEADS_TOKEN, AUTH_PATH } from './_lib.js';
 
 export default async function handler(req, res) {
   let record;
   try {
+    await ensureSecret();
     record = await readAuthRecord();
   } catch (e) {
     // never report "not configured" because storage was unreachable:

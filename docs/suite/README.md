@@ -12,31 +12,18 @@ needs coding to use. It has three parts:
 Your name, logo, colours, contact and bank details, currency, time zone and holidays are
 **settings**, not code: Team → Settings → **Brand & region**.
 
-## Set it up on Vercel (once, about 15 minutes)
+## Set it up on Vercel (once, about 5 minutes)
 
-1. **Two Blob stores.** Vercel → your project → Storage → Create → Blob.
-   - Make one **private** store (for the team database, quotes, leads and settings). Copy its
-     read-write token.
-   - Make one **public** store (for profile photos, backgrounds and your logo). Copy its token.
-2. **Environment variables.** Vercel → Settings → Environment Variables. Add:
-   - `LEADS_BLOB_TOKEN`: the private store's token
-   - `MEDIA_BLOB_TOKEN`: the public store's token
-   - `SESSION_SECRET`: any long random text (32+ characters)
-   - `SETUP_TOKEN`: a "setup key" of your choice (12+ characters). You type it once below.
-   - `CRON_SECRET`: any random text; Vercel uses it for the daily jobs
-   - Optional, for phone notifications: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` (run
-     `npx web-push generate-vapid-keys` once to get a pair) and `VAPID_SUBJECT`
-     (e.g. `mailto:hello@kidusminyel.xyz`)
-   Every name is listed with an explanation in [`.env.example`](../../.env.example).
-3. **Redeploy** (Deployments → ⋯ → Redeploy) so the new variables apply. Variables only reach
-   deployments made after they were added, and each variable must be ticked for the
-   environment you open (Production, and Preview if you test a preview link).
-   If `/team` says "File storage is not working", check that the private store really is
-   private and that each token sits under the right name.
-4. **Create your account.** Open `https://<your-domain>/team`. Because nobody has signed up
-   yet it shows **Set up**: enter the setup key, your name, email and a password. The same
-   password also opens the Price Builder at `/price` (you can change either later).
-   After this, setup is closed: nobody can create another first admin, even with the key.
+1. **Storage: one click.** Vercel → your project → **Storage** → Create → **Blob** → choose
+   **Private** → Create, and connect it to this project when asked (tick all environments).
+   Vercel adds the token (`BLOB_READ_WRITE_TOKEN`) by itself; you copy nothing.
+2. **Setup key: one setting.** Vercel → Settings → Environment Variables → add
+   `SETUP_TOKEN` with any phrase you make up (12+ characters). You type it once in step 4.
+3. **Redeploy** (Deployments → ⋯ → Redeploy). Settings only reach deployments made after
+   they were added.
+4. **Create your account.** Open `https://<your-domain>/team`. It shows **Set up**: enter the
+   setup key, your name, email and a password. The same password also opens the Price
+   Builder at `/price`. After this, setup is closed for good.
 5. **Brand & region.** Team → Settings → Brand & region. Fill in your name, logo, colours,
    email, phone, address, bank details and what you sell. Pick a region preset
    (**Ethiopia**: ETB, 15% VAT, review year from 11 September, Ethiopian holidays; or
@@ -48,12 +35,26 @@ Your name, logo, colours, contact and bank details, currency, time zone and holi
    Or press "Load demo team" in Settings to try everything with fictional people first
    (and "Remove all demo people" afterwards).
 
+If `/team` says "File storage is not working", the Blob store is not connected to the project
+(or the deployment is older than the connection): connect it and redeploy.
+
+### Optional settings
+
+| Setting | What it adds |
+| --- | --- |
+| `CRON_SECRET` (any random text) | turns on the daily jobs below on Vercel. Without it, everything works except those notifications. |
+| `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | notifications on phones' lock screens. Run `npx web-push generate-vapid-keys` once for the pair; the subject is e.g. `mailto:hello@kidusminyel.xyz`. |
+| `SESSION_SECRET` | your own signing key. Without it the server makes one and keeps it in the store. |
+| `MEDIA_BLOB_TOKEN` | a separate *public* Blob store for photos and the logo (faster for big teams). Without it they are kept in the private store and served by the site. |
+
+All of them are explained in [`.env.example`](../../.env.example).
+
 ### Scheduled jobs and the Vercel plan
 
 | Job | When | What it does | Runs on |
 | --- | --- | --- | --- |
-| morning | daily 05:00 UTC | tasks due today, scheduled team messages, holidays and work anniversaries | Vercel (any plan) |
-| evening | Mon–Sat 14:30 UTC | "clean sweep" achievements; on Fridays, zero-overdue weeks | Vercel (any plan) |
+| morning | daily 05:00 UTC | tasks due today, scheduled team messages, holidays and work anniversaries | Vercel (any plan, needs `CRON_SECRET`) |
+| evening | Mon–Sat 14:30 UTC | "clean sweep" achievements; on Fridays, zero-overdue weeks | Vercel (any plan, needs `CRON_SECRET`) |
 | hourly | every hour at :05 | due-date reminders (a day before, on the day, 6 h and 2 h before) | **self-hosting** or Vercel Pro |
 
 Vercel's free Hobby plan only allows jobs that run once a day, so the hourly reminders are not
@@ -65,7 +66,7 @@ to `crons` in `vercel.json`. When self-hosting, `server.js` runs all three by it
 Needs Node 20+ (or Docker). Data is kept in a folder instead of Vercel Blob.
 
 ```bash
-cp .env.example .env      # fill in SESSION_SECRET, SETUP_TOKEN, CRON_SECRET; set STORAGE=local
+cp .env.example .env      # set SETUP_TOKEN and STORAGE=local; nothing else is needed
 npm ci && npm run build
 npm start                 # http://localhost:3000
 ```

@@ -9,7 +9,7 @@
    Kick-off writes a project into the Team system (team/db.json), where the
    project manager reviews the task plan and starts it.
    The public side (a client opening /price/<slug>) only ever reads proposals/. */
-import { json, readBody, readJson, readJsonMeta, writeJson, isWriteConflict, list, del, isAuthed, requireAuth, LEADS_TOKEN, failure } from './_lib.js';
+import { json, readBody, readJson, readJsonMeta, writeJson, isWriteConflict, list, del, isAuthed, requireAuth, LEADS_TOKEN, failure, ensureSecret } from './_lib.js';
 import { computeQuote, publishQuote, clientTotals, defaultSelection, slugify, formatMoney, clampQty,
          RESERVED, STATUSES, setHomeCurrency } from '../public/price/engine.js';
 import { readBrand, brand, publicBrand, companyOf, saveBrand } from './_brand.js';
@@ -143,6 +143,7 @@ export default async function handler(req, res) {
   const url = new URL(req.url, 'http://localhost');
   const qs = url.searchParams;
   try {
+    await ensureSecret();
     await readBrand();
     setHomeCurrency(brand().currency);
     if (req.method === 'GET') {

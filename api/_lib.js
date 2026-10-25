@@ -1,9 +1,10 @@
 import crypto from 'node:crypto';
 import { put, get, head, list, del } from './_storage.js';
+import { secret, setSecret } from './_secret.js';
 
 export const MEDIA_TOKEN = process.env.MEDIA_BLOB_TOKEN;
-export const LEADS_TOKEN = process.env.LEADS_BLOB_TOKEN;
-const SECRET = process.env.SESSION_SECRET || '';
+/* the private store: its own token, or the one Vercel adds when a Blob store is connected */
+export const LEADS_TOKEN = process.env.LEADS_BLOB_TOKEN || process.env.BLOB_READ_WRITE_TOKEN;
 
 export const CONTENT_PATH = 'content.json';
 // overridable so local development can hold its own password
@@ -93,7 +94,7 @@ export function verifyPassword(password, record) {
 const COOKIE = 'gz_session';
 
 function sign(value) {
-  return crypto.createHmac('sha256', SECRET).update(value).digest('hex');
+  return crypto.createHmac('sha256', secret()).update(value).digest('hex');
 }
 
 export function makeSession(hours) {
@@ -102,7 +103,7 @@ export function makeSession(hours) {
 }
 
 export function validSession(token) {
-  if (!token || !SECRET) return false;
+  if (!token || !secret()) return false;
   const i = token.lastIndexOf('.');
   if (i < 0) return false;
   const exp = token.slice(0, i), sig = token.slice(i + 1);
@@ -167,7 +168,30 @@ export function failure(e) {
   const msg = String((e && e.message) || '') + (cause ? ': ' + cause : '');
   if (/vercel blob|blob|token|storage/i.test(msg + ' ' + String((e && e.name) || ''))) {
     return [503, 'File storage is not working (' + msg.replace(/^Vercel Blob:\s*/i, '').slice(0, 200) +
-      '). Check LEADS_BLOB_TOKEN and MEDIA_BLOB_TOKEN in the server settings, then redeploy.'];
+      '). In Vercel, check that a private Blob store is connected to this project (Storage → the store → Connect Project), then redeploy.'];
   }
   return [500, 'Something went wrong. Please try again.'];
+}
+
+/* ---------- the signing key ----------
+   With SESSION_SECRET set this does nothing. Without it, the first request makes a random
+   key and keeps it in the private store; later requests (and other servers) read the same
+   one. Call at the start of every handler that signs or checks cookies or upload links. */
+const SECRET_PATH = 'config/secret.json';
+export async function ensureSecret() {
+  if (secret()) return;
+  let saved = await readJson(SECRET_PATH, LEADS_TOKEN, null, 'private');
+  if (!saved || !saved.key) {
+    const key = crypto.randomBytes(32).toString('hex');
+    try {
+      // no overwrite: if two requests race, the first key wins and the other reads it back
+      await put(SECRET_PATH, JSON.stringify({ key, createdAt: new Date().toISOString() }), { access: 'private', token: LEADS_TOKEN,
+        contentType: 'application/json', addRandomSuffix: false, allowOverwrite: false });
+      saved = { key };
+    } catch (e) {
+      saved = await readJson(SECRET_PATH, LEADS_TOKEN, null, 'private');
+      if (!saved || !saved.key) throw e;
+    }
+  }
+  setSecret(saved.key);
 }

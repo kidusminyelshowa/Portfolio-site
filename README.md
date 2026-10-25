@@ -53,12 +53,12 @@ Private tools for running client work, hidden from search engines:
 - `/price`: the Price Builder (quotes, client links, contract → invoice → kick-off, PDFs).
 - `/price/<link>`: the page a client opens to adjust a proposal and send a request.
 
-Setup, environment variables (two Vercel Blob stores, `SESSION_SECRET`, `SETUP_TOKEN`, `CRON_SECRET`), self-hosting with Node or Docker, and everything else: **[docs/suite/README.md](docs/suite/README.md)**.
+Setup (connect one private Vercel Blob store and add `SETUP_TOKEN`), self-hosting with Node or Docker, and everything else: **[docs/suite/README.md](docs/suite/README.md)**.
 
 Run it locally with storage in a folder:
 
 ```bash
-cp .env.example .env   # set SESSION_SECRET, SETUP_TOKEN, CRON_SECRET and STORAGE=local
+cp .env.example .env   # set SETUP_TOKEN and STORAGE=local
 npm run build && npm start   # http://localhost:3000/team
 ```
 

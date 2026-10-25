@@ -11,13 +11,16 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import * as blob from '@vercel/blob';
+import { secret } from './_secret.js';
 
 export const BACKEND = (process.env.STORAGE || 'blob').toLowerCase() === 'local' ? 'local' : 'blob';
 const ROOT = path.resolve(process.env.STORAGE_DIR || './data');
-const SECRET = process.env.SESSION_SECRET || '';
 
-/* public files (photos, backgrounds) are served by server.js under this path */
+/* photos, backgrounds and the logo are served under this path: by server.js from the local
+   folder, or by api/media.js from the private Blob store when there is no public store */
 export const LOCAL_MEDIA_PREFIX = '/media/';
+/* no MEDIA_BLOB_TOKEN: pictures go into the one private store, through api/media.js */
+export const MEDIA_PRIVATE = BACKEND === 'blob' && !process.env.MEDIA_BLOB_TOKEN;
 
 class StorageError extends Error {
   constructor(name, message) { super(message); this.name = name; }
@@ -111,22 +114,25 @@ const local = {
     }
   },
   /* signed upload links: a short-lived HMAC over the path, checked by server.js */
-  async issueSignedToken(opts) {
-    const exp = opts.validUntil || Date.now() + 15 * 60 * 1000;
-    const claims = { p: opts.pathname, e: exp, s: opts.maximumSizeInBytes || 0, t: (opts.allowedContentTypes || []).join(',') };
-    const raw = Buffer.from(JSON.stringify(claims)).toString('base64url');
-    return raw + '.' + crypto.createHmac('sha256', SECRET).update(raw).digest('base64url');
-  },
+  issueSignedToken: async opts => signUpload(opts),
   async presignUrl(token) {
     return { presignedUrl: '/api/local-upload?token=' + encodeURIComponent(token) };
   }
 };
 
+/* an upload link of our own (local folder, or the private store through api/media.js) */
+export function signUpload(opts) {
+  const exp = opts.validUntil || Date.now() + 15 * 60 * 1000;
+  const claims = { p: opts.pathname, e: exp, s: opts.maximumSizeInBytes || 0, t: (opts.allowedContentTypes || []).join(',') };
+  const raw = Buffer.from(JSON.stringify(claims)).toString('base64url');
+  return raw + '.' + crypto.createHmac('sha256', secret()).update(raw).digest('base64url');
+}
+
 /* checks an upload link made by issueSignedToken; returns its claims or null */
 export function checkUploadToken(token) {
   const [raw, sig] = String(token || '').split('.');
-  if (!raw || !sig || !SECRET) return null;
-  const expect = crypto.createHmac('sha256', SECRET).update(raw).digest('base64url');
+  if (!raw || !sig || !secret()) return null;
+  const expect = crypto.createHmac('sha256', secret()).update(raw).digest('base64url');
   if (sig.length !== expect.length || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expect))) return null;
   const claims = JSON.parse(Buffer.from(raw, 'base64url').toString('utf8'));
   return claims.e > Date.now() ? claims : null;
