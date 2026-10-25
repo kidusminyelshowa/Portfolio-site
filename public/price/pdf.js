@@ -5,11 +5,11 @@
 import { money, dateLong, termContext, fillTerms, paymentPlan, paidSoFar, invoiceLineText, KIND_LABELS } from '/price/deal.js';
 import { clientTotals, toDisplay, defaultSelection, homeCurrency, timelinePlan } from '/price/engine.js';
 
-/* palette: the same neutrals as suite.css; the accent ("pink") and its tint follow the brand's
+/* palette: the same paper, ink and navy as suite.css (the portfolio's colours); the accent ("pink") and its tint follow the brand's
    accent colour (Team → Settings → Brand & region), and text on it is white or ink, whichever reads */
 const C = {
-  plum: [20, 20, 20], ink: [20, 20, 20], ink2: [94, 94, 90], mute: [107, 107, 102],
-  pink: [242, 84, 27], pinkSoft: [254, 236, 229], onPink: [20, 20, 20], cream: [245, 245, 243], line: [234, 234, 231], ok: [21, 114, 56], white: [255, 255, 255]
+  plum: [26, 54, 71], ink: [14, 14, 14], ink2: [75, 90, 99], mute: [86, 99, 107],
+  pink: [59, 132, 177], pinkSoft: [229, 239, 245], onPink: [14, 14, 14], cream: [238, 241, 242], line: [203, 211, 215], ok: [21, 114, 56], white: [255, 255, 255]
 };
 const lum = rgb => { const c = rgb.map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
 const onColour = rgb => (1.05 / (lum(rgb) + 0.05) >= (lum(rgb) + 0.05) / (lum(C.ink) + 0.05) ? C.white : C.ink);

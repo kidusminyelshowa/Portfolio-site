@@ -26,7 +26,7 @@ const short = n => { n = Number(n) || 0; return n >= 1e6 ? (Math.round(n / 1e5) 
 const won = r => r.reached && (r.reached.signed || r.reached.paid);
 const wonAt = r => String((r.contract && (r.contract.signedAt || r.contract.date)) || '').slice(0, 10);
 const monthsBack = n => Array.from({ length: n }, (_, i) => { const d = new Date(); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth() - (n - 1 - i)); return d.toISOString().slice(0, 7); });
-const STATUS_COLOR = { todo: '#D9D9D5', in_progress: '#141414', blocked: '#D42F23', submitted: '#F6C445', done: 'var(--highlight)' };
+const STATUS_COLOR = { todo: '#CBD3D7', in_progress: '#1A3647', blocked: '#D42F23', submitted: '#F6C445', done: 'var(--highlight)' };
 
 /* the people the dashboard compares: everyone you can see, without the founder */
 function people() {

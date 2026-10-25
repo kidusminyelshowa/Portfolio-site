@@ -470,7 +470,7 @@ function themePicker() {
     ])));
   };
   draw();
-  return panel('Proposal look', 'The colour theme the client sees on their page. Classic is the default.', [grid]);
+  return panel('Proposal look', 'The colour theme the client sees on their page. “Your brand” uses your colours from Settings and is the default.', [grid]);
 }
 
 /* the services' own timelines next to the quoted pace: a gentle note when they don't agree */

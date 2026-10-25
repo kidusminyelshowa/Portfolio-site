@@ -10,6 +10,10 @@ observed, not assumed. Before shots are from the audit (UX-AUDIT.md), taken on t
   freelancer a short menu (Work, Clients, Plan, Business), calls People "Partners", and takes
   team-only cards off the dashboard. "Decide for me" (the default) switches to it while there is
   at most one active non-partner person. Every team screen still exists and opens by its address.
+- **Looks like the portfolio site.** The default look now uses the portfolio's paper
+  background, ink, cerulean blue (#3B84B1), navy (#1A3647) and blue mist (#C9DDE9), with 2 px ink
+  outlines, hard offset shadows and bold uppercase page titles, in Figtree like the site.
+  ![](ux-shots/portfolio-vs-suite.jpg)
 - **Your brand everywhere.** One accent and one highlight colour from Brand & region now colour
   the Team app, the Price Builder, the client proposal ("Your brand" theme, the default for new
   quotes) and the PDFs. Text on the accent turns white or near-black, whichever is readable.
@@ -59,6 +63,7 @@ drew square corners, and a page error when the Team app routed while signed out.
 
 | Brand | Accent / highlight | Team app | Proposal page | PDF |
 | --- | --- | --- | --- | --- |
+| Kidus (default) | #3B84B1 cerulean / #C9DDE9 blue mist | re-themed, contrast passes | re-themed, contrast passes | blue accents, navy headings and total |
 | Fern & Field | #0B5D3B dark green / #F4D35E yellow | re-themed, contrast passes | re-themed, contrast passes | green mark, rules, table heads and timeline; text on green readable |
 | Pop Kiosk | #FF2E88 hot pink / #2EC4F1 cyan | re-themed, contrast passes (dark text on pink picked automatically) | re-themed, contrast passes | pink throughout, readable |
 

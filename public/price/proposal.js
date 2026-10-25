@@ -256,7 +256,7 @@ function renderIncluded(t) {
 }
 
 /* ---------- per-service timeline: each service's steps on a week grid ---------- */
-const SVC_COLORS = ['var(--pinkSel)', 'var(--teal)', 'var(--w5)', 'var(--w3)', 'var(--gC-soft)', 'var(--gD-soft)'];
+const SVC_COLORS = ['var(--pinkSel)', 'var(--gA-arc2)', 'var(--w5)', 'var(--teal)', 'var(--gC-soft)', 'var(--gD-soft)'];
 function renderTimeline() {
   const plan = timelinePlan(P, sel);
   const panel = $('#tlPanel');

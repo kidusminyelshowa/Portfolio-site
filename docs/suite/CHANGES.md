@@ -111,3 +111,4 @@ See UX-AUDIT.md, UX-PLAN.md and UX-RESULTS.md.
 | `public/price/proposal.html`, `proposal.js` | brand theme, week-by-week project timeline per service, larger toggle hit area | UX-PASS |
 | `public/price/pdf.js` | neutrals match the app, brand-tinted accents with readable text, project timeline page in the proposal PDF | UX-PASS |
 | `api/_price-catalog.js` | sample timeline steps on the Branding project type | UX-PASS |
+| `suite.css`, `theme.js`, `_brand.js`, Team / Price Builder / proposal styles, `pdf.js` | default look matches the portfolio site: paper and ink neutrals, cerulean accent, navy dark surfaces, blue-mist highlight, ink outlines and offset shadows; still re-themed by Brand & region | UX-PASS |

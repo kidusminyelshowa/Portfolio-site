@@ -3,30 +3,37 @@
    each page maps its own older variable names onto these, so changing them here re-themes all three. */
 :root{
   /* brand */
-  --accent:#F2541B; --accent-2:#FF7A45; --on-accent:#141414; --highlight:#C8F23C; --on-highlight:#141414;
+  --accent:#3B84B1; --accent-2:#2A6D97; --on-accent:#0E0E0E; --highlight:#C9DDE9; --on-highlight:#0E0E0E;
   --accent-soft:color-mix(in srgb, var(--accent) 14%, #fff);
   --accent-strong:color-mix(in srgb, var(--accent) 82%, #000);
   --highlight-soft:color-mix(in srgb, var(--highlight) 22%, #fff);
 
-  /* neutrals: every text colour passes WCAG AA (4.5:1) on --page, --soft and --card */
-  --ink:#141414; --ink-2:#5E5E5A; --mute:#6B6B66;
-  --page:#F0F0EE; --card:#FFFFFF; --soft:#F5F5F3; --soft-2:#ECECE9; --line:#EAEAE7; --line-2:#D9D9D5;
+  /* neutrals, from the portfolio site's paper and ink: every text colour passes WCAG AA (4.5:1)
+     on --page, --soft and --card */
+  --ink:#0E0E0E; --ink-2:#4B5A63; --mute:#56636B;
+  --page:#EEF1F2; --card:#F8FAFA; --soft:#E2E8EB; --soft-2:#D7DFE3; --line:#CBD3D7; --line-2:#AEB9BF;
+  /* dark surfaces are the portfolio's navy */
+  --dark:#1A3647; --dark-2:#234A60;
+
+  /* the portfolio look: ink outlines and hard offset shadows */
+  --stroke:2px; --stroke-c:var(--ink);
+  --pop:6px 6px 0 var(--ink); --pop-sm:3px 3px 0 var(--ink);
 
   /* task status, the same everywhere */
-  --st-todo:#EFEFEC; --st-doing:#141414; --st-blocked:#D42F23; --st-handed:#F6C445; --st-done:var(--highlight);
+  --st-todo:#E2E8EB; --st-doing:#1A3647; --st-blocked:#D42F23; --st-handed:#F6C445; --st-done:var(--highlight);
 
   /* messages */
   --ok:#157238; --ok-soft:#E4F5EA; --warn:#8A5F00; --warn-soft:#FDF3D3; --bad:#C42B20; --bad-soft:#FDE8E6;
 
   /* charts: the brand accent, then ink, then softer steps */
-  --chart-1:var(--accent); --chart-2:#141414; --chart-3:#8F8F8A; --chart-4:var(--highlight);
+  --chart-1:var(--accent); --chart-2:#1A3647; --chart-3:#8A979E; --chart-4:var(--highlight);
 
   /* type, space, shape */
   --font:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
   --fs-xs:12px; --fs-sm:13.5px; --fs-md:15px; --fs-lg:18px; --fs-xl:22px; --fs-2xl:28px; --fs-3xl:40px;
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-7:32px;
-  --r-input:10px; --r-card:16px; --r-panel:24px; --r-pill:999px;
-  --shadow:0 1px 2px rgba(20,20,20,.03),0 8px 24px rgba(20,20,20,.04);
+  --r-input:12px; --r-card:16px; --r-panel:20px; --r-pill:999px;
+  --shadow:none;
   --focus:0 0 0 2px var(--card),0 0 0 4px var(--accent);
   --tap:44px;
 }

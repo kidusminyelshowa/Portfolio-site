@@ -28,7 +28,7 @@ export const DEFAULT_BRAND = {
   name: 'Your Agency',
   tagline: 'Brand and design',
   logo: '',                       // a picture link; empty shows the first letter of the name
-  colors: { accent: '#F2541B', accent2: '#FF7A45', ink: '#141414', highlight: '#C8F23C' },
+  colors: { accent: '#3B84B1', accent2: '#2A6D97', ink: '#0E0E0E', highlight: '#C9DDE9' },
   email: '',
   secondaryEmail: '',
   phone: '',

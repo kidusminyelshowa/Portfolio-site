@@ -14,8 +14,8 @@
   /* colours come from /team/suite.css (shared with the Team app and proposals); these names map onto it,
      so the Price Builder follows the brand accent and the same neutrals as the Team app */
   :root{
-    --inner:#F2F2EF; --ink2:var(--ink-2);
-    --pink:var(--accent-soft); --pinkSel:var(--accent); --pinkSoft:color-mix(in srgb,var(--accent) 10%,#fff); --plum:#141414;
+    --inner:var(--soft); --ink2:var(--ink-2);
+    --pink:var(--accent-soft); --pinkSel:var(--accent); --pinkSoft:color-mix(in srgb,var(--accent) 10%,#fff); --plum:var(--dark);
     --teal:var(--highlight-soft); --tealInk:var(--ink);
   }
   *{box-sizing:border-box}
@@ -240,6 +240,21 @@
   @media(max-width:760px){main{padding:14px 12px 100px}header.top{padding:10px 12px}.grid2,.grid3,.steps3{grid-template-columns:1fr}
     .head h1{font-size:28px}.review dl{grid-template-columns:1fr}.doc .parties{grid-template-columns:1fr}.doc{padding:20px 16px}.review dt{padding-bottom:0}.review dd{border-top:0}
     .items,.qt,.opts{display:block;overflow-x:auto}.items input:not([type=checkbox]):not([type=radio]),.items select,.opts input:not([type=checkbox]):not([type=radio]){min-width:84px}.steps{border-radius:22px}}
+
+  /* ---------- the portfolio look (kidusminyel.xyz): paper, ink outlines, hard offset shadows, navy ---------- */
+  .panel,.live,.hint,.gate .card,dialog#dlg,.doc{border:var(--stroke) solid var(--stroke-c);box-shadow:none}
+  .live,dialog#dlg,.gate .card{box-shadow:var(--pop)}
+  .steps{background:var(--dark);border:var(--stroke) solid var(--stroke-c)}
+  button.primary,button.ghost,header.top button,.head button{border:var(--stroke) solid var(--stroke-c);box-shadow:none}
+  button.primary{background:var(--accent);color:var(--on-accent)}
+  button.ghost{background:var(--card)}
+  button.primary,button.ghost{transition:background .15s,box-shadow .15s,transform .15s}
+  button.primary:hover,button.ghost:hover{filter:none;box-shadow:var(--pop-sm);transform:translate(-2px,-2px)}
+  button.primary:active,button.ghost:active{box-shadow:none;transform:none}
+  input:focus,textarea:focus,select:focus{border-color:var(--stroke-c)}
+  .head h1{font-weight:800;text-transform:uppercase;letter-spacing:-.01em}
+  @media (prefers-reduced-motion:reduce){button:hover{transform:none !important}}
+  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{box-shadow:var(--focus) !important}
 </style>
 </head>
 <body>

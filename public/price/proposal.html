@@ -45,16 +45,16 @@ html[data-theme="classic"]{
 /* "Your brand": every colour is mixed from the brand accent and highlight (set by theme.js) */
 html[data-theme="brand"]{
   --a:var(--accent); --h:var(--highlight);
-  --page:#F0F0EE; --card:#FFFFFF; --inner:#F2F2EF; --ink:#141414; --ink2:#5E5E5A; --mute:#6B6B66; --line:#E6E6E2;
+  --page:#EEF1F2; --card:#F8FAFA; --inner:#E9EEF0; --ink:#0E0E0E; --ink2:#4B5A63; --mute:#56636B; --line:#CBD3D7;
   --pink:color-mix(in srgb,var(--a) 32%,#fff); --pinkSel:color-mix(in srgb,var(--a) 48%,#fff); --pinkSoft:color-mix(in srgb,var(--a) 12%,#fff); --pinkLine:color-mix(in srgb,var(--a) 58%,#fff);
-  --plum:color-mix(in srgb,var(--a) 38%,#141414); --teal:color-mix(in srgb,var(--h) 45%,#fff); --tealIn:color-mix(in srgb,var(--h) 22%,#fff);
+  --plum:color-mix(in srgb,var(--a) 30%,#0E0E0E); --teal:color-mix(in srgb,var(--h) 45%,#fff); --tealIn:color-mix(in srgb,var(--h) 22%,#fff);
   --tealInk:#141414; --tealLine:color-mix(in srgb,var(--h) 55%,#141414); --tealText:#2B2B27;
-  --black:#141414; --shade:20,20,20; --togOff:#E3E3DF; --dot:#D3D3CE;
+  --black:#1A3647; --shade:14,14,14; --togOff:#D7DFE3; --dot:#BAC4CA;
   --gA-bg:color-mix(in srgb,var(--a) 12%,#fff); --gA-ink:#141414; --gA-arc:var(--a); --gA-arc2:color-mix(in srgb,var(--a) 70%,#fff); --gA-rest:color-mix(in srgb,var(--a) 20%,#fff); --gA-chip:color-mix(in srgb,var(--a) 24%,#fff);
-  --gB-bg:#F2F2EF; --gB-ink:#141414; --gB-track:#E3E3DF; --gB-tick:#A8A8A2;
+  --gB-bg:#E9EEF0; --gB-ink:#0E0E0E; --gB-track:#D7DFE3; --gB-tick:#9AA7AE;
   --w1:var(--a); --w2:color-mix(in srgb,var(--a) 65%,#141414); --w3:color-mix(in srgb,var(--a) 55%,#fff); --w4:#141414; --w5:color-mix(in srgb,var(--a) 30%,#fff); --w6:color-mix(in srgb,var(--a) 75%,#8F8F8A); --wx:#141414;
   --gC-bg:color-mix(in srgb,var(--h) 20%,#fff); --gC-ink:#141414; --gC-line:color-mix(in srgb,var(--h) 45%,#141414); --gC-soft:color-mix(in srgb,var(--h) 35%,#fff); --gC-vline:color-mix(in srgb,var(--h) 60%,#6B6B66);
-  --gD-bg:#EEEEEA; --gD-ink:#2B2B27; --gD-badge:#6B6B66; --gD-soft:#E0E0DB; --gD-softInk:#3F3F3B;
+  --gD-bg:#E2E8EB; --gD-ink:#1F2A30; --gD-badge:#56636B; --gD-soft:#D7DFE3; --gD-softInk:#33424B;
 }
 html[data-theme="ember"]{
   --page:#F1ECE6; --card:#FBF8F4; --inner:#F0E9E1; --ink:#3B1A0C; --ink2:#6B4E3F; --mute:#9A8374; --line:#E9DDD2;
@@ -387,6 +387,15 @@ dialog::backdrop{background:rgba(var(--shade),.35);-webkit-backdrop-filter:blur(
   .invh h2{font-size:20px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+
+/* ---------- "Your brand" theme: the portfolio look (ink outlines, hard offset shadows) ---------- */
+html[data-theme="brand"] :is(.field,.panel,.gc,.dlg,.done,.cat,.innerbox){border:2px solid var(--ink)}
+html[data-theme="brand"] .gc{box-shadow:none}
+html[data-theme="brand"] :is(.field.plum,.field.pink){box-shadow:6px 6px 0 var(--ink)}
+html[data-theme="brand"] .field .card{border:2px solid var(--ink)}
+html[data-theme="brand"] .hero h1{font-weight:800;text-transform:uppercase;letter-spacing:-.02em}
+html[data-theme="brand"] .tl .svc,html[data-theme="brand"] .tl .lane{border:2px solid var(--ink)}
+html[data-theme="brand"] .tl .svc{border-right:0} html[data-theme="brand"] .tl .lane{border-left:0}
 </style>
 </head>
 <body>

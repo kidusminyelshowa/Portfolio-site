@@ -1,7 +1,7 @@
 /* The brand colours from Settings → Brand & region, applied the same way in the Team app, the
    Price Builder and the client proposal. Sets the --accent family that suite.css defines, and
    picks white or near-black for text on the accent so it stays readable whatever colour is chosen. */
-const INK = '#141414';
+const INK = '#0E0E0E';
 
 function hexToRgb(hex) {
   const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex || '').trim());
