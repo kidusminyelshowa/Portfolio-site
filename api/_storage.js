@@ -16,9 +16,12 @@ import path from 'node:path';
 import * as blob from '@vercel/blob';
 import { secret } from './_secret.js';
 
-const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || '';
-const SB_URL = String(process.env.SUPABASE_URL || 'https://vuzxysgjuvgovcxmnfae.supabase.co').replace(/\/+$/, '');
-const CHOSEN = (process.env.STORAGE || (SB_KEY ? 'supabase' : 'blob')).toLowerCase();
+const env = process.env;
+const SB_KEY = String(env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_SECRET_KEY || env.SUPABASE_SERVICE_KEY || '').trim();
+const SB_URL = String(env.SUPABASE_URL || 'https://vuzxysgjuvgovcxmnfae.supabase.co').trim().replace(/\/+$/, '');
+// a Supabase key wins over a leftover STORAGE=blob; only STORAGE=local is kept as chosen
+const ASKED = String(env.STORAGE || '').trim().toLowerCase();
+const CHOSEN = ASKED === 'local' ? 'local' : SB_KEY ? 'supabase' : (ASKED || 'blob');
 export const BACKEND = ['local', 'supabase'].includes(CHOSEN) ? CHOSEN : 'blob';
 const ROOT = path.resolve(process.env.STORAGE_DIR || './data');
 

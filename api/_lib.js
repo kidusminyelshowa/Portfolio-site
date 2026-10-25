@@ -169,8 +169,9 @@ export function failure(e) {
   if (/vercel blob|blob|token|storage/i.test(msg + ' ' + String((e && e.name) || ''))) {
     const fix = BACKEND === 'supabase'
       ? 'In Vercel, check that SUPABASE_SERVICE_ROLE_KEY holds the secret key from Supabase (Project Settings → API Keys), then redeploy.'
-      : 'In Vercel, add SUPABASE_SERVICE_ROLE_KEY (the secret key from Supabase → Project Settings → API Keys), or connect a private Blob store to this project, then redeploy.';
-    return [503, 'File storage is not working (' + msg.replace(/^Vercel Blob:\s*/i, '').slice(0, 200) + '). ' + fix];
+      : 'This deployment cannot see SUPABASE_SERVICE_ROLE_KEY. In Vercel → Settings → Environment Variables, check the name is exactly that and that Production and Preview are both ticked, then redeploy this deployment.';
+    const why = BACKEND === 'supabase' ? msg.slice(0, 200) : 'storage: ' + BACKEND + ', no Supabase key found';
+    return [503, 'File storage is not working (' + why + '). ' + fix];
   }
   return [500, 'Something went wrong. Please try again.'];
 }
