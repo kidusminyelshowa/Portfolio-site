@@ -14,11 +14,13 @@ Your name, logo, colours, contact and bank details, currency, time zone and holi
 
 ## Set it up on Vercel (once, about 5 minutes)
 
-1. **Storage: one click.** Vercel → your project → **Storage** → Create → **Blob** → choose
-   **Private** → Create, and connect it to this project when asked (tick all environments).
-   Vercel adds the token (`BLOB_READ_WRITE_TOKEN`) by itself; you copy nothing.
-2. **Setup key: one setting.** Vercel → Settings → Environment Variables → add
-   `SETUP_TOKEN` with any phrase you make up (12+ characters). You type it once in step 4.
+1. **Storage: one setting.** Everything is kept in your Supabase project (the same one the
+   contact form uses; its table `suite_files` is already created). In Supabase → Project
+   Settings → **API Keys**, copy the **secret key** (`sb_secret_…`; the older `service_role`
+   key also works). In Vercel → Settings → Environment Variables, add it as
+   `SUPABASE_SERVICE_ROLE_KEY` (all environments). Keep it secret: it is never sent to browsers.
+2. **Setup key: one setting.** In the same place add `SETUP_TOKEN` with any phrase you make up
+   (12+ characters). You type it once in step 4.
 3. **Redeploy** (Deployments → ⋯ → Redeploy). Settings only reach deployments made after
    they were added.
 4. **Create your account.** Open `https://<your-domain>/team`. It shows **Set up**: enter the
@@ -35,8 +37,13 @@ Your name, logo, colours, contact and bank details, currency, time zone and holi
    Or press "Load demo team" in Settings to try everything with fictional people first
    (and "Remove all demo people" afterwards).
 
-If `/team` says "File storage is not working", the Blob store is not connected to the project
-(or the deployment is older than the connection): connect it and redeploy.
+If `/team` says "File storage is not working", the message says why: usually the key was
+pasted wrong, or the deployment is older than the setting. Fix it and redeploy.
+
+Using another Supabase project? Run
+[`supabase/migrations/20261025120000_suite_files_storage.sql`](../../supabase/migrations/20261025120000_suite_files_storage.sql)
+in its SQL editor once and add `SUPABASE_URL` (`https://<ref>.supabase.co`). Vercel Blob also
+still works: leave `SUPABASE_SERVICE_ROLE_KEY` out and connect a private Blob store instead.
 
 ### Optional settings
 
@@ -44,8 +51,8 @@ If `/team` says "File storage is not working", the Blob store is not connected t
 | --- | --- |
 | `CRON_SECRET` (any random text) | turns on the daily jobs below on Vercel. Without it, everything works except those notifications. |
 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | notifications on phones' lock screens. Run `npx web-push generate-vapid-keys` once for the pair; the subject is e.g. `mailto:hello@kidusminyel.xyz`. |
-| `SESSION_SECRET` | your own signing key. Without it the server makes one and keeps it in the store. |
-| `MEDIA_BLOB_TOKEN` | a separate *public* Blob store for photos and the logo (faster for big teams). Without it they are kept in the private store and served by the site. |
+| `SESSION_SECRET` | your own signing key. Without it the server makes one and keeps it in storage. |
+| `SUPABASE_URL` | only for a Supabase project other than the portfolio one. |
 
 All of them are explained in [`.env.example`](../../.env.example).
 
@@ -63,7 +70,7 @@ to `crons` in `vercel.json`. When self-hosting, `server.js` runs all three by it
 
 ## Self-hosting instead of Vercel
 
-Needs Node 20+ (or Docker). Data is kept in a folder instead of Vercel Blob.
+Needs Node 20+ (or Docker). Data is kept in a folder, or in Supabase if you set `SUPABASE_SERVICE_ROLE_KEY`.
 
 ```bash
 cp .env.example .env      # set SETUP_TOKEN and STORAGE=local; nothing else is needed

@@ -2,7 +2,9 @@
 
 ## Backups
 
-- **Vercel:** everything is in the private Blob store (plus a public one if you added
+- **Supabase:** everything is in the `suite_files` table. Supabase's daily backups cover it;
+  for a copy of your own, Supabase → Table Editor → `suite_files` → Export, or `pg_dump -t suite_files`.
+- **Vercel Blob:** everything is in the private Blob store (plus a public one if you added
   `MEDIA_BLOB_TOKEN`). Download it now and then (Vercel → Storage → the store → Browse, or
   `vercel blob` with the CLI).
 - **Self-hosting:** copy the `STORAGE_DIR` folder (default `./data`, or the `suite-data`
@@ -17,8 +19,8 @@
   to change it in this version (as in the original). To change it, sign in to `/price` and run
   this in the browser console:
   `fetch('/api/price-auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'change',password:'OLD',newPassword:'NEW'})}).then(r=>r.json()).then(console.log)`
-- **Lost the Price Builder password:** delete `config/auth.json` from the private store (or
-  data folder), then set a new one with the setup key:
+- **Lost the Price Builder password:** delete `config/auth.json` from storage (the `suite_files` row, the
+  private store or the data folder), then set a new one with the setup key:
   `curl -X POST https://<domain>/api/price-auth -H 'Content-Type: application/json' -d '{"action":"setup","password":"NEW-PASSWORD","setupToken":"<SETUP_TOKEN>"}'`
 - **Lost every admin account:** with the server stopped, remove the `users` entries from
   `team/db.json` (keep a copy first). `/team` then shows Set up again (setup key needed).

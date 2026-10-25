@@ -27,7 +27,9 @@ export default async function handler(req, res) {
       return json(res, 200, { url: LOCAL_MEDIA_PREFIX + claims.p, pathname: claims.p });
     }
     if (req.method !== 'GET') return json(res, 405, { error: 'Method not allowed' });
-    const p = String(url.searchParams.get('path') || '');
+    // after the /media/… rewrite the path arrives in req.query; req.url can still be the original
+    const p = String((req.query && req.query.path) || url.searchParams.get('path') ||
+      (url.pathname.startsWith(LOCAL_MEDIA_PREFIX) ? decodeURIComponent(url.pathname.slice(LOCAL_MEDIA_PREFIX.length)) : ''));
     if (!/^team\/(avatar|background|logo)\/[\w.-]+$/.test(p)) return json(res, 404, { error: 'Not found' });
     let r;
     try { r = await get(p, { token: LEADS_TOKEN, access: 'private' }); }

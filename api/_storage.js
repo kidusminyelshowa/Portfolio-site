@@ -3,6 +3,9 @@
    signed upload links).
 
    STORAGE=blob (default): Vercel Blob, unchanged behaviour.
+   STORAGE=supabase (picked by itself when SUPABASE_SERVICE_ROLE_KEY is set): one table,
+   suite_files, in a Supabase project, reached with the project's secret key. Saves go
+   through the suite_put function, which does the etag check inside the database.
    STORAGE=local: plain files under STORAGE_DIR (default ./data), for running the
    suite on any server or PC with server.js. Each document gets an etag (a hash of its
    bytes), and a save with ifMatch is refused when the file changed in between, the
@@ -13,14 +16,18 @@ import path from 'node:path';
 import * as blob from '@vercel/blob';
 import { secret } from './_secret.js';
 
-export const BACKEND = (process.env.STORAGE || 'blob').toLowerCase() === 'local' ? 'local' : 'blob';
+const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || '';
+const SB_URL = String(process.env.SUPABASE_URL || 'https://vuzxysgjuvgovcxmnfae.supabase.co').replace(/\/+$/, '');
+const CHOSEN = (process.env.STORAGE || (SB_KEY ? 'supabase' : 'blob')).toLowerCase();
+export const BACKEND = ['local', 'supabase'].includes(CHOSEN) ? CHOSEN : 'blob';
 const ROOT = path.resolve(process.env.STORAGE_DIR || './data');
 
 /* photos, backgrounds and the logo are served under this path: by server.js from the local
    folder, or by api/media.js from the private Blob store when there is no public store */
 export const LOCAL_MEDIA_PREFIX = '/media/';
-/* no MEDIA_BLOB_TOKEN: pictures go into the one private store, through api/media.js */
-export const MEDIA_PRIVATE = BACKEND === 'blob' && !process.env.MEDIA_BLOB_TOKEN;
+/* Supabase, or Blob without MEDIA_BLOB_TOKEN: pictures go into the one private store,
+   through api/media.js */
+export const MEDIA_PRIVATE = BACKEND === 'supabase' || (BACKEND === 'blob' && !process.env.MEDIA_BLOB_TOKEN);
 
 class StorageError extends Error {
   constructor(name, message) { super(message); this.name = name; }
@@ -120,6 +127,82 @@ const local = {
   }
 };
 
+/* Supabase: the table is closed to the public keys; only the secret key can reach it */
+async function sb(method, route, body) {
+  if (!SB_KEY) throw new StorageError('BlobError', 'Supabase storage: SUPABASE_SERVICE_ROLE_KEY is not set');
+  let r;
+  try {
+    r = await fetch(SB_URL + route, {
+      method,
+      headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: body === undefined ? undefined : JSON.stringify(body)
+    });
+  } catch (e) {
+    throw new StorageError('BlobError', 'Supabase storage: cannot reach ' + SB_URL + ' (' + (e.cause && e.cause.code || e.message) + ')');
+  }
+  const text = await r.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+  if (!r.ok) {
+    const m = String((data && data.message) || text || r.status);
+    if (/precondition_failed/.test(m)) throw new StorageError('BlobPreconditionFailedError', 'Precondition failed: etag mismatch');
+    if (/already_exists/.test(m)) throw new StorageError('BlobError', 'This blob already exists');
+    if (r.status === 401 || r.status === 403) throw new StorageError('BlobError', 'Supabase storage: the secret key was refused (' + m.slice(0, 120) + ')');
+    if (r.status === 404 || /suite_(put|get|files)/.test(m)) throw new StorageError('BlobError', 'Supabase storage: the suite_files table is missing (' + m.slice(0, 120) + ')');
+    throw new StorageError('BlobError', 'Supabase storage: ' + m.slice(0, 200));
+  }
+  return data;
+}
+const q = v => encodeURIComponent(v);
+
+const supabase = {
+  async put(pathname, body, opts = {}) {
+    fileOf(pathname, 'private'); // same path rules as the local folder
+    const buf = Buffer.isBuffer(body) ? body : Buffer.from(typeof body === 'string' ? body : await new Response(body).arrayBuffer());
+    const access = opts.access === 'private' ? 'private' : 'public';
+    const rows = await sb('POST', '/rest/v1/rpc/suite_put', {
+      p_path: pathname, p_body: buf.toString('base64'), p_type: opts.contentType || 'application/octet-stream', p_access: access,
+      p_if_match: opts.ifMatch || null, p_overwrite: opts.allowOverwrite !== false
+    });
+    const row = Array.isArray(rows) ? rows[0] : rows;
+    const url = access === 'public' ? LOCAL_MEDIA_PREFIX + pathname : 'supabase:' + pathname;
+    return { url, downloadUrl: url, pathname, contentType: opts.contentType || '', etag: row && row.etag };
+  },
+  async get(pathname) {
+    const rows = await sb('POST', '/rest/v1/rpc/suite_get', { p_path: pathname });
+    const row = Array.isArray(rows) ? rows[0] : rows;
+    if (!row) return null;
+    const buf = Buffer.from(row.body || '', 'base64');
+    return { stream: buf, blob: { pathname, etag: row.etag, size: buf.length, contentType: row.content_type } };
+  },
+  async head(pathname) {
+    const rows = await sb('GET', '/rest/v1/suite_files?select=etag,size&path=eq.' + q(pathname));
+    if (!rows || !rows[0]) throw new StorageError('BlobNotFoundError', 'The requested blob does not exist');
+    return { pathname, etag: rows[0].etag, size: rows[0].size };
+  },
+  async list(opts = {}) {
+    const prefix = String(opts.prefix || '');
+    const limit = opts.limit || 1000;
+    const rows = await sb('GET', '/rest/v1/suite_files?select=path,size,updated_at,access&order=path&limit=' + (limit + 1) +
+      (prefix ? '&path=like.' + q(prefix.replace(/[*%]/g, '') + '*') : ''));
+    const out = (rows || []).filter(r => r.path.startsWith(prefix)).map(r => ({
+      pathname: r.path, size: r.size, uploadedAt: new Date(r.updated_at),
+      url: r.access === 'public' ? LOCAL_MEDIA_PREFIX + r.path : 'supabase:' + r.path
+    }));
+    return { blobs: out.slice(0, limit), hasMore: out.length > limit };
+  },
+  async del(pathnames) {
+    for (const p of [].concat(pathnames)) {
+      const name = String(p).replace(/^supabase:/, '').replace(LOCAL_MEDIA_PREFIX, '');
+      await sb('DELETE', '/rest/v1/suite_files?path=eq.' + q(name));
+    }
+  },
+  issueSignedToken: async opts => signUpload(opts),
+  async presignUrl(token) {
+    return { presignedUrl: '/api/media?token=' + encodeURIComponent(token) };
+  }
+};
+
 /* an upload link of our own (local folder, or the private store through api/media.js) */
 export function signUpload(opts) {
   const exp = opts.validUntil || Date.now() + 15 * 60 * 1000;
@@ -140,7 +223,7 @@ export function checkUploadToken(token) {
 
 export const localMediaFile = pathname => fileOf(pathname, 'public');
 
-const impl = BACKEND === 'local' ? local : blob;
+const impl = BACKEND === 'local' ? local : BACKEND === 'supabase' ? supabase : blob;
 export const put = (...a) => impl.put(...a);
 export const get = (...a) => impl.get(...a);
 export const head = (...a) => impl.head(...a);

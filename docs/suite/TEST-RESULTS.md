@@ -49,6 +49,20 @@ Chromium (Playwright) at 1440×900 and 375×812. Every line below was observed, 
 - Brand settings showed the word "null" next to the logo button when no logo was set.
 - The invoice form and two PDF lines still said "ETB" instead of the home currency.
 
+## Supabase storage (25 October)
+
+| Check | Result |
+| --- | --- |
+| `suite_put` / `suite_get` on the real portfolio database (in a transaction that was rolled back) | save and read back the same text and etag; save with the current etag works; save with an old etag refused (`precondition_failed`); no-overwrite save of an existing file refused (`already_exists`); etag on a missing file refused |
+| Table and functions with the public keys | anon cannot read the table or call `suite_get`; signed-in users cannot call `suite_put`; only the secret key can |
+| Whole app with `SUPABASE_SERVICE_ROLE_KEY` set, against a local stand-in for Supabase's REST API with the same rules | 22 of 22: fresh install empty, wrong setup key refused, setup, Price Builder setup, both sign-ins, preset save, leads import, price list, quotes list, photo upload and read back byte for byte, documents not readable through `/media`, photo saved to profile, all three crons, second setup refused |
+| 8 saves to the team database at the same moment | all 8 succeed and all 8 changes are kept |
+| Wrong secret key / Supabase unreachable | clear message: "File storage is not working (… the secret key was refused …)" |
+| Local-folder mode, same 22 checks | 22 of 22 |
+
+Not tested: the app against the real Supabase REST API with the secret key (the key is not
+available here). Check after the first deploy: setup at `/team`, then upload a profile photo.
+
 ## Not tested here
 
 - **Vercel Blob** (needs the real tokens): the same code path as before the port, behind

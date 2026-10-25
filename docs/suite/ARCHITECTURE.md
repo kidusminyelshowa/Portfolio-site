@@ -6,7 +6,9 @@ Browser ──► /team, /price, /price/<slug>   static HTML + JS modules (publi
             /api/price-auth, /api/cron      or the same files run by server.js when self-hosting
                      │
                      ▼
-              api/_storage.js ──► Vercel Blob (STORAGE=blob)  or  a folder (STORAGE=local)
+              api/_storage.js ──► Supabase table suite_files (STORAGE=supabase, picked when
+                                  SUPABASE_SERVICE_ROLE_KEY is set), Vercel Blob (STORAGE=blob)
+                                  or a folder (STORAGE=local)
 ```
 
 The portfolio itself (React, `src/`) is unrelated to the suite and is built by Vite. Vite copies
@@ -16,7 +18,7 @@ portfolio.
 
 ## Data (all JSON documents)
 
-Private store (`BLOB_READ_WRITE_TOKEN` from connecting a Blob store, or `LEADS_BLOB_TOKEN`, or `<STORAGE_DIR>/private`):
+Private store (one row per path in Supabase `suite_files`, or `BLOB_READ_WRITE_TOKEN` from connecting a Blob store, or `LEADS_BLOB_TOKEN`, or `<STORAGE_DIR>/private`):
 
 | Path | What |
 | --- | --- |
@@ -28,8 +30,8 @@ Private store (`BLOB_READ_WRITE_TOKEN` from connecting a Blob store, or `LEADS_B
 | `proposals/<slug>.json` | the frozen copy a client sees at `/price/<slug>` |
 | `leads/*.json` | client requests from proposal pages, kept as records |
 
-Pictures (profile photos, backgrounds, the logo): with `MEDIA_BLOB_TOKEN`, a public store the
-browser uploads to directly. Without it (the default), they go into the private store under
+Pictures (profile photos, backgrounds, the logo): on Blob with `MEDIA_BLOB_TOKEN`, a public store the
+browser uploads to directly. Otherwise (Supabase, or Blob without it), they go into the private store under
 `team/…` through `api/media.js` and are served at `/media/…` (only `team/avatar|background|logo`
 can be read there). Self-hosted, they are files in `<STORAGE_DIR>/public`, served at `/media/`.
 
@@ -37,7 +39,11 @@ can be read there). Self-hosted, they are files in `<STORAGE_DIR>/public`, serve
 
 Writes to `team/db.json` go through `mutate()` (api/_team-lib.js): it re-reads, applies the
 change and saves only if nobody else saved in between (an ETag check), retrying otherwise.
-`api/_storage.js` gives the local folder the same ETag behaviour.
+`api/_storage.js` gives the local folder the same ETag behaviour; on Supabase the check runs
+inside the database (`suite_put` locks the row, compares the etag, then saves).
+
+The `suite_files` table has row-level security on and no grants for the public keys, so the
+browser key used by the contact form cannot read or write it; only the server's secret key can.
 
 ## Sign-in
 
@@ -55,7 +61,7 @@ change and saves only if nobody else saved in between (an ETag check), retrying 
 | `api/price-auth.js` | Price Builder password |
 | `api/cron.js` | the morning, evening and hourly jobs |
 | `api/_brand.js` | Brand & region document and the region presets |
-| `api/_storage.js` | Vercel Blob or local folder, same functions |
+| `api/_storage.js` | Supabase, Vercel Blob or a local folder, same functions |
 | `api/_team-*.js`, `_sales.js`, `_leads.js`, `_push.js` | team logic, notifications, kick-off routing, sales, web push |
 | `api/_price-catalog.js` | the starting (sample) price list and contract clauses |
 | `public/price/engine.js`, `deal.js` | quote maths and contract/invoice maths, shared by browser and server |

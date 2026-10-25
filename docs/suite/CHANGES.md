@@ -25,7 +25,8 @@ only the source code in the zip. `.vercel/`, `.env` and `node_modules` were not 
 | File | What | Tag |
 | --- | --- | --- |
 | `api/_brand.js` | Brand & region document (`config/brand.json`): name, logo, colours, contact, bank, currency, time zone, phone code, country, city; Ethiopia and International presets | REMOVE-GEZAT |
-| `api/_storage.js` | the same storage functions over Vercel Blob or a local folder (ETags, conditional writes, signed uploads) | SELF-HOSTING |
+| `api/_storage.js` | the same storage functions over Supabase, Vercel Blob or a local folder (ETags, conditional writes, signed uploads) | SELF-HOSTING |
+| `supabase/migrations/20261025120000_suite_files_storage.sql` | the `suite_files` table and the `suite_put` / `suite_get` functions the Supabase storage uses | SELF-HOSTING |
 | `api/_secret.js`, `ensureSecret()` in `api/_lib.js` | the signing key: `SESSION_SECRET`, or one made on first run and kept in the private store | SELF-HOSTING |
 | `api/media.js` | one-store setup: pictures are saved in the private store and served at `/media/…` when there is no public store | SELF-HOSTING |
 | `server.js` | self-host server: static files, API, `vercel.json` rewrites/headers/redirects, cron jobs, local uploads | SELF-HOSTING |

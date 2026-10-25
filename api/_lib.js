@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { put, get, head, list, del } from './_storage.js';
+import { put, get, head, list, del, BACKEND } from './_storage.js';
 import { secret, setSecret } from './_secret.js';
 
 export const MEDIA_TOKEN = process.env.MEDIA_BLOB_TOKEN;
@@ -167,8 +167,10 @@ export function failure(e) {
   const cause = e && e.cause ? String(e.cause.hostname || e.cause.message || '') : '';
   const msg = String((e && e.message) || '') + (cause ? ': ' + cause : '');
   if (/vercel blob|blob|token|storage/i.test(msg + ' ' + String((e && e.name) || ''))) {
-    return [503, 'File storage is not working (' + msg.replace(/^Vercel Blob:\s*/i, '').slice(0, 200) +
-      '). In Vercel, check that a private Blob store is connected to this project (Storage → the store → Connect Project), then redeploy.'];
+    const fix = BACKEND === 'supabase'
+      ? 'In Vercel, check that SUPABASE_SERVICE_ROLE_KEY holds the secret key from Supabase (Project Settings → API Keys), then redeploy.'
+      : 'In Vercel, add SUPABASE_SERVICE_ROLE_KEY (the secret key from Supabase → Project Settings → API Keys), or connect a private Blob store to this project, then redeploy.';
+    return [503, 'File storage is not working (' + msg.replace(/^Vercel Blob:\s*/i, '').slice(0, 200) + '). ' + fix];
   }
   return [500, 'Something went wrong. Please try again.'];
 }
