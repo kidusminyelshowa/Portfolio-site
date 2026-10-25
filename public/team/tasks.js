@@ -314,14 +314,15 @@ export function viewMyTasks() {
   if (taskView() === 'board') return frag([
     el('div', { style: 'margin-bottom:14px' }, [deliveryTiles(emp.tasks.recent)]),
     bar,
-    taskBoard(all, { emptyText: managing ? 'Give a task with a due date.' : 'Tasks your manager gives you appear here.' })
+    taskBoard(all, { emptyText: managing ? 'Add a task with a due date.' : 'Tasks your manager gives you appear here.' })
   ]);
   return frag([
     el('div', { style: 'margin-bottom:14px' }, [deliveryTiles(emp.tasks.recent)]),
     bar,
     card('Open tasks', open.length ? open.length + ' open' : null, [
       open.length ? el('div', { class: 'list' }, open.map(t => taskRow(t))) :
-        empty('Nothing open', managing ? 'Give a task with a due date.' : 'Tasks your manager gives you will appear here.')
+        empty('Nothing open', managing ? 'Add a task with a due date.' : 'Tasks your manager gives you will appear here.',
+          managing ? el('button', { class: 'primary', text: 'New task', onclick: () => taskModal(null, emp) }) : null)
     ], managing ? [el('button', { class: 'primary sm', text: 'New task', onclick: () => taskModal(null, emp) })] : null),
     el('div', { style: 'margin-top:14px' }, [card('Finished', done.length ? done.length + ' done' : null, [
       done.length ? el('div', { class: 'list' }, done.slice(0, 30).map(t => taskRow(t))) : empty('Nothing finished yet', '')

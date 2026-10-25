@@ -2,8 +2,9 @@
    Views (by URL hash): #/ dashboard · #/new · #/edit/<id> · #/quote/<id> · #/contract/<id> · #/prices
    After the client says yes, the quote page walks through contract → invoice →
    kick-off; kick-off hands the project to the Team system (/team). */
+import { applyTheme } from '/team/theme.js';
 import { computeQuote, publishQuote, clientTotals, defaultSelection, formatMoney, slugify, isLocked, THEMES,
-         num, STATUSES, STATUS_LABELS, VAT_PCT, setHomeCurrency, homeCurrency, currencyLabel } from '/price/engine.js';
+         num, STATUSES, STATUS_LABELS, VAT_PCT, setHomeCurrency, homeCurrency, currencyLabel, nextPhaseStart, serviceDays } from '/price/engine.js';
 import { basisOf, agreement, nextInvoice, paymentPlan, paidSoFar, termContext, fillTerms, dateLong, invoiceLineText, lineTotals, contractStart,
          CONTRACT_LABELS, INVOICE_LABELS, KIND_LABELS } from '/price/deal.js';
 
@@ -26,7 +27,7 @@ function setText(n, v) {
     i.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' + GLYPH[part] + '</svg>';
     n.appendChild(i);
   });
-  if (!n.getAttribute('aria-label') && /^[→←↗↑↓×⋯]$/.test(s.trim())) n.setAttribute('aria-label', n.getAttribute('title') || ({ '×': 'Remove', '⋯': 'More' }[s.trim()] || s.trim()));
+  if (!n.getAttribute('aria-label') && /^[→←↗↑↓×⋯]$/.test(s.trim())) n.setAttribute('aria-label', n.getAttribute('title') || ({ '×': 'Remove', '⋯': 'More', '↑': 'Move up', '↓': 'Move down' }[s.trim()] || s.trim()));
 }
 function el(tag, attrs, kids) {
   const n = document.createElement(tag);
@@ -125,7 +126,7 @@ async function loadBrand() {
   mk.textContent = '';
   if (b.logo) mk.appendChild(el('img', { src: b.logo, alt: '' })); else mk.textContent = String(b.name || 'P').charAt(0).toUpperCase();
   $('#brandName').textContent = b.name || '';
-  if (b.colors && b.colors.accent) document.documentElement.style.setProperty('--pinkSel', b.colors.accent);
+  applyTheme(b.colors);
   document.title = (b.name ? b.name + ' — ' : '') + 'Price Builder';
 }
 
@@ -180,7 +181,7 @@ function itemFrom(ci, catId) {
            qty: 1, override: null, note: '', clientTitle: ci.label, clientDesc: ci.desc || '',
            mode: 'optional', defaultOn: true, clientQty: !!ci.unitLabel, enabled: false };
 }
-function categoryFrom(c) { return { id: c.id + '-' + uid().slice(0, 3), label: c.label, items: c.items.map(i => itemFrom(i, c.id)) }; }
+function categoryFrom(c) { return { id: c.id + '-' + uid().slice(0, 3), label: c.label, items: c.items.map(i => itemFrom(i, c.id)), start: num(c.start), phases: clone(c.phases || []) }; }
 function timelineFor(type) {
   return catalog.timeline.map((o, i) => ({ ...clone(o), days: type.days && has(type.days[i]) ? num(type.days[i]) : o.days }));
 }
@@ -311,7 +312,9 @@ async function renderDashboard() {
   const { quotes } = await api('/api/quotes');
   box.textContent = '';
   if (!quotes.length) {
-    box.appendChild(el('p', { class: 'muted', style: 'padding:14px', text: 'No quotes yet. Press “Create new quote” to start.' }));
+    box.appendChild(el('div', { class: 'next-empty', style: 'margin:8px' }, [el('b', { text: 'No quotes yet' }),
+      el('span', { text: 'Pick a project type, tick what you will deliver and send the client a live link.' }),
+      el('button', { class: 'primary', text: 'Create your first quote', onclick: () => go('#/new') })]));
     return;
   }
   box.appendChild(el('table', { class: 'qt' }, [
@@ -326,7 +329,7 @@ async function renderDashboard() {
         r.requests ? el('span', { class: 'muted', style: 'font-size:12px;margin-left:6px', text: r.requests + ' request' + (r.requests > 1 ? 's' : '') }) : null]),
       el('td', { class: 'muted', text: when(r.updatedAt) }),
       el('td', {}, [r.slug ? el('a', { href: '/price/' + r.slug, target: '_blank', rel: 'noopener', text: '/price/' + r.slug }) : el('span', { class: 'muted', text: 'Not sent' })]),
-      el('td', { class: 'right' }, [el('button', { class: 'small danger', text: 'Delete', onclick: async e => {
+      el('td', { class: 'right' }, [el('button', { class: 'small quiet-del', text: 'Delete', 'aria-label': 'Delete the quote for ' + (r.company || r.client || 'this client'), onclick: async e => {
         e.stopPropagation();
         if (!confirm('Delete the quote for ' + (r.company || r.client || 'this client') + '?' +
                      (r.slug ? ' The link ' + location.host + '/price/' + r.slug + ' will stop working.' : '') +
@@ -470,6 +473,65 @@ function themePicker() {
   return panel('Proposal look', 'The colour theme the client sees on their page. Classic is the default.', [grid]);
 }
 
+/* the services' own timelines next to the quoted pace: a gentle note when they don't agree */
+function paceCheck(q) {
+  const quoted = (q.factors.timeline.options || []).find(o => o.id === q.factors.timeline.selected);
+  const total = (q.categories || []).filter(c => (c.items || []).some(it => it.enabled) && serviceDays(c.phases))
+    .reduce((m, c) => Math.max(m, num(c.start) + serviceDays(c.phases)), 0);
+  if (!quoted || !total || !num(quoted.days) || total === num(quoted.days)) return el('span');
+  return el('p', { class: 'sub', text: 'The service timelines in step 2 add up to ' + total + ' working days, but this pace says ' + num(quoted.days) +
+    '. The client\'s week-by-week chart follows the service timelines, stretched or squeezed if they pick another pace.' });
+}
+
+/* ---- a service's own timeline: phases with a start day and a length, some of them client reviews ---- */
+function phaseEditor(cat, others) {
+  cat.phases = Array.isArray(cat.phases) ? cat.phases : [];
+  const box = el('details', { class: 'phases', open: cat.phases.length ? null : null });
+  const sum = el('summary');
+  const body = el('div', { class: 'phbody' });
+  const label = () => {
+    const d = serviceDays(cat.phases);
+    sum.textContent = '';
+    sum.append(el('b', { text: 'Timeline' }), el('span', { class: 'muted', text: cat.phases.length
+      ? ' · ' + cat.phases.length + ' step' + (cat.phases.length === 1 ? '' : 's') + ', ' + d + ' working day' + (d === 1 ? '' : 's') + ', starts on day ' + (num(cat.start) + 1)
+      : ' · optional: break this service into steps and client reviews' }));
+  };
+  const add = review => {
+    cat.phases.push({ label: review ? 'Client review' : 'New step', start: nextPhaseStart(cat.phases), days: review ? 2 : 3, review });
+    markDirty(); draw(); box.open = true;
+  };
+  const draw = () => {
+    label();
+    body.textContent = '';
+    // the service starts on a day of the project; "after the previous service" is the common case
+    const prevEnd = (others || []).filter(o => o !== cat && o.phases && o.phases.length).reduce((m, o) => Math.max(m, num(o.start) + serviceDays(o.phases)), 0);
+    body.append(el('div', { class: 'row wrap', style: 'gap:8px;margin-bottom:8px' }, [
+      el('label', { class: 'l', style: 'margin:0', text: 'Starts on project day' }),
+      el('input', { type: 'number', min: 1, class: 'w-qty', 'aria-label': 'Starts on project day', value: String(num(cat.start) + 1), oninput: ev => { cat.start = Math.max(0, Math.round(Number(ev.target.value) || 1) - 1); markDirty(); label(); } }),
+      others ? el('button', { class: 'small ghost', text: 'Start after the other services', onclick: () => { cat.start = prevEnd; markDirty(); draw(); } }) : null
+    ]));
+    if (cat.phases.length) body.appendChild(el('table', { class: 'items phtable' }, [
+      el('thead', {}, [el('tr', {}, ['Step', 'From day', 'Days', 'Client review', ''].map(h => el('th', { text: h })))]),
+      el('tbody', {}, cat.phases.map((ph, i) => el('tr', { class: ph.review ? 'rev' : '' }, [
+        el('td', {}, [inp(ph, 'label', { label: 'Step name', onInput: label })]),
+        el('td', { style: 'width:90px' }, [(() => { const x = el('input', { type: 'number', min: 1, class: 'w-qty', 'aria-label': 'From day', value: String(num(ph.start) + 1) });
+          x.addEventListener('input', () => { ph.start = Math.max(0, Math.round(Number(x.value) || 1) - 1); markDirty(); label(); }); return x; })()]),
+        el('td', { style: 'width:80px' }, [inp(ph, 'days', { type: 'number', class: 'w-qty', label: 'Days', onInput: label })]),
+        el('td', { style: 'width:110px' }, [chk(ph, 'review', null, () => { draw(); })]),
+        el('td', { style: 'width:44px' }, [el('button', { class: 'x', title: 'Remove step', text: '×', onclick: () => { cat.phases.splice(i, 1); markDirty(); draw(); } })])
+      ])))
+    ]));
+    body.appendChild(el('div', { class: 'row wrap', style: 'gap:8px;margin-top:6px' }, [
+      el('button', { class: 'small', text: '+ Add step', onclick: () => add(false) }),
+      el('button', { class: 'small ghost', text: '+ Add client review', onclick: () => add(true) }),
+      el('span', { class: 'muted', style: 'font-size:12.5px', text: 'Days are working days. Steps can overlap. The client sees this as a week-by-week chart.' })
+    ]));
+  };
+  draw();
+  box.append(sum, body);
+  return box;
+}
+
 /* ---- step 2 ---- */
 const MODES = [['optional-on', 'Removable', 'In the quote; the client can switch it off'],
                ['optional-off', 'Add-on', 'Offered switched off; the client can add it'],
@@ -532,12 +594,13 @@ function categoryBlock(c, ci) {
       c.items.push({ id: 'x' + uid(), label: 'Custom item', unitLabel: '', unit: 0, qty: 1, override: null, note: '',
                      clientTitle: 'Custom item', clientDesc: '', mode: 'optional', defaultOn: true, clientQty: false, enabled: true, custom: true, open: true });
       markDirty(); renderEditor();
-    } })])
+    } })]),
+    phaseEditor(c, q.categories)
   ]);
 }
 
 function itemRows(c, it, ii) {
-  const calc = el('td', { class: 'num muted' });
+  const calc = el('td', { class: 'num muted', style: 'white-space:nowrap' });
   const ov = inp(it, 'override', { type: 'number', nullable: true, class: 'w-money', label: 'Custom price', disabled: !it.enabled });
   liveHooks.push(() => {
     const k = num(it.unit) * num(it.qty);
@@ -593,7 +656,8 @@ function stepFactors() {
       'Complexity and other factors are internal: the client never sees them.']),
     panel('Delivery pace', 'Faster delivery usually costs more.', [
       optionTable('tl', f.timeline.options, { days: true, radio: radio('timeline', 'Quoted') }),
-      letChoose('timeline', 'Let the client choose the delivery pace')
+      letChoose('timeline', 'Let the client choose the delivery pace'),
+      paceCheck(q)
     ]),
     panel('Team', 'How many people work on the project.', [
       optionTable('tm', f.team.options, { desc: true, radio: radio('team', 'Quoted') }),
@@ -1434,10 +1498,11 @@ function renderCatalog() {
         el('table', { class: 'items' }, [el('thead', {}, [el('tr', {}, ['Deliverable', 'Client description', 'Unit', 'Price (' + homeCurrency() + ')', ''].map(h => el('th', { text: h })))]), tb]),
         el('div', { class: 'addbar' }, [el('button', { class: 'small', text: '+ Add deliverable', onclick: () => {
           cat.items.push({ id: 'i' + uid(), label: 'New deliverable', desc: '', unitLabel: '', price: 0 }); markDirty(); renderCatalog();
-        } })])
+        } })]),
+        phaseEditor(cat, type.categories)
       ]));
     });
-    tp.appendChild(el('div', { class: 'row', style: 'margin-top:12px' }, [
+    tp.appendChild(el('div', { class: 'row wrap', style: 'margin-top:12px' }, [
       el('button', { text: '+ Add category', onclick: () => { type.categories.push({ id: 'c' + uid(), label: 'New category', items: [] }); markDirty(); renderCatalog(); } }),
       el('span', { class: 'grow' }),
       el('button', { class: 'danger', text: 'Delete this project type', onclick: () => {

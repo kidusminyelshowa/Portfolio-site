@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" href="/team/suite.css" />
 <style>
 :root{
   --page:#EFEEE9; --card:#F8F6F2; --inner:#EEECE7; --white:#FFFFFF;
@@ -40,6 +41,20 @@ html[data-theme="classic"]{
   --w1:#F10103; --w2:#9E1B32; --w3:#F5806F; --w4:#4B0010; --w5:#F7B7AC; --w6:#C2463B; --wx:#4B0010;
   --gC-bg:#D7EAE6; --gC-ink:#0B3B37; --gC-line:#105752; --gC-soft:#BFDDD8; --gC-vline:#5E9F98;
   --gD-bg:#EAE4DD; --gD-ink:#2B2522; --gD-badge:#6E655E; --gD-soft:#DCD4CB; --gD-softInk:#4A433E;
+}
+/* "Your brand": every colour is mixed from the brand accent and highlight (set by theme.js) */
+html[data-theme="brand"]{
+  --a:var(--accent); --h:var(--highlight);
+  --page:#F0F0EE; --card:#FFFFFF; --inner:#F2F2EF; --ink:#141414; --ink2:#5E5E5A; --mute:#6B6B66; --line:#E6E6E2;
+  --pink:color-mix(in srgb,var(--a) 32%,#fff); --pinkSel:color-mix(in srgb,var(--a) 48%,#fff); --pinkSoft:color-mix(in srgb,var(--a) 12%,#fff); --pinkLine:color-mix(in srgb,var(--a) 58%,#fff);
+  --plum:color-mix(in srgb,var(--a) 38%,#141414); --teal:color-mix(in srgb,var(--h) 45%,#fff); --tealIn:color-mix(in srgb,var(--h) 22%,#fff);
+  --tealInk:#141414; --tealLine:color-mix(in srgb,var(--h) 55%,#141414); --tealText:#2B2B27;
+  --black:#141414; --shade:20,20,20; --togOff:#E3E3DF; --dot:#D3D3CE;
+  --gA-bg:color-mix(in srgb,var(--a) 12%,#fff); --gA-ink:#141414; --gA-arc:var(--a); --gA-arc2:color-mix(in srgb,var(--a) 70%,#fff); --gA-rest:color-mix(in srgb,var(--a) 20%,#fff); --gA-chip:color-mix(in srgb,var(--a) 24%,#fff);
+  --gB-bg:#F2F2EF; --gB-ink:#141414; --gB-track:#E3E3DF; --gB-tick:#A8A8A2;
+  --w1:var(--a); --w2:color-mix(in srgb,var(--a) 65%,#141414); --w3:color-mix(in srgb,var(--a) 55%,#fff); --w4:#141414; --w5:color-mix(in srgb,var(--a) 30%,#fff); --w6:color-mix(in srgb,var(--a) 75%,#8F8F8A); --wx:#141414;
+  --gC-bg:color-mix(in srgb,var(--h) 20%,#fff); --gC-ink:#141414; --gC-line:color-mix(in srgb,var(--h) 45%,#141414); --gC-soft:color-mix(in srgb,var(--h) 35%,#fff); --gC-vline:color-mix(in srgb,var(--h) 60%,#6B6B66);
+  --gD-bg:#EEEEEA; --gD-ink:#2B2B27; --gD-badge:#6B6B66; --gD-soft:#E0E0DB; --gD-softInk:#3F3F3B;
 }
 html[data-theme="ember"]{
   --page:#F1ECE6; --card:#FBF8F4; --inner:#F0E9E1; --ink:#3B1A0C; --ink2:#6B4E3F; --mute:#9A8374; --line:#E9DDD2;
@@ -176,6 +191,8 @@ aside{position:sticky;top:14px}
 
 /* ---------- toggles + pills ---------- */
 .tog{flex:none;position:relative;width:40px;height:23px;border-radius:999px;border:0;padding:0;background:var(--togOff);transition:background .2s}
+/* a bigger invisible hit area, so the switch is easy to tap */
+.tog::before{content:"";position:absolute;inset:-11px -6px}
 .tog::after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;
             box-shadow:0 1px 2px rgba(0,0,0,.15);transition:transform .22s cubic-bezier(.3,.7,.2,1)}
 .tog[aria-checked="true"]{background:var(--pinkSel)}
@@ -297,6 +314,26 @@ dialog::backdrop{background:rgba(var(--shade),.35);-webkit-backdrop-filter:blur(
 .state p{color:var(--ink2);margin:0}
 
 /* ---------- tablet / phone ---------- */
+/* ---------- per-service timeline: a week-by-week chart ---------- */
+.tlpanel{margin-top:var(--gap)}
+.tlhint{display:none;margin:0 0 8px;font-size:13px;color:var(--mute,#6B6B66)}
+@media (max-width:760px){.tlhint{display:block}}
+.tlscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px 4px}
+.tl{min-width:720px;display:grid;grid-template-columns:clamp(140px,18%,220px) minmax(0,1fr);row-gap:10px}
+.tl .wkh{grid-column:2;display:grid;font-size:12.5px;color:var(--ink2);padding:0 0 4px}
+.tl .wkh span{padding-left:6px}
+.tl .svc{border-radius:var(--r-box) 0 0 var(--r-box);padding:16px;display:flex;flex-direction:column;justify-content:center;gap:2px;color:var(--ink)}
+.tl .svc b{font-weight:500;font-size:16px;line-height:1.2}
+.tl .svc small{font-size:12.5px;color:var(--ink)}
+.tl .lane{position:relative;background:var(--inner);border-radius:0 var(--r-box) var(--r-box) 0;padding:12px 0;
+  background-image:repeating-linear-gradient(90deg,transparent 0 calc(var(--wk) - 1px),var(--line) calc(var(--wk) - 1px) var(--wk))}
+.tl .step{position:relative;height:22px;margin:4px 0}
+.tl .bar{position:absolute;top:0;height:100%;border-radius:6px}
+.tl .bar.rev{background:#FFE15A !important;box-shadow:inset 0 0 0 1.5px rgba(20,20,20,.45)}
+.tl .lbl{position:absolute;top:50%;transform:translateY(-50%);font-size:12px;white-space:nowrap;color:var(--ink);padding:0 6px}
+.tlkey{display:flex;gap:16px;margin-top:12px;font-size:12.5px;color:var(--ink2)}
+.tlkey i{display:inline-block;width:18px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.tlkey .k-work{background:var(--pinkSel)} .tlkey .k-rev{background:#FFE15A;box-shadow:inset 0 0 0 1.5px rgba(20,20,20,.45)}
 @media (max-width:1060px){
   .layout{grid-template-columns:minmax(0,1fr)}
   aside{position:static}
@@ -468,6 +505,13 @@ dialog::backdrop{background:rgba(var(--shade),.35);-webkit-backdrop-filter:blur(
         </div>
       </aside>
     </div>
+
+    <section class="panel tlpanel" id="tlPanel" hidden aria-labelledby="tlTitle">
+      <div class="phead"><div><h2 id="tlTitle">Project timeline</h2><p id="tlSub">Each service, step by step, week by week.</p></div><span class="count" id="tlTotal"></span></div>
+      <p class="tlhint">Swipe sideways to see every week.</p>
+      <div class="tlscroll"><div class="tl" id="tl"></div></div>
+      <div class="tlkey"><span><i class="k-work"></i>Work</span><span><i class="k-rev"></i>Your review</span></div>
+    </section>
 
     <footer>
       <span id="footName"></span>

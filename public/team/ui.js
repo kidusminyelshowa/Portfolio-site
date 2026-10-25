@@ -1,3 +1,5 @@
+import { applyTheme } from '/team/theme.js';
+
 /* Shared helpers: tiny DOM builder, formatting, chips/bars, modal, toast, API
    and the in-memory copy of everything this person is allowed to see. */
 
@@ -46,8 +48,18 @@ export const settings = () => (S.data && S.data.settings) || {};
 /* the agency's name, logo, colours and region (Settings → Brand & region) */
 export const brand = () => (S.data && S.data.brand) || S.brand || { name: 'Team', colors: {} };
 export const brandName = () => brand().name || 'Team';
-/* "Kidus Studio Team", or just "Team" before the brand is known */
-export const appName = () => (brand().name && brand().name !== 'Team' ? brand().name + ' Team' : 'Team');
+/* "Just me" mode (Settings → Brand & region): a freelancer working alone. 'auto' means solo while
+   nobody else is on the team (creative partners don't count: they only take tasks). */
+export const teamSize = () => ((S.data && S.data.employees) || []).filter(e => e.status !== 'inactive' && !(e.partner || e.departmentId === 'partners')).length;
+export const isSolo = () => {
+  const m = brand().workMode || 'auto';
+  return m === 'solo' || (m === 'auto' && !!(S.data && S.data.employees) && teamSize() <= 1);
+};
+/* "Kidus Studio Team" ("… Workspace" when working alone), or just "Team" before the brand is known */
+export const appName = () => {
+  const word = isSolo() ? 'Workspace' : 'Team';
+  return brand().name && brand().name !== 'Team' ? brand().name + ' ' + word : word;
+};
 /* the home currency (ETB in the Ethiopia preset) and the agency's time zone */
 export const cur = () => brand().currency || settings().currency || 'ETB';
 export const brandZone = () => brand().timeZone || 'UTC';
@@ -58,13 +70,13 @@ export function brandMark() {
 }
 /* the brand colours become the app's accent colours */
 export function applyBrand() {
-  const b = brand(), c = b.colors || {}, r = document.documentElement.style;
-  if (c.accent) { r.setProperty('--orange', c.accent); r.setProperty('--orangeSoft', 'color-mix(in srgb, ' + c.accent + ' 14%, #fff)'); }
-  if (c.accent2) r.setProperty('--orange2', c.accent2);
-  if (c.highlight) { r.setProperty('--lime', c.highlight); r.setProperty('--limeSoft', 'color-mix(in srgb, ' + c.highlight + ' 22%, #fff)'); }
+  const b = brand();
+  applyTheme(b.colors);
   const mark = document.getElementById('brandMark'), name = document.getElementById('brandName');
   if (mark) mark.replaceWith(Object.assign(brandMark(), { id: 'brandMark' }));
   if (name) name.textContent = brandName();
+  const sub = name && name.parentElement && name.parentElement.querySelector('small');
+  if (sub) sub.textContent = isSolo() ? 'Workspace' : 'Team';
   document.title = appName();
 }
 export const employees = () => (S.data && S.data.employees) || [];

@@ -81,7 +81,8 @@ function draw(root, data) {
   root.textContent = '';
   const rows = data.rows || [];
   if (!rows.length) {
-    root.appendChild(empty('No proposals yet', 'Proposals made in the Price Builder (' + location.host + '/price) show up here as soon as they are created.'));
+    root.appendChild(empty('No proposals yet', 'Proposals made in the Price Builder show up here as soon as they are created.',
+      el('button', { class: 'primary', text: 'Make a quote', onclick: () => { location.href = '/price#/new'; } })));
     return;
   }
   const cohort = rows.filter(r => r.sentAt && inPeriod(r));
@@ -192,7 +193,7 @@ function monthlyCard(rows) {
   return card(MONEY ? 'Value per month' : 'Proposals per month', 'Last 6 months · hover a month for the numbers', [
     el('div', { class: 'legend', style: 'margin-bottom:8px' }, [el('span', {}, [el('i', { style: 'background:var(--c1)' }), 'Sent']), el('span', {}, [el('i', { style: 'background:var(--c2)' }), 'Won'])]),
     wrap,
-    el('p', { class: 'muted', style: 'font-size:12.5px;margin-top:6px', text: MONEY ? 'This month: ' + short(last.sent) + ' ' + cur() + ' sent, ' + short(last.won) + ' ' + cur() + ' won · scale up to ' + short(max) + ' ETB' : 'This month: ' + last.nSent + ' sent, ' + last.nWon + ' won' })
+    el('p', { class: 'muted', style: 'font-size:12.5px;margin-top:6px', text: MONEY ? 'This month: ' + short(last.sent) + ' ' + cur() + ' sent, ' + short(last.won) + ' ' + cur() + ' won · scale up to ' + short(max) + ' ' + cur() : 'This month: ' + last.nSent + ' sent, ' + last.nWon + ' won' })
   ]);
 }
 

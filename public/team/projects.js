@@ -32,7 +32,8 @@ export function viewProjects() {
   const addBar = isManager() ? el('div', { class: 'salesbar' }, [el('span', { class: 'grow muted', style: 'font-size:13px', text: 'Projects come from Price Builder kick-offs, or add one yourself.' }),
     el('button', { class: 'primary sm', text: '+ Add project', onclick: newProjectModal })]) : null;
   if (!list.length) {
-    return frag([addBar, empty('No projects yet', 'When a deal is kicked off in the Price Builder (contract → invoice → kick-off), it arrives here with a task plan. You can also add a project yourself.')]);
+    return frag([addBar, empty('No projects yet', 'When a deal is kicked off in the Price Builder (contract → invoice → kick-off), it arrives here with a task plan. You can also add a project yourself.',
+      isManager() ? el('button', { class: 'primary', text: '+ Add project', onclick: newProjectModal }) : null)]);
   }
   return frag([
     addBar,

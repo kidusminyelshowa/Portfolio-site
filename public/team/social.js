@@ -5,7 +5,7 @@ import {
   el, frag, S, me, isAdmin, isManager, employees, empById, chip, card, empty, field, input, textarea, select, checkbox,
   modal, closeModal, act, toast, avatar, dateShort, today, resizeImage, uploadFile, pickFile, myEmp
 } from '/team/ui.js';
-import { brandName } from '/team/ui.js';
+import { brandName, isSolo } from '/team/ui.js';
 import { icon } from '/team/icons.js';
 
 const render = () => window.dispatchEvent(new Event('gz:render'));
@@ -76,7 +76,7 @@ export async function enablePush() {
   if (st === 'install-first') return installApp();
   if (st === 'unsupported') return toast('This browser cannot show notifications. Try Chrome, or install the app.', true);
   if (st === 'blocked') return toast('Notifications are blocked for this site. Allow them in the browser settings.', true);
-  if (!S.data.push || !S.data.push.ready || !S.data.push.publicKey) return toast('Phone notifications are not switched on for the studio yet. You still see everything in the bell.', true);
+  if (!S.data.push || !S.data.push.ready || !S.data.push.publicKey) return toast('Phone notifications are not switched on yet. You still see everything in the bell.', true);
   const perm = await Notification.requestPermission();
   if (perm !== 'granted') return toast('Notifications were not allowed.', true);
   try {
@@ -214,7 +214,7 @@ export function hello() {
       el('h2', {}, [greet + ', ', el('em', { text: first(me().name) })]),
       el('p', { text: new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + ' · here is your day' })
     ]),
-    roster.length > 1 ? teamStrip(roster) : null
+    roster.length > 1 && !isSolo() ? teamStrip(roster) : null
   ]);
 }
 export function teamStrip(roster) {
@@ -317,13 +317,13 @@ export function viewMusic() {
   const id = spotifyId();
   if (SP.ro) { SP.ro.disconnect(); SP.ro = null; }
   SP.slot = null;
-  const admin = isAdmin() ? card('Playlist link', id ? 'Paste a different link to change it, or clear it to remove the player.' : 'Paste the link of the studio’s Spotify playlist (Spotify → Share → Copy link to playlist).', [
+  const admin = isAdmin() ? card('Playlist link', id ? 'Paste a different link to change it, or clear it to remove the player.' : 'Paste the link of a Spotify playlist (Spotify → Share → Copy link to playlist).', [
     el('div', { class: 'row' }, (() => {
       const i = input(id ? 'https://open.spotify.com/' + id : '', { placeholder: 'https://open.spotify.com/playlist/…' });
       return [i, el('button', { class: 'sm accent', text: 'Save', onclick: () => act({ action: 'setSpotify', url: i.value.trim() }, i.value.trim() ? 'Playlist linked' : 'Playlist removed', render).catch(() => {}) })];
     })())
   ]) : null;
-  if (!id) return frag([empty('No playlist yet', isAdmin() ? 'Link the studio’s Spotify playlist below and it plays for the whole team, on every page.' : 'An admin will link the studio’s Spotify playlist here.'),
+  if (!id) return frag([empty('No playlist yet', isAdmin() ? (isSolo() ? 'Link a Spotify playlist below and it plays while you work, on every page.' : 'Link a Spotify playlist below and it plays for the whole team, on every page.') : 'An admin will link the team playlist here.'),
     admin ? el('div', { style: 'margin-top:14px' }, [admin]) : null]);
   const slot = el('div', { class: 'spslot', style: 'height:min(520px,70vh)' });
   SP.slot = slot;

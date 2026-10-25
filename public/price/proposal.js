@@ -1,7 +1,8 @@
 /* Price Builder: the client proposal at /price/<slug>.
    The client's choices live only in this browser (and are sent when they
    press "Request"). The saved quote is never changed. */
-import { clientTotals, defaultSelection, toDisplay, formatMoney, clampQty, qtyOf, isOn, MAX_QTY, setHomeCurrency, homeCurrency, currencyLabel } from '/price/engine.js';
+import { applyTheme } from '/team/theme.js';
+import { clientTotals, defaultSelection, toDisplay, formatMoney, clampQty, qtyOf, isOn, MAX_QTY, setHomeCurrency, homeCurrency, currencyLabel, timelinePlan } from '/price/engine.js';
 
 const $ = s => document.querySelector(s);
 const SVG = 'http://www.w3.org/2000/svg';
@@ -71,6 +72,7 @@ function fail() { $('#loading').hidden = true; $('#missing').hidden = false; }
 let BRAND = { name: '' };
 function applyBrand(b) {
   BRAND = b;
+  applyTheme(b.colors);
   setHomeCurrency(b.currency);
   document.querySelectorAll('[data-cur="ETB"]').forEach(x => { x.textContent = homeCurrency(); });
   const mk = $('#brandMark'), nm = $('#brandName');
@@ -177,6 +179,7 @@ function render() {
   renderIncluded(t);
   renderGlance(t, defT);
   renderInvestment(t, defT);
+  renderTimeline();
   if (focusKey) { const f = document.querySelector('[data-k="' + focusKey + '"]'); if (f) f.focus({ preventScroll: true }); }
 }
 
@@ -250,6 +253,36 @@ function renderIncluded(t) {
   });
   (P.costs || []).forEach(c => box.appendChild(el('div', {}, [el('span', { text: c.title }), el('span', { class: 'num', text: money(c.amount) })])));
   $('#inclPanel').hidden = !box.children.length;
+}
+
+/* ---------- per-service timeline: each service's steps on a week grid ---------- */
+const SVC_COLORS = ['var(--pinkSel)', 'var(--teal)', 'var(--w5)', 'var(--w3)', 'var(--gC-soft)', 'var(--gD-soft)'];
+function renderTimeline() {
+  const plan = timelinePlan(P, sel);
+  const panel = $('#tlPanel');
+  panel.hidden = !plan.services.length;
+  if (!plan.services.length) return;
+  const weeks = Math.max(1, Math.ceil(plan.total / 5)), span = weeks * 5;
+  const pc = d => (d / span * 100) + '%';
+  const box = $('#tl');
+  box.textContent = '';
+  box.style.setProperty('--wk', (100 / weeks) + '%');
+  box.appendChild(el('div', { class: 'wkh', style: 'grid-template-columns:repeat(' + weeks + ',1fr)', 'aria-hidden': 'true' },
+    Array.from({ length: weeks }, (_, i) => el('span', { text: 'Week ' + (i + 1) }))));
+  plan.services.forEach((sv, n) => {
+    const color = SVC_COLORS[n % SVC_COLORS.length];
+    box.appendChild(el('div', { class: 'svc', style: 'background:' + color }, [el('b', { text: sv.title }), el('small', { text: sv.days + ' working day' + (sv.days === 1 ? '' : 's') })]));
+    box.appendChild(el('div', { class: 'lane', role: 'list', 'aria-label': sv.title }, sv.phases.map(ph => {
+      const right = ph.end / span > 0.7;    // near the end: the name goes before the bar
+      const when = 'days ' + (ph.start + 1) + '–' + ph.end;
+      return el('div', { class: 'step', role: 'listitem', 'aria-label': ph.label + ', ' + when + (ph.review ? ', your review' : '') }, [
+        el('span', { class: 'bar' + (ph.review ? ' rev' : ''), style: 'left:' + pc(ph.start) + ';width:' + pc(ph.end - ph.start) + ';background:' + color }),
+        el('span', { class: 'lbl', style: right ? 'right:calc(100% - ' + pc(ph.start) + ')' : 'left:' + pc(ph.end), text: ph.label })
+      ]);
+    })));
+  });
+  $('#tlTotal').textContent = plan.total + ' working days · about ' + weeks + ' week' + (weeks === 1 ? '' : 's');
+  $('#tlSub').textContent = plan.scaled ? 'Each service, step by step. It follows the delivery pace you chose.' : 'Each service, step by step, week by week.';
 }
 
 /* ---------- charts ---------- */

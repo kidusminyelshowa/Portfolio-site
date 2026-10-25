@@ -6,7 +6,9 @@
    Price list page shows a "Sample prices" warning until the list is saved. */
 
 const it = (id, label, price, desc, unitLabel) => ({ id, label, price, desc: desc || '', unitLabel: unitLabel || '' });
-const cat = (id, label, items) => ({ id, label, items });
+const cat = (id, label, items, start, phases) => ({ id, label, items, ...(phases ? { start, phases } : {}) });
+// a sample timeline step: [name, from day (counted from the service's start), working days, client review?]
+const ph = list => list.map(([label, start, days, review]) => ({ label, start, days, review: !!review }));
 
 export default {
   version: 1,
@@ -75,7 +77,7 @@ export default {
         it('naming', 'Naming', 25000, 'Name exploration, screening and a shortlist.'),
         it('architecture', 'Brand architecture', 20000, 'How the brand, sub-brands and products relate.'),
         it('messaging', 'Brand messaging', 15000, 'Tagline, tone of voice and key messages.')
-      ]),
+      ], 0, ph([['Discovery and research', 0, 2], ['Strategy workshop', 2, 2], ['Client review', 4, 1, true], ['Final strategy document', 5, 2]])),
       cat('identity', 'Visual Identity', [
         it('logo', 'Logo', 40000, 'Primary logo, secondary lock-ups and mark.'),
         it('identity', 'Visual identity system', 35000, 'The full look: layout, imagery and rules.'),
@@ -84,7 +86,7 @@ export default {
         it('graphics', 'Graphic elements', 15000, 'Patterns, shapes and the brand’s visual language.'),
         it('icons', 'Iconography', 12000, 'A custom icon set.', 'sets'),
         it('guidelines', 'Brand guidelines', 20000, 'A clear book so anyone can use the brand well.')
-      ]),
+      ], 5, ph([['Concept development, 2 options', 0, 4], ['Client review', 4, 1, true], ['Refinements', 5, 2], ['Client review', 7, 1, true], ['Final files and guidelines', 8, 3]])),
       cat('collaterals', 'Collaterals', [
         it('card', 'Business card', 3000, 'Design and print-ready files.'),
         it('letterhead', 'Letterhead', 2500, 'Letterhead and document template.'),
@@ -93,7 +95,7 @@ export default {
         it('signage', 'Signage', 15000, 'Storefront and wayfinding signage.'),
         it('uniform', 'Uniform', 8000, 'Staff uniform and apparel.'),
         it('social', 'Social media templates', 12000, 'Post and story templates in the new identity.')
-      ])
+      ], 12, ph([['Cards, letterhead and core pieces', 0, 3], ['Menu, signage and templates', 2, 3], ['Client review', 5, 1, true], ['Revisions and final exports', 6, 3]]))
     ]},
     { id: 'refresh', label: 'Brand Refresh', days: [14, 10, 7], categories: [
       cat('audit', 'Brand Audit', [

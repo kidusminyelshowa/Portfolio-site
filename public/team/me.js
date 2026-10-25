@@ -9,7 +9,9 @@ import {
   money, pct, score, dateShort, monthName, monthShort, today, thisMonth, sinceText, daysBetween,
   modal, closeModal, toast, act, STATUS_LABEL, quarterLabel, quarterDates, userName, noteModal, skillScale
 } from '/team/ui.js';
-import { brandName } from '/team/ui.js';
+import { brandName, brand, isSolo, teamSize } from '/team/ui.js';
+import { loadSales } from '/team/sales.js';
+import { icon } from '/team/icons.js';
 import { tasksCard, taskEvidenceCard, deliveryTiles, taskBoard, linkedTasks } from '/team/tasks.js';
 import { hello, promoCards, achievementsCard } from '/team/social.js';
 import { studioDashboard } from '/team/studio.js';
@@ -40,6 +42,43 @@ function partnerHome(emp) {
   ]);
 }
 
+/* ================= first run: four steps for a new admin, gone once done or dismissed ================= */
+const SETUP_KEY = 'gz-setup-dismissed';
+function setupCard() {
+  try { if (localStorage.getItem(SETUP_KEY)) return null; } catch (e) { /* private mode: still show it */ }
+  const root = el('section', { class: 'card setup' });
+  const draw = sales => {
+    const b = brand(), solo = isSolo();
+    const partners = employees().some(e => e.status !== 'inactive' && partnerEmp(e));
+    const steps = [
+      { done: !!(b.name && b.name !== 'Your Agency' && b.email), title: 'Add your business details', why: 'Name, logo, colours, contact and bank details. They appear on proposals, contracts and invoices.', href: '#/settings', label: 'Open settings' },
+      { done: !!(sales && sales.catalogSaved), title: 'Set your prices', why: 'The price list starts with sample prices. Put in yours once and every quote uses them.', href: '/price#/prices', label: 'Open price list' },
+      { done: !!(sales && sales.rows && sales.rows.length), title: 'Send your first proposal', why: 'Build a quote and send the client a live link they can adjust.', href: '/price#/new', label: 'New quote' },
+      solo
+        ? { done: partners, optional: true, title: 'Add a creative partner (optional)', why: 'Freelancers you bring in for specific work. They only see the tasks you give them.', href: '#/people', label: 'Add partner' }
+        : { done: teamSize() > 1, title: 'Add your team', why: 'Each person gets their own sign-in, tasks and growth plan.', href: '#/people', label: 'Add people' }
+    ];
+    const required = steps.filter(x => !x.optional);
+    if (required.every(x => x.done) && (steps[3].done || steps[3].optional)) { root.remove(); return; }
+    const left = required.filter(x => !x.done).length;
+    root.textContent = '';
+    root.append(
+      el('div', { class: 'cardhead' }, [
+        el('div', {}, [el('h3', { text: 'Get set up' }), el('p', { class: 'sub', text: left ? left + ' of ' + required.length + ' steps left. This card goes away when you are done.' : 'All set. You can hide this card.' })]),
+        el('button', { class: 'sm ghost', text: 'Hide', onclick: () => { try { localStorage.setItem(SETUP_KEY, '1'); } catch (e) { /* ignore */ } root.remove(); } })
+      ]),
+      el('ol', { class: 'setup-steps' }, steps.map((x, i) => el('li', { class: x.done ? 'done' : '' }, [
+        el('span', { class: 'n', 'aria-hidden': 'true' }, [x.done ? icon('check', 15) : String(i + 1)]),
+        el('span', { class: 'grow' }, [el('b', { text: x.title }), el('small', { text: x.done ? 'Done' : x.why })]),
+        x.done ? null : el('button', { class: i === steps.findIndex(y => !y.done) ? 'accent sm' : 'sm ghost', text: x.label, onclick: () => { location.href = x.href; } })
+      ])))
+    );
+  };
+  draw(null);
+  loadSales(false).then(draw).catch(() => draw(null));
+  return root;
+}
+
 /* ================= dashboard ================= */
 export function viewDashboard() {
   const emp = subject();
@@ -67,7 +106,8 @@ export function viewDashboard() {
         ]),
         el('div', { style: 'height:12px' }),
         el('div', { class: 'list' }, goals.map(g => goalRow(g, emp)))
-      ]) : empty('No goals yet', 'No goals have been set for this quarter.')
+      ]) : empty('No goals yet', own && canManage(emp.id) ? 'Set a few targets for this quarter: income, clients, a skill to learn.' : 'No goals have been set for this quarter.',
+        own && canManage(emp.id) ? el('button', { class: 'sm primary', text: 'Add goal', onclick: () => goalModal(null, emp, true) }) : null)
     ], [el('button', { class: 'sm ghost', text: 'Open goals', onclick: () => go('#/goals') })]),
     card('Next milestones', null, [
       nextMs.length ? el('div', { class: 'list' }, nextMs.map(m => el('div', { class: 'item' }, [
@@ -80,7 +120,7 @@ export function viewDashboard() {
   // the founder and managers see the studio first: sales, the work being done, the people
   const studio = own && isManager() && !S.preview;
   if (studio && isAdmin()) return frag([
-    hello(), promoCards(), studioDashboard(),
+    hello(), setupCard(), promoCards(), studioDashboard(),
     el('h2', { class: 'sechead', text: 'Your quarter' }),
     quarterRow,
     el('div', { style: 'margin-top:14px' }, [tasksCard(emp)])

@@ -36,7 +36,9 @@ export const CHOICE_GROUPS = [
 
 // colour themes for the client page (css in price/proposal.html); the first is the default
 export const THEMES = [
-  { id: 'classic', label: 'Classic', note: 'Default · red, wine, petrol, ivory', colors: ['#F10103', '#4B0010', '#105752', '#F2E8DA'] },
+  // built from Settings → Brand & region (accent and highlight), so proposals look like your other material
+  { id: 'brand', label: 'Your brand', note: 'Default · your accent and highlight colours', colors: ['var(--accent)', 'color-mix(in srgb, var(--accent) 35%, #141414)', 'var(--highlight)', '#F0F0EE'] },
+  { id: 'classic', label: 'Classic', note: 'Red, wine, petrol, ivory', colors: ['#F10103', '#4B0010', '#105752', '#F2E8DA'] },
   { id: 'blossom', label: 'Blossom', note: 'Pink, plum, teal', colors: ['#FFB1EE', '#4A1239', '#8FDCE5', '#EFEEE9'] },
   { id: 'ember', label: 'Ember', note: 'Warm · apricot, rust, mustard', colors: ['#F7A774', '#5A1F0E', '#F2D27A', '#F1ECE6'] },
   { id: 'sage', label: 'Sage', note: 'Calm · mint, forest, periwinkle', colors: ['#A8D5B5', '#173B30', '#C9D6F0', '#ECEEE8'] },
@@ -196,7 +198,7 @@ export function publishQuote(q, slug, now) {
         qtyEditable: !!it.clientQty
       });
     });
-    if (items.length) categories.push({ title: String(c.label || ''), items });
+    if (items.length) categories.push({ title: String(c.label || ''), items, start: dayNum(c.start, 0), phases: cleanPhases(c.phases) });
   });
 
   const gw = d.goodwill || {};
@@ -228,6 +230,47 @@ export function publishQuote(q, slug, now) {
     total: round(t.final, 2),
     totalInclVat: round(t.finalWithVat, 2)
   };
+}
+
+/* ---------- per-service timeline ----------
+   Each category (service) can carry its own plan: phases with a start day (counted from the
+   service's own start) and a length in working days, some marked as client reviews. The service
+   itself starts on a day counted from the project start, so services can overlap. */
+const dayNum = (v, min) => Math.max(min, Math.min(999, Math.round(num(v)) || 0));
+export function cleanPhases(list) {
+  return (Array.isArray(list) ? list : []).slice(0, 30).map(x => ({
+    label: String((x && x.label) || '').slice(0, 120), start: dayNum(x && x.start, 0), days: Math.max(1, dayNum(x && x.days, 1)), review: !!(x && x.review)
+  })).filter(x => x.label);
+}
+/* a new phase goes right after the last one */
+export function nextPhaseStart(phases) {
+  return (phases || []).reduce((m, x) => Math.max(m, dayNum(x.start, 0) + Math.max(1, dayNum(x.days, 1))), 0);
+}
+/* how long a service takes from its first phase to its last */
+export function serviceDays(phases) { return cleanPhases(phases).reduce((m, x) => Math.max(m, x.start + x.days), 0); }
+
+/* the plan the client sees: services with at least one item switched on, stretched or squeezed
+   by the delivery pace they picked (Rush shortens every phase in proportion) */
+export function timelinePlan(p, sel) {
+  const s = sel || defaultSelection(p);
+  const pace = (p.choices || []).find(g => g.id === 'timeline');
+  let k = 1;
+  if (pace) {
+    const base = pace.options.find(o => o.id === pace.selected) || pace.options[0];
+    const now = (pace.canChange && s.choices && pace.options.find(o => o.id === s.choices[pace.id])) || base;
+    if (base && now && num(base.days) > 0 && num(now.days) > 0) k = num(now.days) / num(base.days);
+  }
+  const sc = d => Math.round(d * k);
+  const services = [];
+  (p.categories || []).forEach((c, i) => {
+    const phases = cleanPhases(c.phases);
+    if (!phases.length || !c.items.some(it => isOn(it, s))) return;
+    const start = sc(dayNum(c.start, 0));
+    const rows = phases.map(x => { const a = start + sc(x.start); return { label: x.label, review: x.review, start: a, end: a + Math.max(1, sc(x.days)) }; });
+    const end = rows.reduce((m, r) => Math.max(m, r.end), start);
+    services.push({ title: c.title, index: i, start, end, days: end - start, phases: rows });
+  });
+  return { services, total: services.reduce((m, x) => Math.max(m, x.end), 0), scaled: k !== 1 };
 }
 
 /* ---------- client totals (browser + server) ---------- */

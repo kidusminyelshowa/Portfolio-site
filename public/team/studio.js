@@ -4,7 +4,7 @@
    browser from what the server already sends (tasks) and the sales pipeline
    (/api/team?sales=1). Amounts only show for admins (the server strips them). */
 import {
-  el, frag, S, me, employees, isAdmin, chip, card, empty, tile, avatar, bar, score, pct, dateShort, monthName,
+  el, frag, S, me, employees, isAdmin, isSolo, brand, chip, card, empty, tile, avatar, bar, score, pct, dateShort, monthName,
   today, daysBetween, svgEl, quarterLabel, quarterRange, STATUS_LABEL, toast
 } from '/team/ui.js';
 import { cur } from '/team/ui.js';
@@ -26,7 +26,7 @@ const short = n => { n = Number(n) || 0; return n >= 1e6 ? (Math.round(n / 1e5) 
 const won = r => r.reached && (r.reached.signed || r.reached.paid);
 const wonAt = r => String((r.contract && (r.contract.signedAt || r.contract.date)) || '').slice(0, 10);
 const monthsBack = n => Array.from({ length: n }, (_, i) => { const d = new Date(); d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth() - (n - 1 - i)); return d.toISOString().slice(0, 7); });
-const STATUS_COLOR = { todo: '#D9D9D5', in_progress: '#141414', blocked: '#E5372B', submitted: '#F6C445', done: '#C8F23C' };
+const STATUS_COLOR = { todo: '#D9D9D5', in_progress: '#141414', blocked: '#D42F23', submitted: '#F6C445', done: 'var(--highlight)' };
 
 /* the people the dashboard compares: everyone you can see, without the founder */
 function people() {
@@ -67,7 +67,7 @@ function columns(data, opts) {
   const paint = W => {
     const H = o.height || 190, padB = 24, padT = 8, padL = 34;
     const max = Math.max(1, ...data.map(d => d.parts.reduce((s, p) => s + p.value, 0)));
-    const nice = max <= 4 ? max : Math.ceil(max / 4) * 4;
+    const nice = max <= 2 ? 2 : max <= 4 ? 4 : Math.ceil(max / 4) * 4;   // even, so the middle line is a whole number
     const gw = (W - padL) / data.length, bw = Math.min(38, gw * 0.56);
     const y = v => padT + (1 - v / nice) * (H - padT - padB);
     const svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, class: 'chart', role: 'img', 'aria-label': o.label || 'Chart' });
@@ -145,7 +145,7 @@ function weeklyCard() {
       columns(data, { label: 'Tasks finished per week' }),
       el('p', { class: 'muted', style: 'font-size:12.5px;margin-top:6px', text: last + ' finished in the last 4 weeks' + (prev ? ' · ' + (last >= prev ? '▲ ' : '▼ ') + Math.abs(last - prev) + ' on the 4 weeks before' : '') })
     ]) : empty('Nothing finished yet', 'The chart fills in as tasks are marked done.')
-  ], [el('button', { class: 'sm ghost', text: 'Team tasks', onclick: () => go('#/tasks-team') })]);
+  ], [el('button', { class: 'sm ghost', text: isSolo() ? 'My tasks' : 'Team tasks', onclick: () => go(isSolo() ? '#/tasks' : '#/tasks-team') })]);
 }
 
 function motionCard() {
@@ -156,7 +156,7 @@ function motionCard() {
   const open = parts.slice(0, 4).reduce((s, p) => s + p.value, 0);
   const now = list.filter(t => t.status === 'in_progress').sort((a, b) => String(a.dueDate).localeCompare(String(b.dueDate))).slice(0, 5);
   const pers = id => employees().find(e => e.id === id);
-  return card('Work in motion', 'Every task the team has, by where it stands', [
+  return card('Work in motion', isSolo() ? 'Every open task, by where it stands' : 'Every task the team has, by where it stands', [
     el('div', { class: 'motion' }, [
       ring(parts, open, 'open'),
       el('div', { class: 'legend col' }, parts.map(p => el('span', {}, [el('i', { style: 'background:' + p.color }), p.name, el('b', { class: 'num', text: String(p.value) })])))
@@ -166,7 +166,7 @@ function motionCard() {
       e ? avatar(e.name, 'sm') : null,
       el('span', { class: 'grow' }, [el('b', { text: t.title }), el('small', { text: [e && first(e.name), t.client, t.dueDate ? 'due ' + dateShort(t.dueDate) : ''].filter(Boolean).join(' · ') })]),
       t.priority === 'urgent' ? chip('Urgent', 'bad') : null
-    ]); })) : empty('Nobody has started anything', 'Tasks show here once someone presses Start.')
+    ]); })) : empty(isSolo() ? 'Nothing in progress' : 'Nobody has started anything', 'Tasks show here once they are started.')
   ]);
 }
 
@@ -221,7 +221,8 @@ function salesCard(sales) {
   if (sales.error) return card('Sales pipeline', null, [empty('Could not load the proposals', sales.error)]);
   const rows = sales.rows || [];
   const money = !!sales.showMoney;
-  if (!rows.length) return card('Sales pipeline', null, [empty('No proposals yet', 'Proposals made in the Price Builder show up here.')]);
+  if (!rows.length) return card('Sales pipeline', null, [empty('No proposals yet', 'Proposals you make in the Price Builder show up here, with where each one stands.',
+    isAdmin() ? el('button', { class: 'accent sm', text: 'Make a quote', onclick: () => { location.href = '/price#/new'; } }) : null)]);
   const STAGES = [['sent', 'Sent'], ['opened', 'Opened'], ['replied', 'Replied'], ['contract', 'Contract'], ['invoiced', 'Invoiced'], ['paid', 'Paid'], ['production', 'With the team']];
   const live = rows.filter(r => STAGES.some(s => s[0] === r.stage));
   const maxN = Math.max(1, ...STAGES.map(([k]) => live.filter(r => r.stage === k).length));
@@ -278,9 +279,10 @@ function kpiRow(sales, eom) {
     tiles.push(tile('Open pipeline', '…', 'loading'), tile('Won this quarter', '…', 'loading'));
   }
   const dm = doneIn(month), dp = doneIn(prevMonth);
-  tiles.push(tile('Finished this month', String(dm), dp ? (dm >= dp ? '▲ ' : '▼ ') + Math.abs(dm - dp) + ' on last month (' + dp + ')' : 'tasks marked done', () => go('#/tasks-team')));
-  tiles.push(tile('On time', onTime == null ? '—' : onTime + '%', 'team, last 90 days · goal 90%', () => go('#/insights')));
-  tiles.push(tile('Overdue now', String(overdue), waiting ? waiting + ' handed in, waiting for you' : 'nothing waiting to check', () => go('#/tasks-team')));
+  const solo = isSolo(), tasksHref = solo ? '#/tasks' : '#/tasks-team';
+  tiles.push(tile('Finished this month', String(dm), dp ? (dm >= dp ? '▲ ' : '▼ ') + Math.abs(dm - dp) + ' on last month (' + dp + ')' : 'tasks marked done', () => go(tasksHref)));
+  tiles.push(tile('On time', onTime == null ? '—' : onTime + '%', (solo ? 'last 90 days' : 'team, last 90 days') + ' · goal 90%', () => go(solo ? '#/tasks' : '#/insights')));
+  tiles.push(tile('Overdue now', String(overdue), waiting ? waiting + ' handed in, waiting for you' : solo ? 'nothing overdue to chase' : 'nothing waiting to check', () => go(tasksHref)));
   return el('div', { class: 'kpis', style: 'margin-bottom:14px' }, tiles);
 }
 
@@ -319,12 +321,12 @@ function nextSteps(sales, eom) {
   (S.data.actions || []).filter(a => ['approval', 'leave', 'review', 'project'].includes(a.kind)).slice(0, 3).forEach(a => add('approvals', a.text, a.kind === 'approval' ? 'Waiting for your approval' : a.kind === 'leave' ? 'Leave request' : a.kind === 'project' ? 'Project' : 'Review', a.href));
   // the Insights rules: workload, who is best at what, lateness patterns
   suggestions(collect(90)).slice(0, 3).forEach(s => add('insights', s.text, s.why, '#/insights'));
-  if (eom.winner && isAdmin()) add('award', 'Recognise ' + first(eom.winner.e.name) + ' as employee of the month', eom.winner.done + ' tasks finished, ' + (eom.winner.onTime == null ? '' : eom.winner.onTime + '% on time') + '. A short message goes a long way.', '#/notify', 'ok');
+  if (eom.winner && isAdmin() && !isSolo()) add('award', 'Recognise ' + first(eom.winner.e.name) + ' as employee of the month', eom.winner.done + ' tasks finished, ' + (eom.winner.onTime == null ? '' : eom.winner.onTime + '% on time') + '. A short message goes a long way.', '#/notify', 'ok');
   return out;
 }
 
 function nextCard(steps) {
-  return card('Next steps', 'Suggested from your tasks, sales and approvals · most urgent first', [
+  return card('Next steps', (isSolo() ? 'Suggested from your tasks and sales' : 'Suggested from your tasks, sales and approvals') + ' · most urgent first', [
     steps.length ? el('div', { class: 'stack', style: 'gap:8px' }, steps.slice(0, 9).map(s => el('div', { class: 'sugg click' + (s.tone ? ' t-' + s.tone : ''), onclick: () => go(s.href) }, [
       el('span', { class: 'sic' }, [icon(s.e, 17)]),
       el('div', { class: 'grow' }, [el('b', { text: s.text }), s.why ? el('div', { class: 'dim', style: 'font-size:13px', text: s.why }) : null]),
@@ -350,8 +352,10 @@ function claudeCard(sales, eom) {
   return el('section', { class: 'card dark claude' }, [
     el('div', { class: 'grow' }, [
       el('span', { class: 'eomtag', text: 'Where do I stand?' }),
-      el('h3', { style: 'font-size:20px;margin-top:8px', text: 'Ask Claude about the studio' }),
-      el('p', { class: 'sub', style: 'margin-top:4px', text: 'Download one file with the pipeline, cash, every task and each person’s numbers. Drop it into a Claude chat and it tells you where you are and what to do next.' })
+      el('h3', { style: 'font-size:20px;margin-top:8px', text: isSolo() ? 'Ask Claude about your business' : 'Ask Claude about ' + (brand().name || 'the studio') }),
+      el('p', { class: 'sub', style: 'margin-top:4px', text: isSolo()
+        ? 'Download one file with your pipeline, cash and every task. Drop it into a Claude chat and it tells you where you are and what to do next.'
+        : 'Download one file with the pipeline, cash, every task and each person’s numbers. Drop it into a Claude chat and it tells you where you are and what to do next.' })
     ]),
     el('button', { text: 'Download for Claude', onclick: ev => {
       ev.target.disabled = true;
@@ -367,6 +371,18 @@ export function studioDashboard() {
   const draw = sales => {
     const eom = employeeOfMonth();
     root.textContent = '';
+    const ok = sales && !sales.error ? sales : null;
+    // working alone: no employee of the month or leaderboard, the sales card gets the room
+    if (isSolo()) {
+      root.append(kpiRow(ok, eom), el('div', { class: 'dash' }, [
+        el('div', { class: 's8' }, [salesCard(sales)]),
+        el('div', { class: 's4' }, [isAdmin() ? claudeCard(ok, eom) : null]),
+        el('div', { class: 's7' }, [nextCard(nextSteps(ok, eom))]),
+        el('div', { class: 's5' }, [motionCard()]),
+        el('div', { class: 's12' }, [weeklyCard()])
+      ]));
+      return;
+    }
     root.append(
       kpiRow(sales && !sales.error ? sales : null, eom),
       el('div', { class: 'dash' }, [

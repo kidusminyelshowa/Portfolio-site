@@ -3,13 +3,16 @@
    downloads a document. Built-in PDF fonts only cover
    Latin letters, so other characters are swapped for close equivalents. */
 import { money, dateLong, termContext, fillTerms, paymentPlan, paidSoFar, invoiceLineText, KIND_LABELS } from '/price/deal.js';
-import { clientTotals, toDisplay, defaultSelection, homeCurrency } from '/price/engine.js';
+import { clientTotals, toDisplay, defaultSelection, homeCurrency, timelinePlan } from '/price/engine.js';
 
-/* palette: the accent ("pink", red by default) follows the brand's accent colour (Team → Settings → Brand & region) */
+/* palette: the same neutrals as suite.css; the accent ("pink") and its tint follow the brand's
+   accent colour (Team → Settings → Brand & region), and text on it is white or ink, whichever reads */
 const C = {
-  plum: [75, 0, 16], ink: [25, 11, 13], ink2: [90, 73, 68], mute: [139, 126, 119],
-  pink: [241, 1, 3], pinkSoft: [242, 232, 218], cream: [248, 242, 233], line: [230, 218, 202], ok: [16, 87, 82], white: [255, 255, 255]
+  plum: [20, 20, 20], ink: [20, 20, 20], ink2: [94, 94, 90], mute: [107, 107, 102],
+  pink: [242, 84, 27], pinkSoft: [254, 236, 229], onPink: [20, 20, 20], cream: [245, 245, 243], line: [234, 234, 231], ok: [21, 114, 56], white: [255, 255, 255]
 };
+const lum = rgb => { const c = rgb.map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+const onColour = rgb => (1.05 / (lum(rgb) + 0.05) >= (lum(rgb) + 0.05) / (lum(C.ink) + 0.05) ? C.white : C.ink);
 const W = 210, H = 297, M = 18, CW = W - M * 2;
 const PT = 0.3528;                       // mm per point
 
@@ -68,6 +71,8 @@ class Sheet {
     this.company = company || {};
     const acc = hexRgb(this.company.accent);
     if (acc) C.pink = acc;
+    C.pinkSoft = C.pink.map(v => Math.round(v * 0.14 + 255 * 0.86));
+    C.onPink = onColour(C.pink);
     this.docLabel = docLabel;
     this.y = M;
   }
@@ -105,14 +110,14 @@ class Sheet {
     this.d.setDrawColor(...C.pink); this.d.setLineWidth(0.8); this.d.line(M, this.y, M + 14, this.y);
     this.y += 4;
   }
-  /* letterhead: plum mark, studio name, contact details on the right */
+  /* letterhead: brand mark, studio name, contact details on the right */
   async letterhead(title, subtitle) {
     const d = this.d, co = this.company;
     d.setFillColor(...C.pink); d.roundedRect(M, M, 14, 14, 3.5, 3.5, 'F');
     const img = await logoData(co.logo);
     let drawn = false;
     if (img) { try { d.addImage(img, 'PNG', M + 2.5, M + 2.5, 9, 9); drawn = true; } catch (e) { /* draw the letter instead */ } }
-    if (!drawn) { this.font(13, 'bold', C.white); d.text(clean(String(co.name || 'S').charAt(0).toUpperCase()), M + 7, M + 7, { baseline: 'middle', align: 'center' }); }
+    if (!drawn) { this.font(13, 'bold', C.onPink); d.text(clean(String(co.name || 'S').charAt(0).toUpperCase()), M + 7, M + 7, { baseline: 'middle', align: 'center' }); }
     this.font(15, 'bold', C.ink); d.text(clean(co.name || 'Studio'), M + 18, M + 2.2, { baseline: 'top' });
     this.font(8.5, 'normal', C.mute); d.text(clean(co.website || ''), M + 18, M + 9, { baseline: 'top' });
     const right = [co.address, co.phone, co.email, co.tin ? 'TIN ' + co.tin : '', co.vatNumber ? 'VAT reg. ' + co.vatNumber : ''].filter(Boolean);
@@ -350,6 +355,46 @@ export async function invoicePdf(q, inv, company) {
 
 /* ================= proposal (the client link as a PDF, for people who ask for one) =================
    Drawn from the published snapshot, so it shows exactly what the client link shows by default. */
+/* each service's steps on a week grid, like the client page; service colours are tints of the brand accent */
+function timelineChart(doc, plan) {
+  if (!plan.services.length) return;
+  const d = doc.d, weeks = Math.max(1, Math.ceil(plan.total / 5)), span = weeks * 5;
+  const LW = 44, TX = M + LW, TW = CW - LW, ROW = 5.6, PAD = 3;
+  const tint = k => C.pink.map(v => Math.round(v * k + 255 * (1 - k)));
+  const tints = [tint(0.55), tint(0.32), tint(0.75), tint(0.2)];
+  const REV = [255, 225, 90];
+  doc.heading('Project timeline', plan.total + ' working days, about ' + weeks + ' week' + (weeks === 1 ? '' : 's') + '. Yellow steps are your reviews.');
+  doc.room(8);
+  doc.font(7.5, 'normal', C.ink2);
+  for (let w = 0; w < weeks; w++) d.text('Wk ' + (w + 1), TX + w * TW / weeks + 1, doc.y, { baseline: 'top' });
+  doc.y += 5;
+  plan.services.forEach((sv, n) => {
+    const h = sv.phases.length * ROW + PAD * 2;
+    doc.room(h + 3);
+    const y0 = doc.y, col = tints[n % tints.length];
+    d.setFillColor(...col); d.roundedRect(M, y0, LW, h, 2.5, 2.5, 'F');
+    d.setFillColor(...C.cream); d.rect(TX, y0, TW, h, 'F');
+    d.setDrawColor(...C.line); d.setLineWidth(0.2);
+    for (let w = 1; w < weeks; w++) d.line(TX + w * TW / weeks, y0, TX + w * TW / weeks, y0 + h);
+    const on = onColour(col);
+    doc.font(9.5, 'bold', on);
+    d.text(d.splitTextToSize(clean(sv.title), LW - 6), M + 3, y0 + 4, { baseline: 'top' });
+    doc.font(7.5, 'normal', on);
+    d.text(sv.days + ' working days', M + 3, y0 + h - 3, { baseline: 'bottom' });
+    sv.phases.forEach((ph, i) => {
+      const x = TX + ph.start / span * TW, bw = Math.max(1.2, (ph.end - ph.start) / span * TW), y = y0 + PAD + i * ROW + 0.8;
+      d.setFillColor(...(ph.review ? REV : col));
+      if (ph.review) { d.setDrawColor(110, 100, 60); d.setLineWidth(0.25); }
+      d.roundedRect(x, y, bw, ROW - 1.6, 1, 1, ph.review ? 'FD' : 'F');
+      doc.font(6.8, 'normal', C.ink);
+      const label = clean(ph.label), right = (x + bw) > TX + TW * 0.7;
+      d.text(label, right ? x - 1.2 : x + bw + 1.2, y + (ROW - 1.6) / 2, { baseline: 'middle', align: right ? 'right' : 'left' });
+    });
+    doc.y = y0 + h + 3;
+  });
+  doc.y += 2;
+}
+
 export async function proposalPdf(p, company, link) {
   const jsPDF = await loadJsPdf();
   const cur = p.currency || 'ETB';
@@ -377,6 +422,7 @@ export async function proposalPdf(p, company, link) {
   }
   const picks = t.picks.map(x => [x.title, x.option.label + (x.id === 'timeline' && t.days ? ', ' + t.days + ' days' : '') + (x.option.desc ? ' (' + x.option.desc + ')' : '')]);
   if (picks.length) { doc.heading('How we work'); doc.pairs(picks); }
+  timelineChart(doc, timelinePlan(p, sel));
   if ((p.costs || []).length) {
     doc.heading('Also included');
     doc.table([{ label: 'Item', w: CW * 0.76 }, { label: 'Amount', w: CW * 0.24, align: 'right' }], p.costs.map(c => [c.title, m(c.amount)]));

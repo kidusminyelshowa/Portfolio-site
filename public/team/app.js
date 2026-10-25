@@ -4,7 +4,7 @@
 import {
   el, $, frag, S, me, settings, employees, empById, subject, isAdmin, isManager, isPartner, canManage,
   avatar, chip, card, field, input, empty, select, toast, modal, closeModal, api, loadState, act,
-  initials, monthName, thisMonth, quarterLabel, appName, brandMark, applyBrand
+  initials, monthName, thisMonth, quarterLabel, appName, brandMark, applyBrand, isSolo, partnerEmp
 } from '/team/ui.js';
 import { icon } from '/team/icons.js';
 import { viewDashboard, viewGoals, viewMilestones, viewSkills, viewReviews, viewCareer, viewLeave } from '/team/me.js';
@@ -98,8 +98,21 @@ function countFor(href) {
   return actions.filter(a => a.href === href || (href === '#/team-leave' && a.kind === 'leave') || (href === '#/projects' && a.kind === 'project') ||
     (href === '#/reviews-team' && a.kind === 'review' && a.level !== 'warn') || (href === '#/approvals' && a.kind === 'approval')).length;
 }
+/* "Just me": a freelancer working alone sees their work, their sales and their business settings.
+   The team screens are only hidden (still reachable by link) and come back with team mode. */
+const hasPartners = () => (S.data.employees || []).some(e => e.status !== 'inactive' && partnerEmp(e));
+function soloSections() {
+  return [
+    ['Work', [['#/', 'Dashboard', 'home'], ['#/tasks', 'My tasks', 'tasks'], ['#/projects', 'Projects', 'projects'], ['#/gantt', 'Timeline', 'gantt']]],
+    ['Clients', [['#/sales', 'Sales pipeline', 'sales']]],
+    ['Plan', [['#/goals', 'My goals', 'goals'], ['#/milestones', 'My milestones', 'milestones']]],
+    ['Business', [['#/people', 'Partners', 'people']].concat(hasPartners() ? [['#/tasks-team', 'Partner tasks', 'tasks']] : [],
+      [['#/music', 'Music', 'music'], ['#/settings', 'Settings', 'settings']])]
+  ];
+}
 function sections() {
   if (isPartner()) return [['Creative partner', NAV_PARTNER]];
+  if (isAdmin() && isSolo()) return soloSections();
   // skill ratings are for the founder and managers; team members see readiness and progress instead
   const mine = isManager() ? NAV_ME : NAV_ME.filter(([href]) => href !== '#/skills');
   return [['My growth', mine]].concat(isManager() ? [['Team', NAV_TEAM]] : []).concat(isAdmin() ? [['Admin', NAV_ADMIN]] : []);
@@ -119,6 +132,7 @@ function renderNav() {
 
   // phones: five tabs; everything else lives under "More"
   const tabs = isPartner() ? [['#/', 'Home', 'home'], ['#/tasks', 'Tasks', 'tasks'], ['#/music', 'Music', 'music']]
+    : isAdmin() && isSolo() ? [['#/', 'Home', 'home'], ['#/tasks', 'Tasks', 'tasks'], ['#/projects', 'Projects', 'projects'], ['#/sales', 'Sales', 'sales']]
     : [['#/', 'Home', 'home'], ['#/tasks', 'Tasks', 'tasks'],
       isManager() ? ['#/projects', 'Projects', 'projects'] : ['#/goals', 'Goals', 'goals'], ['#/music', 'Music', 'music']];
   const bar = $('#tabbar');
@@ -172,6 +186,7 @@ const TITLES = {
 /* ---------- router ---------- */
 let lastHash = null;
 function route() {
+  if (!me()) return;                     // signed out: the sign-in screen is showing
   const view = $('#view');
   let hash = location.hash || '#/';
   // creative partners: tasks, music and their profile only
@@ -240,12 +255,20 @@ function route() {
   }
 
   if (['#/team', '#/people'].includes(hash) && isAdmin()) {
-    topActions.appendChild(el('button', { class: 'primary sm', text: 'Add person', onclick: () => personModal(null) }));
+    topActions.appendChild(isSolo()
+      ? el('button', { class: 'primary sm', text: 'Add partner', onclick: () => personModal({ status: 'active', startDate: new Date().toISOString().slice(0, 10), levelId: 'creative_partner' }) })
+      : el('button', { class: 'primary sm', text: 'Add person', onclick: () => personModal(null) }));
   }
-  if (hash === '#/' && isManager()) {
+  if (hash === '#/' && isManager() && !isSolo()) {
     topActions.appendChild(el('button', { class: 'sm ghost', text: 'Team overview', onclick: () => { location.hash = '#/team'; } }));
   }
 
+  // working alone: team words become yours
+  if (isAdmin() && isSolo()) {
+    title = { '#/people': 'Partners', '#/tasks-team': 'Partner tasks' }[hash] || title;
+    crumb = { '#/people': 'Freelancers you bring in for specific work. They only see the tasks you give them.',
+      '#/music': 'Your playlist', '#/gantt': 'Your tasks over time' }[hash] || crumb;
+  }
   $('#title').textContent = title;
   $('#crumb').textContent = crumb;
   view.textContent = '';

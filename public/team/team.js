@@ -10,7 +10,7 @@ import {
   modal, closeModal, toast, act, api, getSummary, STATUS_LABEL,
   quarterLabel, quarterDates, quarterRange, nextQuarterOf, userName, skillScale
 } from '/team/ui.js';
-import { brand, applyBrand, loadState, pickFile, uploadFile } from '/team/ui.js';
+import { brand, applyBrand, loadState, pickFile, uploadFile, isSolo } from '/team/ui.js';
 import { goalModal, milestoneModal, reviewModal, skillGaps, skillsModal, leaveModal, workingDaysBetween, reviewStateChip, signoffBlock, signoffActions } from '/team/me.js';
 import { personTasks, deliveryTable, onTimeChart, teamDelivery, linkedTasks, linkedTo } from '/team/tasks.js';
 import { teamStrip, achievementsCard } from '/team/social.js';
@@ -1228,9 +1228,34 @@ export function viewSettings() {
     el('button', { class: 'primary sm', style: 'margin-top:12px', text: 'Add account', onclick: () => accountModal(null) })
   ]);
 
+  // what a new owner needs comes first; the team machinery (reviews, promotion, positions) is folded away
+  // when working alone, and its own Save button sits with it
+  const teamPart = el('details', { class: 'card fold', open: !isSolo() || null }, [
+    el('summary', {}, [el('b', { text: 'Team structure and reviews' }), el('span', { class: 'sub', text: isSolo() ? ' · only needed once you have a team' : ' · positions, reviews, promotion and leave' })]),
+    el('div', { class: 'stack', style: 'margin-top:14px' }, [
+      el('div', { class: 'row', style: 'justify-content:flex-end' }, [saveBtn]),
+      leave, positions, signoff, weights, promo, scaleCard
+    ])
+  ]);
   return frag([
-    el('div', { class: 'row', style: 'justify-content:flex-end;margin-bottom:14px' }, [saveBtn]),
-    el('div', { class: 'stack' }, [brandCard(), holidaysCard(s), scaleCard, fresh, weights, promo, signoff, leave, positions, accounts, demo])
+    el('div', { class: 'stack' }, [brandCard(), workModeCard(), holidaysCard(s), accounts, teamPart, demo, fresh])
+  ]);
+}
+
+/* ---------- "Just me" or a team: decides which screens show (nothing is deleted) ---------- */
+function workModeCard() {
+  const cur0 = brand().workMode || 'auto';
+  const opts = [
+    ['solo', 'Just me', 'For a freelancer. Hides team screens: reviews, leave, approvals, team messages, insights, employee of the month.'],
+    ['team', 'With a team', 'Every screen, for a studio with staff.'],
+    ['auto', 'Decide for me', 'Just me while you are the only person; team screens appear when you add someone (partners don’t count).']
+  ];
+  return card('How you work', 'You can switch at any time. Your data stays the same either way.', [
+    el('div', { class: 'modes', role: 'radiogroup', 'aria-label': 'How you work' }, opts.map(([v, title, why]) =>
+      el('button', { type: 'button', role: 'radio', 'aria-checked': String(cur0 === v), class: 'mode', onclick: async () => {
+        try { await api({ action: 'saveBrand', brand: { workMode: v } }); await loadState(); applyBrand(); toast(title + ' mode on'); window.dispatchEvent(new Event('gz:render')); }
+        catch (e) { toast(e.message, 'bad'); }
+      } }, [el('b', { text: title }), el('small', { text: why })])))
   ]);
 }
 
@@ -1260,7 +1285,7 @@ function brandCard() {
   const preset = select(b.preset || Object.keys(presets)[0] || '', Object.entries(presets).map(([value, label]) => ({ value, label })));
   const reload = async msg => { await loadState(); applyBrand(); toast(msg); window.dispatchEvent(new Event('gz:render')); };
   return card('Brand & region', 'Your name, logo, colours and details. They appear in the Team app, on proposals, contracts and invoices.', [
-    el('div', { class: 'grid3' }, [txt('name', 'Agency name'), txt('tagline', 'Tagline'), txt('website', 'Website', { placeholder: 'https://…' })]),
+    el('div', { class: 'grid3' }, [txt('name', 'Business name'), txt('tagline', 'Tagline'), txt('website', 'Website', { placeholder: 'https://…' })]),
     field('Logo', logoBox),
     el('div', { class: 'grid4' }, [colour('accent', 'Accent'), colour('accent2', 'Accent, lighter'), colour('ink', 'Text'), colour('highlight', 'Highlight')]),
     el('div', { class: 'grid3' }, [txt('email', 'Email', { type: 'email' }), txt('secondaryEmail', 'Second email', { type: 'email' }), txt('phone', 'Phone')]),
@@ -1301,11 +1326,12 @@ function holidaysCard(s) {
     list.appendChild(el('button', { class: 'sm', style: 'align-self:flex-start', text: '+ Add a day', onclick: () => { s.holidays.custom.push({ date: '', emoji: '🎉', title: '', body: '' }); draw(); } }));
   };
   draw();
-  return card('Holidays', 'The team gets a greeting on these days. Press Save settings after changing them.', [
+  return card('Holidays', isSolo() ? 'Days off you want marked in the app, with a greeting on the day.' : 'The team gets a greeting on these days.', [
     field('Ready-made list', select(s.holidays.preset || 'none', ((S.data && S.data.holidayPresets) || Object.keys(names)).map(v => ({ value: v, label: names[v] || v })),
       { onchange: ev => { s.holidays.preset = ev.target.value; } })),
     el('p', { class: 'muted', style: 'font-size:12.5px;margin:8px 0', text: 'Your own days, every year (month-day, like 12-25):' }),
-    list
+    list,
+    el('button', { class: 'primary', style: 'margin-top:12px', text: 'Save holidays', onclick: () => act({ action: 'saveSettings', settings: s }, 'Holidays saved') })
   ]);
 }
 

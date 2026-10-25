@@ -26,7 +26,7 @@ export const PRESETS = {
 
 export const DEFAULT_BRAND = {
   name: 'Your Agency',
-  tagline: 'Creative studio',
+  tagline: 'Brand and design',
   logo: '',                       // a picture link; empty shows the first letter of the name
   colors: { accent: '#F2541B', accent2: '#FF7A45', ink: '#141414', highlight: '#C8F23C' },
   email: '',
@@ -43,12 +43,14 @@ export const DEFAULT_BRAND = {
   // what the agency sells, used in the "Get leads from Claude" prompt
   services: 'brand identity and logos, packaging, websites, social media content and campaigns',
   preset: 'ethiopia',
+  // 'solo' hides the team-only screens, 'team' shows everything, 'auto' decides by headcount
+  workMode: 'auto',
   ...PRESETS.ethiopia.brand
 };
 
 const COLOR_KEYS = Object.keys(DEFAULT_BRAND.colors);
 const STRING_KEYS = ['name', 'tagline', 'logo', 'email', 'secondaryEmail', 'phone', 'address', 'city', 'website', 'tin', 'vatNumber',
-  'signatory', 'signatoryTitle', 'bank', 'services', 'preset', 'currency', 'timeZone', 'phoneCode', 'country'];
+  'signatory', 'signatoryTitle', 'bank', 'services', 'preset', 'currency', 'timeZone', 'phoneCode', 'country', 'workMode'];
 
 const clip = (v, n) => String(v == null ? '' : v).slice(0, n || 400);
 const isHex = v => /^#[0-9a-f]{6}$/i.test(String(v || ''));
@@ -61,6 +63,7 @@ export function mergeBrand(saved) {
   if (!validZone(out.timeZone)) out.timeZone = 'UTC';
   out.currency = /^[A-Z]{3}$/.test(out.currency) ? out.currency : 'ETB';
   out.phoneCode = String(out.phoneCode || '').replace(/\D/g, '').slice(0, 4);
+  if (!['auto', 'solo', 'team'].includes(out.workMode)) out.workMode = 'auto';
   return out;
 }
 
@@ -80,7 +83,7 @@ export function publicBrand(b) {
   const x = mergeBrand(b);
   return { name: x.name, tagline: x.tagline, logo: x.logo, colors: x.colors, email: x.email, secondaryEmail: x.secondaryEmail,
     phone: x.phone, website: x.website, address: x.address, city: x.city, country: x.country, currency: x.currency,
-    timeZone: x.timeZone, phoneCode: x.phoneCode };
+    timeZone: x.timeZone, phoneCode: x.phoneCode, workMode: x.workMode };
 }
 
 /* contracts and invoices print these (the price list's "company" block) */

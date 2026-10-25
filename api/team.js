@@ -311,7 +311,9 @@ export default async function handler(req, res) {
           requests: r.requests.map(q => ({ ref: q.ref, at: q.at, changed: q.changed, message: q.message })),
           contract: r.contract ? { number: r.contract.number, status: r.contract.status, date: r.contract.date, signedAt: r.contract.signedAt } : null,
           needs: r.needs && r.needs.kind === 'payment' ? { ...r.needs, reason: r.needs.reason } : r.needs }));
-        return json(res, 200, { rows: safe, rules, owner: rules.owner, assignable, canEditRules: isAdmin(user0), priceAccess: money, showMoney: money });
+        // the first-run checklist on the admin dashboard asks whether the sample price list was replaced
+        const catalogSaved = isAdmin(user0) ? !!(await readJson('pricing/catalog.json', LEADS_TOKEN, null, 'private')) : undefined;
+        return json(res, 200, { rows: safe, rules, owner: rules.owner, assignable, canEditRules: isAdmin(user0), priceAccess: money, showMoney: money, catalogSaved });
       }
       if (url.searchParams.has('leads')) {
         // sales leads (before a proposal): managers and the founder see all, anyone else the ones they own
