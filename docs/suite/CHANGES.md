@@ -92,3 +92,22 @@ These remain because they are generic or are the Ethiopia preset itself:
 - `gz_team`, `gz_session`, `gz-…` cookie and local-storage names: internal, never shown.
 - "Addis Ababa", Instagram and LinkedIn in `index.html` and `content/site.json`: the
   portfolio owner's own location and profiles, not the original agency's.
+
+## UI/UX pass (25 October)
+
+Asked for by the owner before merging. Tagged **UX-PASS**. No feature, permission, API action
+or stored field was removed; screens hidden in "Just me" mode stay reachable by their address.
+See UX-AUDIT.md, UX-PLAN.md and UX-RESULTS.md.
+
+| File | What | Tag |
+| --- | --- | --- |
+| `public/team/suite.css` (new) | one set of design tokens (brand, neutrals, status, type, spacing, radius, focus ring, 44 px touch targets, reduced motion) used by the Team app, the Price Builder and the proposal | UX-PASS |
+| `public/team/theme.js` (new) | applies the brand colours from Brand & region on all three pages and picks white or near-black text on them for contrast | UX-PASS |
+| `api/_brand.js` | `workMode` setting (auto / solo / team); default tagline "Brand and design" | UX-PASS |
+| `api/team.js` | the sales summary tells an admin whether the price list was saved (`catalogSaved`), for the setup checklist | UX-PASS |
+| `public/team/*.js`, `index.html` | "Just me" mode (shorter menu, Partners instead of People, solo dashboard and wording), first-run checklist, empty states with a next button, team settings folded away, AA contrast fixes, chart axis fix, no page error when routing while signed out | UX-PASS |
+| `public/price/index.html`, `builder.js` | same neutrals as the Team app, empty quote list with a next button, phone fixes (price list, contract, inputs), timeline step editor per service, note when the steps and the pace disagree | UX-PASS |
+| `public/price/engine.js` | "Your brand" proposal theme (default), service `start` and `phases` published with the quote, `timelinePlan()` | UX-PASS |
+| `public/price/proposal.html`, `proposal.js` | brand theme, week-by-week project timeline per service, larger toggle hit area | UX-PASS |
+| `public/price/pdf.js` | neutrals match the app, brand-tinted accents with readable text, project timeline page in the proposal PDF | UX-PASS |
+| `api/_price-catalog.js` | sample timeline steps on the Branding project type | UX-PASS |

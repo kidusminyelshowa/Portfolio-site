@@ -73,7 +73,11 @@ available here). Check after the first deploy: setup at `/team`, then upload a p
 - **jsPDF from the CDN**: the sandbox cannot reach the CDN, so the test served the identical
   npm release (same integrity hash) to the browser.
 
-## Known layout issues seen
+## UI/UX pass (25 October)
 
-At 375 px the Price Builder's price list (4 px) and contract editor (about 50 px) scroll
-sideways. See KNOWN-ISSUES.md.
+Full results, with before/after screenshots, are in UX-RESULTS.md. In short: every role at
+1440 and 375 has no page errors, no sideways scrolling, AA text contrast and visible keyboard
+focus; two very different brands re-theme the Team app, the proposal and the PDFs; the 22 checks
+above pass again on a fresh install; and the quote → request → contract → invoice → kick-off →
+Team project flow passes with the new timeline. The 375 px sideways scrolling in the Price
+Builder's price list and contract editor is fixed.
