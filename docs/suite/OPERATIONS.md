@@ -2,9 +2,9 @@
 
 ## Backups
 
-- **Vercel:** the data is in the two Blob stores. Download the private store now and then
-  (Vercel → Storage → the store → Browse, or `vercel blob` with the CLI). The public store only
-  holds photos and the logo.
+- **Vercel:** everything is in the private Blob store (plus a public one if you added
+  `MEDIA_BLOB_TOKEN`). Download it now and then (Vercel → Storage → the store → Browse, or
+  `vercel blob` with the CLI).
 - **Self-hosting:** copy the `STORAGE_DIR` folder (default `./data`, or the `suite-data`
   Docker volume). Stop the server or copy twice if you want a perfectly consistent copy.
 
