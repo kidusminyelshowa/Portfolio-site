@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="brand">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -31,65 +31,28 @@
   --r-field:40px; --r-card:32px; --r-box:22px;
   --gap:clamp(12px,2vw,20px);
 }
-/* ---------- themes (chosen per quote in the builder; Classic is the default for new quotes) ---------- */
-html[data-theme="classic"]{
-  --page:#F3ECE1; --card:#FFFCF7; --inner:#F1E8DB; --ink:#190B0D; --ink2:#5A4944; --mute:#8B7E77; --line:#E6DACA;
-  --pink:#F7C3B9; --pinkSel:#F4AE9F; --pinkSoft:#FCE1DB; --pinkLine:#EE9A8C;
-  --plum:#4B0010; --teal:#A8D6CF; --tealIn:#D7EAE6; --tealInk:#105752; --tealLine:#2E7D75; --tealText:#105752;
-  --black:#190B0D; --shade:25,11,13; --togOff:#E6DACA; --dot:#D3C5B1;
-  --gA-bg:#FCE1DB; --gA-ink:#4B0010; --gA-arc:#F10103; --gA-arc2:#F5574A; --gA-rest:#F3CFC7; --gA-chip:#F8D3CB;
-  --gB-bg:#F2E8DA; --gB-ink:#4B0010; --gB-track:#E6DACA; --gB-tick:#B9B0A7;
-  --w1:#F10103; --w2:#9E1B32; --w3:#F5806F; --w4:#4B0010; --w5:#F7B7AC; --w6:#C2463B; --wx:#4B0010;
-  --gC-bg:#D7EAE6; --gC-ink:#0B3B37; --gC-line:#105752; --gC-soft:#BFDDD8; --gC-vline:#5E9F98;
-  --gD-bg:#EAE4DD; --gD-ink:#2B2522; --gD-badge:#6E655E; --gD-soft:#DCD4CB; --gD-softInk:#4A433E;
-}
-/* "Your brand": every colour is mixed from the brand accent and highlight (set by theme.js) */
-html[data-theme="brand"]{
-  --a:var(--accent); --h:var(--highlight);
+/* ---------- themes (chosen per quote in the builder; "Your brand" is the default for new quotes) ----------
+   Every theme is built the same way as the portfolio's blue: one accent, a deep shade of it for dark
+   panels, a pale "mist" of it for highlights, on the same paper and ink. Only --a and --h differ. */
+html[data-theme]{
+
   --page:#EEF1F2; --card:#F8FAFA; --inner:#E9EEF0; --ink:#0E0E0E; --ink2:#4B5A63; --mute:#56636B; --line:#CBD3D7;
   --pink:color-mix(in srgb,var(--a) 32%,#fff); --pinkSel:color-mix(in srgb,var(--a) 48%,#fff); --pinkSoft:color-mix(in srgb,var(--a) 12%,#fff); --pinkLine:color-mix(in srgb,var(--a) 58%,#fff);
   --plum:color-mix(in srgb,var(--a) 30%,#0E0E0E); --teal:color-mix(in srgb,var(--h) 45%,#fff); --tealIn:color-mix(in srgb,var(--h) 22%,#fff);
-  --tealInk:#141414; --tealLine:color-mix(in srgb,var(--h) 55%,#141414); --tealText:#2B2B27;
-  --black:#1A3647; --shade:14,14,14; --togOff:#D7DFE3; --dot:#BAC4CA;
-  --gA-bg:color-mix(in srgb,var(--a) 12%,#fff); --gA-ink:#141414; --gA-arc:var(--a); --gA-arc2:color-mix(in srgb,var(--a) 70%,#fff); --gA-rest:color-mix(in srgb,var(--a) 20%,#fff); --gA-chip:color-mix(in srgb,var(--a) 24%,#fff);
+  --tealInk:#0E0E0E; --tealLine:color-mix(in srgb,var(--h) 55%,#0E0E0E); --tealText:#2B2B27;
+  --black:color-mix(in srgb,var(--a) 30%,#0E0E0E); --shade:14,14,14; --togOff:#D7DFE3; --dot:#BAC4CA;
+  --gA-bg:color-mix(in srgb,var(--a) 12%,#fff); --gA-ink:#0E0E0E; --gA-arc:var(--a); --gA-arc2:color-mix(in srgb,var(--a) 70%,#fff); --gA-rest:color-mix(in srgb,var(--a) 20%,#fff); --gA-chip:color-mix(in srgb,var(--a) 24%,#fff);
   --gB-bg:#E9EEF0; --gB-ink:#0E0E0E; --gB-track:#D7DFE3; --gB-tick:#9AA7AE;
-  --w1:var(--a); --w2:color-mix(in srgb,var(--a) 65%,#141414); --w3:color-mix(in srgb,var(--a) 55%,#fff); --w4:#141414; --w5:color-mix(in srgb,var(--a) 30%,#fff); --w6:color-mix(in srgb,var(--a) 75%,#8F8F8A); --wx:#141414;
-  --gC-bg:color-mix(in srgb,var(--h) 20%,#fff); --gC-ink:#141414; --gC-line:color-mix(in srgb,var(--h) 45%,#141414); --gC-soft:color-mix(in srgb,var(--h) 35%,#fff); --gC-vline:color-mix(in srgb,var(--h) 60%,#6B6B66);
+  --w1:var(--a); --w2:color-mix(in srgb,var(--a) 65%,#0E0E0E); --w3:color-mix(in srgb,var(--a) 55%,#fff); --w4:#0E0E0E; --w5:color-mix(in srgb,var(--a) 30%,#fff); --w6:color-mix(in srgb,var(--a) 75%,#8F8F8A); --wx:#0E0E0E;
+  --gC-bg:color-mix(in srgb,var(--h) 20%,#fff); --gC-ink:#0E0E0E; --gC-line:color-mix(in srgb,var(--h) 45%,#0E0E0E); --gC-soft:color-mix(in srgb,var(--h) 35%,#fff); --gC-vline:color-mix(in srgb,var(--h) 60%,#6B6B66);
   --gD-bg:#E2E8EB; --gD-ink:#1F2A30; --gD-badge:#56636B; --gD-soft:#D7DFE3; --gD-softInk:#33424B;
 }
-html[data-theme="ember"]{
-  --page:#F1ECE6; --card:#FBF8F4; --inner:#F0E9E1; --ink:#3B1A0C; --ink2:#6B4E3F; --mute:#9A8374; --line:#E9DDD2;
-  --pink:#F7A774; --pinkSel:#F59B63; --pinkSoft:#FBDCC6; --pinkLine:#EFA376;
-  --plum:#5A1F0E; --teal:#F2D27A; --tealIn:#FBEBBF; --tealInk:#5A4205; --tealLine:#B8962E; --tealText:#6E5410;
-  --black:#231A15; --shade:59,26,12; --togOff:#E8DDD3; --dot:#DCCFC4;
-  --gA-bg:#FBE9DC; --gA-ink:#3B1A0C; --gA-arc:#E4703A; --gA-arc2:#EC8F62; --gA-rest:#F0D5C4; --gA-chip:#F6D3BD;
-  --gB-bg:#F6EFD9; --gB-ink:#5A4205; --gB-track:#EBE0C2; --gB-tick:#B9A57A;
-  --w1:#E8B530; --w2:#C98E12; --w3:#F2D27A; --w4:#8C6208; --w5:#F7E3A8; --w6:#B8963F; --wx:#5A4205;
-  --gC-bg:#F3E6E0; --gC-ink:#3B1A0C; --gC-line:#8E3B1D; --gC-soft:#EDD2C6; --gC-vline:#C0836A;
-  --gD-bg:#E8EDE0; --gD-ink:#28301D; --gD-badge:#5B6B3C; --gD-soft:#D6DFC7; --gD-softInk:#3C4726;
-}
-html[data-theme="sage"]{
-  --page:#ECEEE8; --card:#F7F8F4; --inner:#E9ECE4; --ink:#16332A; --ink2:#48605A; --mute:#7F918A; --line:#DCE3DB;
-  --pink:#A8D5B5; --pinkSel:#9CD0AC; --pinkSoft:#DAEEDF; --pinkLine:#8CC7A0;
-  --plum:#173B30; --teal:#C9D6F0; --tealIn:#E4EBF8; --tealInk:#22335A; --tealLine:#6F86BD; --tealText:#34466E;
-  --black:#1B211E; --shade:22,51,42; --togOff:#DCE3DB; --dot:#CBD5CD;
-  --gA-bg:#E3F1E7; --gA-ink:#16332A; --gA-arc:#3E9A67; --gA-arc2:#62B083; --gA-rest:#CBE2D3; --gA-chip:#CBE6D5;
-  --gB-bg:#EEF0E2; --gB-ink:#3D4A1E; --gB-track:#DFE3CD; --gB-tick:#A3AC86;
-  --w1:#9DB35A; --w2:#6F8A2E; --w3:#C5D494; --w4:#4E6620; --w5:#DDE6BC; --w6:#8FA36A; --wx:#3D4A1E;
-  --gC-bg:#E6ECF7; --gC-ink:#1D2A4A; --gC-line:#3B5BA5; --gC-soft:#D1DCF1; --gC-vline:#8EA3D2;
-  --gD-bg:#F1ECDF; --gD-ink:#3A3020; --gD-badge:#7A6541; --gD-soft:#E3DAC5; --gD-softInk:#52432A;
-}
-html[data-theme="cobalt"]{
-  --page:#ECEEF3; --card:#F8F9FB; --inner:#E9ECF3; --ink:#0F1C4D; --ink2:#4A5478; --mute:#8089A6; --line:#DDE1EC;
-  --pink:#A9C3FF; --pinkSel:#9DB8FF; --pinkSoft:#DCE6FF; --pinkLine:#93AEF5;
-  --plum:#14215C; --teal:#FFD1A8; --tealIn:#FFE8D3; --tealInk:#6B3A12; --tealLine:#D08A4E; --tealText:#7A4A22;
-  --black:#111633; --shade:15,28,77; --togOff:#DDE1EC; --dot:#CDD2E0;
-  --gA-bg:#E6ECFF; --gA-ink:#0F1C4D; --gA-arc:#3D63F0; --gA-arc2:#6B87F3; --gA-rest:#CDD7F7; --gA-chip:#D3DDFF;
-  --gB-bg:#FFF0E4; --gB-ink:#6B3A12; --gB-track:#F3DECB; --gB-tick:#C9A585;
-  --w1:#FF9A5C; --w2:#E0763A; --w3:#FFC49A; --w4:#B5561F; --w5:#FFDAC0; --w6:#D2915F; --wx:#6B3A12;
-  --gC-bg:#EAF3F7; --gC-ink:#0F2E3D; --gC-line:#1F7A9A; --gC-soft:#CFE6EF; --gC-vline:#7FB6CA;
-  --gD-bg:#F1EEF8; --gD-ink:#2A2345; --gD-badge:#5A4E91; --gD-soft:#DEDAF0; --gD-softInk:#3D3566;
-}
+html[data-theme="brand"]{--a:var(--accent); --h:var(--highlight)}
+html[data-theme="classic"]{--a:#C8443A; --h:#F1D4CF}
+html[data-theme="blossom"]{--a:#C2508E; --h:#F2D5E5}
+html[data-theme="ember"]{--a:#C8642E; --h:#F4DCC9}
+html[data-theme="sage"]{--a:#3D8A5F; --h:#CFE5D7}
+html[data-theme="cobalt"]{--a:#3557C4; --h:#D0DAF4}
 *{box-sizing:border-box}
 html{background:var(--page);-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--page);color:var(--ink);font-family:"Figtree",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.45;
@@ -103,8 +66,8 @@ button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:tra
 /* ---------- top bar ---------- */
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 0 16px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.2em;font-size:13px}
-.logo .mk{width:38px;height:38px;border-radius:50%;background:var(--plum);color:#fff;font-weight:600;font-size:16px;display:grid;place-items:center}
-.logo .mk img{width:15px;height:auto;display:block}
+.logo .mk{width:42px;height:42px;border-radius:12px;border:2px solid var(--ink);background:var(--pinkSel);color:var(--ink);font-weight:800;font-size:17px;display:grid;place-items:center;overflow:hidden;box-shadow:3px 3px 0 var(--ink)}
+.logo .mk img{width:100%;height:100%;object-fit:cover;display:block}
 .chip{display:inline-flex;align-items:center;background:var(--inner);border-radius:999px;font-size:13px;overflow:hidden}
 .chip span{padding:9px 14px}
 .chip span+span{border-left:1px solid var(--line)}
@@ -389,14 +352,14 @@ dialog::backdrop{background:rgba(var(--shade),.35);-webkit-backdrop-filter:blur(
 }
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 
-/* ---------- "Your brand" theme: the portfolio look (ink outlines, hard offset shadows) ---------- */
-html[data-theme="brand"] :is(.field,.panel,.gc,.dlg,.done,.cat,.innerbox){border:2px solid var(--ink)}
-html[data-theme="brand"] .gc{box-shadow:none}
-html[data-theme="brand"] :is(.field.plum,.field.pink){box-shadow:6px 6px 0 var(--ink)}
-html[data-theme="brand"] .field .card{border:2px solid var(--ink)}
-html[data-theme="brand"] .hero h1{font-weight:800;text-transform:uppercase;letter-spacing:-.02em}
-html[data-theme="brand"] .tl .svc,html[data-theme="brand"] .tl .lane{border:2px solid var(--ink)}
-html[data-theme="brand"] .tl .svc{border-right:0} html[data-theme="brand"] .tl .lane{border-left:0}
+/* ---------- every theme: the portfolio look (ink outlines, hard offset shadows) ---------- */
+html[data-theme] :is(.field,.panel,.gc,.dlg,.done,.cat,.innerbox){border:2px solid var(--ink)}
+html[data-theme] .gc{box-shadow:none}
+html[data-theme] :is(.field.plum,.field.pink){box-shadow:6px 6px 0 var(--ink)}
+html[data-theme] .field .card{border:2px solid var(--ink)}
+html[data-theme] .hero h1{font-weight:800;text-transform:uppercase;letter-spacing:-.02em}
+html[data-theme] .tl .svc,html[data-theme] .tl .lane{border:2px solid var(--ink)}
+html[data-theme] .tl .svc{border-right:0} html[data-theme] .tl .lane{border-left:0}
 </style>
 </head>
 <body>

@@ -37,12 +37,12 @@ export const CHOICE_GROUPS = [
 // colour themes for the client page (css in price/proposal.html); the first is the default
 export const THEMES = [
   // built from Settings → Brand & region (accent and highlight), so proposals look like your other material
-  { id: 'brand', label: 'Your brand', note: 'Default · your accent and highlight colours', colors: ['var(--accent)', 'color-mix(in srgb, var(--accent) 35%, #141414)', 'var(--highlight)', '#F0F0EE'] },
-  { id: 'classic', label: 'Classic', note: 'Red, wine, petrol, ivory', colors: ['#F10103', '#4B0010', '#105752', '#F2E8DA'] },
-  { id: 'blossom', label: 'Blossom', note: 'Pink, plum, teal', colors: ['#FFB1EE', '#4A1239', '#8FDCE5', '#EFEEE9'] },
-  { id: 'ember', label: 'Ember', note: 'Warm · apricot, rust, mustard', colors: ['#F7A774', '#5A1F0E', '#F2D27A', '#F1ECE6'] },
-  { id: 'sage', label: 'Sage', note: 'Calm · mint, forest, periwinkle', colors: ['#A8D5B5', '#173B30', '#C9D6F0', '#ECEEE8'] },
-  { id: 'cobalt', label: 'Cobalt', note: 'Bold · sky, navy, peach', colors: ['#A9C3FF', '#14215C', '#FFD1A8', '#ECEEF3'] }
+  { id: 'brand', label: 'Your brand', note: 'Default · your accent and highlight colours', colors: ['var(--accent)', 'color-mix(in srgb, var(--accent) 30%, #0E0E0E)', 'var(--highlight)', '#EEF1F2'] },
+  { id: 'classic', label: 'Classic', note: 'Red, deep wine, blush', colors: ['#C8443A', 'color-mix(in srgb, #C8443A 30%, #0E0E0E)', '#F1D4CF', '#EEF1F2'] },
+  { id: 'blossom', label: 'Blossom', note: 'Pink, plum, rose mist', colors: ['#C2508E', 'color-mix(in srgb, #C2508E 30%, #0E0E0E)', '#F2D5E5', '#EEF1F2'] },
+  { id: 'ember', label: 'Ember', note: 'Warm · rust, umber, peach', colors: ['#C8642E', 'color-mix(in srgb, #C8642E 30%, #0E0E0E)', '#F4DCC9', '#EEF1F2'] },
+  { id: 'sage', label: 'Sage', note: 'Calm · green, forest, mint', colors: ['#3D8A5F', 'color-mix(in srgb, #3D8A5F 30%, #0E0E0E)', '#CFE5D7', '#EEF1F2'] },
+  { id: 'cobalt', label: 'Cobalt', note: 'Bold · cobalt, navy, ice', colors: ['#3557C4', 'color-mix(in srgb, #3557C4 30%, #0E0E0E)', '#D0DAF4', '#EEF1F2'] }
 ];
 
 // words a proposal link may never take (they are real files or routes)
