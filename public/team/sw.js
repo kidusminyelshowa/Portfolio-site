@@ -1,7 +1,7 @@
 /* Team app: works offline for the app itself (not the data), and shows
    push notifications. Pages and scripts are fetched fresh when online and
    fall back to the last copy when offline. The API is never cached. */
-const CACHE = 'team-v7';
+const CACHE = 'team-v8';
 const SHELL = ['/team', '/team/ui.js', '/team/app.js', '/team/me.js', '/team/team.js', '/team/tasks.js', '/team/projects.js',
   '/team/sales.js', '/team/social.js', '/team/icons.js', '/team/gantt.js', '/team/insights.js', '/team/icons/icon-192.png', '/team/manifest.webmanifest'];
 
