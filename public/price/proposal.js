@@ -97,8 +97,8 @@ function applyBrand(b) {
 /* ================= static parts ================= */
 function build() {
   const name = P.company || P.client;
-  if (P.theme && P.theme !== 'blossom') {
-    document.documentElement.dataset.theme = P.theme;
+  {
+    document.documentElement.dataset.theme = P.theme || 'blossom';
     const bg = getComputedStyle(document.documentElement).getPropertyValue('--page').trim();
     if (bg) document.querySelector('meta[name="theme-color"]').setAttribute('content', bg);
   }
