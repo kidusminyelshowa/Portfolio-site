@@ -43,24 +43,23 @@ Run `npx decap-server` in one terminal and `npm run dev` in another, add `local_
 
 ## Inquiries
 
-"Yes, let's talk" opens a step-by-step form at `/contact`. Submissions are saved to the `inquiries` table in the **portfolio** Supabase project and show up as leads in the studio. The form's wording and options live under Site details → Inquiry form in the CMS.
+"Yes, let's talk" opens a step-by-step form at `/contact`. Submissions are saved to the `inquiries` table in the **portfolio** Supabase project (Table Editor). The form's wording and options live under Site details → Inquiry form in the CMS.
 
-## Studio (private tools)
+## Studio tools: Team app and Price Builder
 
-`/studio` is a private area for running client work, hidden from search engines and only usable by emails listed in the `studio_owners` table.
+Private tools for running client work, hidden from search engines:
 
-- **Leads:** every contact-form inquiry, on a board from New to Won or Lost. Open a card to change its stage, add notes, reply or write a proposal, or drag it between columns. Add leads by hand or paste a list from a spreadsheet (first row: `name,email,company,message,budget,timeline`).
-- **Prices:** your services and what you charge. The starting list is marked as samples until you save your own.
-- **Proposals:** build a quote from your prices, send the client a private link (`/proposal/...`) where they can accept or ask for changes, and download a PDF.
-- **Next steps** (on an accepted proposal): create a numbered contract from your terms and mark it signed, raise a deposit and balance invoice (or one for the full amount) and mark them paid, then start the project. Contracts and invoices download as PDFs.
-- **Invoices:** everything you've billed, what's still waiting to be paid and what's overdue.
-- **Projects:** work you've started, with its status and due date.
-- **Settings:** business details, currency and VAT (Ethiopia and International presets), bank details, TIN, contract terms and invoice note. Proposals, contracts and invoices use these.
+- `/team`: the Team app (tasks, projects, sales pipeline and leads, reviews, goals, leave, insights). Installs on phones.
+- `/price`: the Price Builder (quotes, client links, contract → invoice → kick-off, PDFs).
+- `/price/<link>`: the page a client opens to adjust a proposal and send a request.
 
-### Signing in
+Setup (connect one private Vercel Blob store and add `SETUP_TOKEN`), self-hosting with Node or Docker, and everything else: **[docs/suite/README.md](docs/suite/README.md)**.
 
-Sign in with email and password. The first time (or after forgetting it), use "Forgot your password, or never set one?" to get an email link, open it on the same device and choose a password. You can change it later under Settings → Password.
+Run it locally with storage in a folder:
 
-The link only works when Supabase knows the site's address. In the **portfolio** Supabase project, open Authentication → URL Configuration, set **Site URL** to the live domain (e.g. `https://kidusminyel.xyz`) and add `https://kidusminyel.xyz/studio` under **Redirect URLs**. Supabase's built-in email sends only a few messages an hour, so if it says the limit was reached, wait a bit and try again.
+```bash
+cp .env.example .env   # set SETUP_TOKEN and STORAGE=local
+npm run build && npm start   # http://localhost:3000/team
+```
 
-To let another email in, add it (lowercase) to the `studio_owners` table in the Table Editor. Database changes live in `supabase/migrations/`.
+Database changes for the contact form live in `supabase/migrations/` (the older studio tables there are no longer used).

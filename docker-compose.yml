@@ -1,0 +1,17 @@
+# docker compose up -d   → the site, /team and /price on http://localhost:3000
+# Put it behind HTTPS (Caddy, nginx, Cloudflare Tunnel…): sign-in cookies are "Secure",
+# so browsers only keep them on https:// or on localhost.
+services:
+  site:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      STORAGE: local
+      STORAGE_DIR: /data
+    ports:
+      - "3000:3000"
+    volumes:
+      - suite-data:/data
+volumes:
+  suite-data:
