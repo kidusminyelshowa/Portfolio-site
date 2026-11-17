@@ -8,7 +8,9 @@
      config/brand.json     the agency's name, logo, colours, company details and region (api/_brand.js)
    Kick-off writes a project into the Team system (team/db.json), where the
    project manager reviews the task plan and starts it.
-   The public side (a client opening /price/<slug>) only ever reads proposals/. */
+     visits/<id>.json      visitor analytics for the client page (api/_visits.js)
+   The public side (a client opening /price/<slug>) only ever reads proposals/, and writes
+   requests and visits onto the quote it belongs to. */
 import { json, readBody, readJson, readJsonMeta, writeJson, isWriteConflict, list, del, isAuthed, requireAuth, LEADS_TOKEN, failure, ensureSecret } from './_lib.js';
 import { computeQuote, publishQuote, clientTotals, defaultSelection, slugify, formatMoney, clampQty,
          RESERVED, STATUSES, setHomeCurrency } from '../public/price/engine.js';
@@ -20,6 +22,7 @@ import { createProject, projectStatusFor } from './_team-projects.js';
 import { effectiveStatus, dealStage, salesRules } from './_sales.js';
 import { notify, notifyEmployee, adminIds, userOf } from './_team-notify.js';
 import { sendPush } from './_push.js';
+import { cleanVisit, recordVisit, readVisits, visitsPath } from './_visits.js';
 
 /* tell the team (bell + push) about something that happened on a deal; never fails the deal itself.
    Sales news goes to the admins and the sales owner, with no amounts in it. */
@@ -181,7 +184,7 @@ export default async function handler(req, res) {
         if (q.deal && q.deal.kickoff && q.deal.kickoff.projectId) {
           try { project = projectStatusFor(await readTeamDb(), q.deal.kickoff.projectId) || { removed: true }; } catch (e) { project = null; }
         }
-        return json(res, 200, { quote: { ...q, status: effectiveStatus(q) }, project });
+        return json(res, 200, { quote: { ...q, status: effectiveStatus(q) }, project, visits: await readVisits(q.id) });
       }
       if (qs.has('team')) {
         // who can run a project: people with a manager or admin account in /team
@@ -288,6 +291,25 @@ export default async function handler(req, res) {
         name: contact.name, email: contact.email, company: p.company || p.client, status: 'new'
       });
       return json(res, 200, { ok: true, ref });
+    }
+
+    /* public: the proposal page reporting how a visit went (time, sections read, changes made).
+       Team previews (signed in to the Price Builder) are not counted. */
+    if (action === 'visit') {
+      if (isAuthed(req)) return json(res, 200, { ok: true, counted: false });
+      const slug = cleanSlug(body.slug);
+      const rec = slug && await read(P + slug + '.json');
+      if (!rec || !rec.published) return json(res, 404, { error: 'Proposal not found' });
+      const v = cleanVisit(body, req);
+      if (!v) return json(res, 400, { error: 'Bad visit' });
+      const { isNew, previous } = await recordVisit(rec.id, v);
+      // a client coming back after a while is a good moment to follow up
+      if (isNew && previous && Date.now() - Date.parse(previous.last || previous.at) > 12 * 3600 * 1000) {
+        const q = await read(Q + rec.id + '.json');
+        if (q) await tellTeam(d => notify(d, salesPeople(d), { kind: 'sales', emoji: '🔁', title: clientName(q) + ' is looking at the proposal again',
+          body: (q.setup.project || 'Their proposal') + ' was opened again' + (v.device === 'desktop' ? '' : ' on a ' + v.device) + '.', href: '#/sales' }));
+      }
+      return json(res, 200, { ok: true, counted: true });
     }
 
     /* everything below is for the agency's team */
@@ -517,6 +539,7 @@ export default async function handler(req, res) {
       if (!q) return json(res, 404, { error: 'Quote not found' });
       if (q.slug) await del(P + q.slug + '.json', { token: LEADS_TOKEN });
       await del(Q + q.id + '.json', { token: LEADS_TOKEN });
+      try { await del(visitsPath(q.id), { token: LEADS_TOKEN }); } catch (e) { /* no visits yet */ }
       return json(res, 200, { ok: true });
     }
 

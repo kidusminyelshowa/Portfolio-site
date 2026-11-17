@@ -167,7 +167,7 @@ async function route() {
       if (!q || q.id !== id) { view().textContent = 'Loading…'; q = upgrade((await api('/api/quotes?id=' + id)).quote); step = 1; }
       return renderEditor();
     }
-    if (name === 'quote' && id) { view().textContent = 'Loading…'; const r = await api('/api/quotes?id=' + id); return renderQuote(r.quote, r.project); }
+    if (name === 'quote' && id) { view().textContent = 'Loading…'; const r = await api('/api/quotes?id=' + id); lastVisits = r.visits || []; return renderQuote(r.quote, r.project); }
     if (name === 'contract' && id) { view().textContent = 'Loading…'; q = upgrade((await api('/api/quotes?id=' + id)).quote); return renderContract(); }
     if (name === 'prices') return renderCatalog();
     return renderDashboard();
@@ -836,6 +836,47 @@ function stepReview() {
 }
 
 /* ================= a sent quote: original vs client version ================= */
+/* ---- visitor analytics for the client link (recorded by /price/proposal.js, stored by api/_visits.js) ---- */
+let lastVisits = [];
+const SECTION_LABELS = { hero: 'Opening', glance: 'At a glance', scope: 'Scope', choices: 'Options', included: 'What’s included', investment: 'Investment', timeline: 'Timeline' };
+const DEVICE_LABELS = { phone: 'Phone', tablet: 'Tablet', desktop: 'Computer' };
+const dur = s => { s = Math.round(s || 0); return s < 60 ? s + 's' : s < 3600 ? Math.floor(s / 60) + 'm' + (s % 60 ? ' ' + (s % 60) + 's' : '') : Math.floor(s / 3600) + 'h ' + Math.floor(s % 3600 / 60) + 'm'; };
+function visitsPanel(visits) {
+  const sub = 'Counted when the client opens the link. Your own previews while signed in here are not counted.';
+  if (!visits.length) return panel('Client visits', sub, [el('p', { class: 'muted', style: 'margin:0', text: 'No visits yet.' })]);
+  const list = visits.slice().reverse();
+  const people = new Set(visits.map(v => v.visitor)).size;
+  const secs = visits.reduce((t, v) => t + (v.secs || 0), 0);
+  const tile = (label, value, hint) => el('div', { class: 'vtile' }, [el('span', { text: label }), el('b', { class: 'num', text: value }), hint ? el('small', { text: hint }) : null]);
+  const stats = el('div', { class: 'vstats' }, [
+    tile('Visits', String(visits.length), visits.filter(v => v.form).length ? visits.filter(v => v.form).length + ' opened the request form' : null),
+    tile('Devices', String(people), people > 1 ? 'may have been shared' : null),
+    tile('Time on page', dur(secs), 'about ' + dur(secs / visits.length) + ' a visit'),
+    tile('Read down to', Math.max(...visits.map(v => v.depth || 0)) + '%'),
+    tile('Last visit', when(list[0].last || list[0].at))
+  ]);
+  const totals = {};
+  visits.forEach(v => Object.entries(v.sections || {}).forEach(([k, n]) => { totals[k] = (totals[k] || 0) + n; }));
+  const top = Math.max(1, ...Object.values(totals));
+  const bars = Object.keys(SECTION_LABELS).filter(k => totals[k]).map(k => el('div', { class: 'vbar' }, [
+    el('span', { text: SECTION_LABELS[k] }), el('i', {}, [el('em', { style: 'width:' + Math.max(3, Math.round(totals[k] / top * 100)) + '%' })]), el('b', { class: 'num', text: dur(totals[k]) })]));
+  const row = v => el('div', { class: 'ln' }, [
+    el('span', { text: [when(v.at), DEVICE_LABELS[v.device] || 'Device', [v.city, v.country].filter(Boolean).join(', ')].filter(Boolean).join(' · ') }),
+    el('span', { class: 'muted', style: 'text-align:right', text: [dur(v.secs), 'read ' + (v.depth || 0) + '%', v.acts ? v.acts + ' change' + (v.acts > 1 ? 's' : '') : '',
+      v.form ? 'opened the request form' : '', v.usd ? 'looked in USD' : ''].filter(Boolean).join(' · ') })]);
+  const rows = el('div');
+  let all = false;
+  const draw = () => {
+    rows.textContent = '';
+    (all ? list : list.slice(0, 6)).forEach(v => rows.appendChild(row(v)));
+    if (list.length > 6) rows.appendChild(el('button', { class: 'ghost', style: 'margin-top:8px', text: all ? 'Show fewer' : 'Show all ' + list.length + ' visits', onclick: () => { all = !all; draw(); } }));
+  };
+  draw();
+  return panel('Client visits', sub, [stats,
+    bars.length ? el('div', { class: 'vsecs' }, [el('h4', { text: 'Time spent on each part' }), ...bars]) : null,
+    el('h4', { class: 'vh', text: 'Recent visits' }), rows]);
+}
+
 function renderQuote(qq, project) {
   q = upgrade(qq);
   const v = view();
@@ -881,6 +922,7 @@ function renderQuote(qq, project) {
     copyBtn, el('a', { href: link, target: '_blank', rel: 'noopener' }, [el('button', { text: 'Open' })]),
     el('button', { text: 'Download PDF', title: 'The proposal as a PDF, for clients who ask for one', onclick: () => download('proposal') })
   ]), el('p', { class: 'muted', style: 'margin:8px 0 0;font-size:12.5px', text: 'The PDF shows the proposal as sent (the default scope, add-ons listed separately). Only you can download it here; the client page has no PDF button.' })]));
+  v.appendChild(visitsPanel(lastVisits));
   v.appendChild(dealPanel(project));
 
   // ---- original quote (internal breakdown, frozen) ----

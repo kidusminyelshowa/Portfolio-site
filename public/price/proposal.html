@@ -361,6 +361,15 @@ html[data-theme] .hero h1{font-weight:800;text-transform:uppercase;letter-spacin
 html[data-theme] .tl .svc,html[data-theme] .tl .lane{border:2px solid var(--ink)}
 html[data-theme] .tl .svc{border-right:0} html[data-theme] .tl .lane{border-left:0}
 </style>
+<!-- Vercel Web Analytics, the same as the portfolio: page views and traffic for /price in the Vercel dashboard.
+     Per-proposal detail (time, sections read, changes) is recorded by proposal.js and shown in the Price Builder. -->
+<script>
+window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+// only where Vercel serves it (not on a self-hosted server or a local preview)
+if (!/^(localhost|127\.|\[::1\])/.test(location.hostname)) {
+  var vs = document.createElement('script'); vs.defer = true; vs.src = '/_vercel/insights/script.js'; document.head.appendChild(vs);
+}
+</script>
 </head>
 <body>
 <div class="wrap">
