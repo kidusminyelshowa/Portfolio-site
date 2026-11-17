@@ -183,6 +183,19 @@
   .cmp th{font-size:12px;color:var(--ink2);font-weight:500;text-align:left;padding:4px 10px}
   .yes{color:var(--ok)} .no{color:var(--mute)}
   .chg td{background:var(--pinkSoft) !important}
+  /* client visits */
+  .vstats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:16px}
+  .vtile{background:var(--inner);border-radius:16px;padding:12px 14px;display:grid;gap:2px;align-content:start}
+  .vtile span{font-size:12px;color:var(--ink2)}
+  .vtile b{font-size:20px;font-weight:500;letter-spacing:-.02em}
+  .vtile small{font-size:11.5px;color:var(--ink2)}
+  .vsecs{margin-bottom:12px}
+  .vsecs h4,.vh{margin:0 0 8px;font-size:13px;font-weight:500;color:var(--ink2)}
+  .vbar{display:grid;grid-template-columns:120px 1fr 64px;align-items:center;gap:10px;font-size:13.5px;padding:3px 0}
+  .vbar i{display:block;height:8px;border-radius:999px;background:var(--inner);overflow:hidden}
+  .vbar em{display:block;height:100%;border-radius:999px;background:var(--pinkSel)}
+  .vbar b{font-weight:500;text-align:right}
+  @media (max-width:760px){.vstats{grid-template-columns:repeat(2,minmax(0,1fr))}.vtile:last-child{grid-column:1/-1}.vbar{grid-template-columns:96px 1fr 56px}}
   .kv{display:grid;grid-template-columns:120px 1fr;gap:8px 12px;font-size:14px;margin:0}
   .kv dt{color:var(--ink2);font-size:13px;padding-top:1px}
   .kv dd{margin:0;white-space:pre-wrap;word-break:break-word}

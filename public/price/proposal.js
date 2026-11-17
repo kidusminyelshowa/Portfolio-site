@@ -38,7 +38,7 @@ const cur = () => (sel.currency === 'USD' && usdOk() ? 'USD' : 'ETB');
 const money = (etb, c) => formatMoney(toDisplay(P, etb, c || cur()), c || cur());
 const signed = (etb, c) => (etb < 0 ? '−' : '+') + money(Math.abs(etb), c);
 const fmtDate = iso => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-function save() { try { localStorage.setItem(storeKey, JSON.stringify({ at: P.preparedAt, sel })); } catch (e) {} }
+function save() { visit.acts++; try { localStorage.setItem(storeKey, JSON.stringify({ at: P.preparedAt, sel })); } catch (e) {} }
 function payable(t) { return t.usd ? formatMoney(t.usdAmount, 'USD') : formatMoney(t.etb); }
 function payNum(t) { return t.usd ? t.usdAmount : t.etb; }
 
@@ -148,6 +148,7 @@ function build() {
   $('#loading').hidden = true;
   $('#doc').hidden = false;
   $('#dock').hidden = false;
+  trackVisit();
 
   // the floating bar on phones: hidden over the hero and while the full summary is visible
   const seen = new Map();
@@ -481,6 +482,7 @@ function renderInvestment(t, defT) {
 
 /* ================= request ================= */
 function openRequest() {
+  visit.form = true;
   const t = clientTotals(P, sel);
   const recap = $('#recap');
   recap.textContent = '';
@@ -520,6 +522,61 @@ async function submit(ev) {
   } finally {
     btn.disabled = false;
   }
+}
+
+/* ================= visitor analytics =================
+   Tells the team how this page is read: time spent while the tab is open and in use, how far down
+   it was read, which sections were on screen and for how long, and how many changes were made.
+   Nothing personal: no cookie and no third party; a random id in this browser's storage lets
+   repeat visits from the same device be told apart from new people. Never breaks the page. */
+const visit = { vid: rid(), visitor: '', secs: 0, depth: 0, sections: {}, acts: 0, form: false };
+function rid() {
+  try { return Array.from(crypto.getRandomValues(new Uint8Array(10)), b => (b % 36).toString(36)).join(''); }
+  catch (e) { return (Date.now().toString(36) + Math.random().toString(36).slice(2)).slice(0, 16); }
+}
+function trackVisit() {
+  try {
+    try { visit.visitor = localStorage.getItem('gz-visitor') || ''; if (!visit.visitor) { visit.visitor = rid(); localStorage.setItem('gz-visitor', visit.visitor); } }
+    catch (e) { visit.visitor = visit.vid; }
+    const parts = { hero: $('.hero'), glance: $('#glance'), scope: $('#scopePanel'), choices: $('#choicePanel'),
+                    included: $('#inclPanel'), investment: $('#inv'), timeline: $('#tlPanel') };
+    const onScreen = new Set();
+    if ('IntersectionObserver' in window) {
+      const names = new Map(Object.entries(parts).filter(([, n]) => n).map(([k, n]) => [n, k]));
+      // "read" = filling a good part of the screen, or mostly visible when it is a short block
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        const k = names.get(e.target);
+        if (e.intersectionRect.height >= Math.min(innerHeight * 0.35, e.boundingClientRect.height * 0.6)) onScreen.add(k); else onScreen.delete(k);
+      }), { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] });
+      names.forEach((k, n) => io.observe(n));
+    }
+    let lastInput = Date.now(), sent = -1;
+    const poke = () => { lastInput = Date.now(); };
+    ['scroll', 'pointerdown', 'keydown', 'touchstart', 'mousemove'].forEach(ev => addEventListener(ev, poke, { passive: true }));
+    const depth = () => {
+      const h = document.documentElement.scrollHeight;
+      visit.depth = Math.max(visit.depth, Math.min(100, Math.round((scrollY + innerHeight) / Math.max(1, h) * 100)));
+    };
+    addEventListener('scroll', depth, { passive: true });
+    depth();
+    // count a second only while the tab is visible and someone has touched it in the last 90 seconds
+    setInterval(() => {
+      if (document.visibilityState !== 'visible' || Date.now() - lastInput > 90000) return;
+      visit.secs++;
+      onScreen.forEach(k => { if (!parts[k].hidden) visit.sections[k] = (visit.sections[k] || 0) + 1; });
+    }, 1000);
+    const send = force => {
+      if (!force && visit.secs === sent) return;
+      sent = visit.secs;
+      const body = JSON.stringify({ action: 'visit', slug, ...visit, usd: sel.currency === 'USD' });
+      try { fetch('/api/quotes', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body }).catch(() => {}); }
+      catch (e) { try { navigator.sendBeacon('/api/quotes', new Blob([body], { type: 'application/json' })); } catch (x) {} }
+    };
+    send(true);
+    setInterval(() => { if (document.visibilityState === 'visible') send(); }, 60000);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') send(); });
+    addEventListener('pagehide', () => send());
+  } catch (e) { /* analytics never get in the client's way */ }
 }
 
 load();
