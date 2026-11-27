@@ -2,7 +2,7 @@
    sharp, small and searchable. Uses jsPDF, loaded from a CDN only when someone
    downloads a document.
 
-   One visual system for every document: the portfolio's paper background, Figtree (the
+   One visual system for every document: a white page, Figtree (the
    site's typeface, embedded from /price/fonts), big heavy titles, and each service as a
    rounded colour block with its price on a pill, the way a printed pricing sheet reads.
    The colours are the site's (mist, blue, navy, paper grey); the blue and the mist follow
@@ -98,7 +98,7 @@ class Sheet {
   tone(i) { return this.tones[i % this.tones.length]; }
   pw() { return this.d.internal.pageSize.getWidth(); }
   ph() { return this.d.internal.pageSize.getHeight(); }
-  paint() { this.d.setFillColor(...C.paper); this.d.rect(0, 0, this.pw(), this.ph(), 'F'); }
+  paint() { this.d.setFillColor(...C.white); this.d.rect(0, 0, this.pw(), this.ph(), 'F'); }
   font(size, style, color) {
     const st = this.family === 'Figtree' ? (style || 'normal') : (style === 'heavy' ? 'bold' : style || 'normal');
     this.d.setFont(this.family, st); this.d.setFontSize(size); this.d.setTextColor(...(color || C.ink)); this.size = size; return this;
@@ -201,7 +201,7 @@ class Sheet {
   /* cards side by side on the lighter surface: [{ title, lines: [] }] */
   cards(list, opts) {
     const o = opts || {}, gap = 5, n = list.length, w = (CW - gap * (n - 1)) / n, pad = 5;
-    const fill = o.fill || C.card;
+    const fill = o.fill || C.paper;
     const heights = list.map(c => 7 + c.lines.filter(Boolean).reduce((h, l, li) => { this.font(li === 0 ? 10 : 9.2, li === 0 ? 'bold' : 'normal'); return h + this.wrap(l, w - pad * 2).length * this.lh(); }, 0) + pad * 1.6);
     const h = Math.max(...heights);
     this.room(h + 5);
@@ -226,7 +226,7 @@ class Sheet {
     const rowH = row => { this.font(10, 'bold'); return 5 + Math.max(...row.map(([, v]) => this.wrap(v || '-', colW).length)) * this.lh(10) + 2.5; };
     const h = rowsOf.reduce((s, r) => s + rowH(r), 0) + pad * 1.6;
     this.room(h + 5);
-    this.d.setFillColor(...(o.fill || C.card)); this.d.roundedRect(M, this.y, CW, h, 4, 4, 'F');
+    this.d.setFillColor(...(o.fill || C.paper)); this.d.roundedRect(M, this.y, CW, h, 4, 4, 'F');
     let yy = this.y + pad;
     rowsOf.forEach(row => {
       row.forEach(([k, v], j) => {
@@ -254,7 +254,7 @@ class Sheet {
       let j = i, used = 0;
       while (j < measured.length && (used + measured[j].h <= avail || j === i)) { used += measured[j].h; j++; }
       const y0 = this.y, h = headH + used + pad * 1.4;
-      this.d.setFillColor(...C.card); this.d.roundedRect(M, y0, CW, h, 4, 4, 'F');
+      this.d.setFillColor(...C.paper); this.d.roundedRect(M, y0, CW, h, 4, 4, 'F');
       let x = M + pad;
       this.font(8.3, 'normal', C.mute);
       cols.forEach((c, k) => { this.d.text(clean(c.label), c.align === 'right' ? x + ws[k] - cp : x + cp, y0 + pad, { baseline: 'top', align: c.align || 'left' }); x += ws[k]; });
