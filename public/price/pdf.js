@@ -155,12 +155,15 @@ class Sheet {
     if (subtitle) this.text(subtitle, { size: 10.5, color: C.ink2 });
     this.y += 6;
   }
-  /* the top of a later section page: a label pill and a big title */
-  pageTitle(label, title, sub) {
+  /* a section that follows on from the one above: a label pill and a big title, kept with what
+     comes under it (keep = the height that must fit on the same page) */
+  section(label, title, sub, keep) {
+    if (this.y > M + 1) this.y += 8;
+    this.room(32 + (keep || 30));
     this.pill(M, this.y, [[label, 'normal']], this.accent.fill, this.accent.text, { size: 10, h: 8.5, pad: 3.6 });
     this.y += 11;
-    this.font(32, 'heavy', C.ink);
-    this.wrap(title, CW).forEach(l => { this.d.text(l, M - 0.6, this.y, { baseline: 'top' }); this.y += this.lh(32, 1.05); });
+    this.font(26, 'heavy', C.ink);
+    this.wrap(title, CW).forEach(l => { this.d.text(l, M - 0.6, this.y, { baseline: 'top' }); this.y += this.lh(26, 1.05); });
     this.y += 2;
     if (sub) this.text(sub, { size: 10.5, color: C.ink2 });
     this.y += 5;
@@ -392,8 +395,7 @@ export async function contractPdf(q, company) {
   if (c.notes) doc.note('Additional notes', fillTerms(c.notes, ctx));
 
   /* 2. project breakdown (Schedule A) */
-  doc.page();
-  doc.pageTitle('Schedule A', 'Project breakdown', 'What ' + ctx.studio + ' will deliver. Anything not listed here is quoted separately.');
+  doc.section('Schedule A', 'Project breakdown', 'What ' + ctx.studio + ' will deliver. Anything not listed here is quoted separately.');
   const choice = id => ((a.choices || []).find(x => x.id === id) || {}).label;
   doc.pairs([
     ['Project', s.project || '-'], ['Type', s.typeLabel || '-'], ['Start date', dateLong(c.startDate)],
@@ -420,8 +422,7 @@ export async function contractPdf(q, company) {
   doc.note('Payment terms', ctx.paymentSchedule + ' Each invoice is payable within ' + ctx.paymentDays + ' days of its date. Work starts once the first payment is received.');
 
   /* 3. signatures */
-  doc.page();
-  doc.pageTitle('Agreement ' + c.number, 'Signatures', 'Signed by both parties, this agreement and Schedule A take effect from the date of the last signature.');
+  doc.section('Agreement ' + c.number, 'Signatures', 'Signed by both parties, this agreement and Schedule A take effect from the date of the last signature.', 92);
   doc.signatures([
     { title: 'For ' + ctx.studio, name: company.signatory || '', role: company.signatoryTitle || '' },
     { title: 'For ' + ctx.client, name: c.clientRep || '', role: c.clientTitle || '' }
