@@ -91,7 +91,7 @@ export function companyOf(b) {
   const x = mergeBrand(b);
   return { name: x.name, address: x.address, phone: x.phone, email: x.email, secondaryEmail: x.secondaryEmail, website: x.website,
     tin: x.tin, vatNumber: x.vatNumber, signatory: x.signatory, signatoryTitle: x.signatoryTitle, bank: x.bank,
-    country: x.country, city: x.city, logo: x.logo, accent: x.colors.accent };
+    country: x.country, city: x.city, logo: x.logo, accent: x.colors.accent, accent2: x.colors.accent2, highlight: x.colors.highlight };
 }
 
 let current = mergeBrand(null);

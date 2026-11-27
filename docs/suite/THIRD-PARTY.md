@@ -5,7 +5,7 @@
 | @vercel/blob | api/_storage.js | Apache-2.0 | only used with STORAGE=blob |
 | web-push | api/_push.js | MPL-2.0 | phone notifications |
 | jsPDF 2.5.2 | loaded in the browser from cdn.jsdelivr.net (fallback unpkg.com) | MIT | pinned version with a subresource-integrity hash |
-| Figtree font | Google Fonts | SIL Open Font License 1.1 | used by the Team app, Price Builder and proposals |
+| Figtree font | Google Fonts (web pages); `public/price/fonts/` (TrueType copies embedded in the PDFs, from @fontsource/figtree, licence in `OFL.txt` there) | SIL Open Font License 1.1 | used by the Team app, Price Builder, proposals and every generated PDF |
 | Spotify embed | Team → Music | Spotify terms | only loads when someone opens the player |
 | wa.me, t.me links | Leads | – | plain links that open WhatsApp or Telegram |
 
